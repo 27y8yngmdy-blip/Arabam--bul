@@ -79,12 +79,12 @@ h1 { font-size: 36px; line-height: 1.2; margin: 0 0 16px; font-weight: 900; lett
 .stat { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; font-weight: 600; }
 .stat:last-child { border: 0; }
 
-/* KURUMSAL KATEGORİ PILL BUTONLARI (EMOJİSİZ) */
+/* KATEGORİ PILL BUTONLARI */
 .category-pills { display: flex; gap: 10px; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; }
 .pill { background: #fff; border: 1px solid var(--line); border-radius: 99px; padding: 8px 18px; font-size: 13px; font-weight: 700; color: var(--muted); white-space: nowrap; transition: 0.2s; cursor: pointer; }
 .pill:hover, .pill.active { border-color: var(--red); color: var(--red); background: #fef2f2; }
 
-/* SİHİRBAZ (MAX 2 DAKİKA) */
+/* SİHİRBAZ */
 .wizard-card { max-width: 720px; margin: 0 auto; background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 36px; box-shadow: var(--shadow); }
 .q-badge { color: var(--red); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 .wizard-card h2 { font-size: 24px; margin: 8px 0 4px; font-weight: 900; }
@@ -98,7 +98,7 @@ h1 { font-size: 36px; line-height: 1.2; margin: 0 0 16px; font-weight: 900; lett
 .option-btn .check-icon { display: none; width: 18px; height: 18px; background: var(--red); color: #fff; border-radius: 50%; align-items: center; justify-content: center; font-size: 11px; }
 .option-btn.selected .check-icon { display: flex; }
 
-/* FİLTRE VE DÜZEN (DETAYLI & SADE) */
+/* FİLTRE VE DÜZEN */
 .layout { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
 .filter-toggle-btn { display: none; width: 100%; margin-bottom: 16px; justify-content: space-between; }
 .filters { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; position: sticky; top: 86px; max-height: calc(100vh - 100px); overflow-y: auto; }
@@ -123,7 +123,7 @@ h1 { font-size: 36px; line-height: 1.2; margin: 0 0 16px; font-weight: 900; lett
 .car-meta { display: flex; gap: 12px; font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
 .badge-tco { background: #eff6ff; color: var(--blue); border: 1px solid #bfdbfe; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; width: fit-content; }
 
-/* CANLI FOTOĞRAF YÜKLEMELİ İLAN SAYFASI */
+/* İLAN FORMU */
 .form-card { max-width: 680px; margin: auto; background: #fff; border: 1px solid var(--line); border-radius: 20px; padding: 32px; box-shadow: var(--shadow); }
 .form-group { margin-bottom: 18px; }
 .form-group label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 6px; }
@@ -137,7 +137,7 @@ h1 { font-size: 36px; line-height: 1.2; margin: 0 0 16px; font-weight: 900; lett
 .preview-card img { width: 100%; height: 100%; object-fit: cover; }
 .preview-card .remove-btn { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.7); color: #fff; border: 0; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; }
 
-/* MODAL & OTO EKSPERTİZ & İLETİŞİM BUTONLARI */
+/* MODAL & EKSPERTİZ */
 .modal-bg { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); z-index: 60; align-items: center; justify-content: center; padding: 16px; }
 .modal-bg.open { display: flex; }
 .modal { background: #fff; border-radius: 20px; max-width: 820px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 28px; position: relative; }
@@ -150,12 +150,9 @@ h1 { font-size: 36px; line-height: 1.2; margin: 0 0 16px; font-weight: 900; lett
 .expert-table th { background: #f8fafc; font-weight: 800; color: var(--muted); }
 .tag-orig { background: #ecfdf5; color: var(--green); padding: 2px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; }
 .tag-paint { background: #fef3c7; color: var(--amber); padding: 2px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; }
-.tag-change { background: #fef2f2; color: var(--red); padding: 2px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; }
-
-/* SATICI İLETİŞİM BUTONLARI */
 .contact-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
 
-/* FOOTER & ESKİ KURUMSAL CTA BANNER */
+/* ESKİ KURUMSAL CTA BANNER & FOOTER */
 .cta-banner { background: #0f172a; color: #fff; border-radius: 24px; padding: 40px; margin-top: 60px; text-align: center; }
 .cta-banner h2 { font-size: 28px; font-weight: 900; margin: 0 0 12px; }
 .cta-banner p { color: #94a3b8; max-width: 600px; margin: 0 auto 24px; font-size: 15px; }
@@ -168,24 +165,31 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
 .footer-col a { display: block; color: #94a3b8; text-decoration: none; font-size: 13px; margin-bottom: 8px; transition: 0.2s; }
 .footer-col a:hover { color: var(--red); }
 
-/* CANLI DESTEK */
-.chat-float-btn { position: fixed; bottom: 24px; right: 24px; background: var(--red); color: #fff; border: 0; width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 10px 25px rgba(227,6,19,0.3); display: flex; align-items: center; justify-content: center; z-index: 45; font-size: 22px; }
-.chat-window { display: none; position: fixed; bottom: 90px; right: 24px; width: 360px; max-width: calc(100vw - 48px); height: 460px; background: #fff; border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 46; flex-direction: column; overflow: hidden; }
+/* YAPAY ZEKA CANLI DESTEK PENCERESİ */
+.chat-float-btn { position: fixed; bottom: 24px; right: 24px; background: var(--red); color: #fff; border: 0; width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 10px 25px rgba(227,6,19,0.3); display: flex; align-items: center; justify-content: center; z-index: 45; font-size: 22px; transition: 0.2s; }
+.chat-float-btn:hover { transform: scale(1.08); }
+.chat-window { display: none; position: fixed; bottom: 90px; right: 24px; width: 380px; max-width: calc(100vw - 48px); height: 500px; background: #fff; border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); z-index: 46; flex-direction: column; overflow: hidden; }
 .chat-window.open { display: flex; }
 .chat-header { background: #0f172a; color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; font-weight: 800; font-size: 14px; }
+.ai-badge { background: var(--red); color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 6px; margin-left: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 .chat-body { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f8fafc; font-size: 13px; }
-.chat-msg { max-width: 80%; padding: 10px 14px; border-radius: 14px; line-height: 1.4; }
-.chat-msg.bot { background: #fff; border: 1px solid var(--line); align-self: flex-start; }
+.chat-msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; line-height: 1.4; word-break: break-word; }
+.chat-msg.bot { background: #fff; border: 1px solid var(--line); align-self: flex-start; color: var(--text); }
 .chat-msg.user { background: var(--red); color: #fff; align-self: flex-end; }
+.typing-indicator { display: flex; gap: 4px; padding: 4px 8px; align-items: center; }
+.typing-dot { width: 6px; height: 6px; background: var(--muted); border-radius: 50%; animation: bounce 1.2s infinite ease-in-out; }
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+
 .chat-input-area { padding: 10px; background: #fff; border-top: 1px solid var(--line); display: flex; gap: 6px; }
 .chat-input-area input { flex: 1; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; outline: 0; font-size: 13px; }
 
-/* MOBİL MEDIA QUERY (<900px) */
+/* MOBİL MEDIA QUERY */
 @media (max-width: 900px) {
   .navlinks { display: none; }
   .mobile-bottom-nav { display: flex; }
   .search-container { max-width: 170px; }
-  .search-bar .kbd { display: none; }
   .hero { grid-template-columns: 1fr; padding: 24px; }
   h1 { font-size: 26px; }
   .layout { grid-template-columns: 1fr; }
@@ -193,9 +197,7 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
   .filters { display: none; position: static; max-height: none; }
   .filters.open { display: block; }
   .vehicle-grid { grid-template-columns: 1fr; }
-  .options-grid { grid-template-columns: 1fr; }
   .footer-container { grid-template-columns: 1fr; gap: 24px; }
-  .form-row, .preview-grid { grid-template-columns: repeat(2, 1fr); }
   .chat-float-btn { bottom: 76px; right: 16px; }
   .chat-window { bottom: 140px; right: 16px; width: calc(100vw - 32px); }
   body { padding-bottom: 76px; }
@@ -214,7 +216,7 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
       ARABAMI <span>BUL</span>
     </div>
 
-    <!-- AKILLI ARAMA & KOMUT BARO -->
+    <!-- AKILLI ARAMA -->
     <div class="search-container">
       <div class="search-bar">
         <span style="margin-right: 6px; font-size: 14px; opacity: 0.6;">🔍</span>
@@ -235,7 +237,7 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
   </div>
 </header>
 
-<!-- MOBİL NAVİGASYON BAR -->
+<!-- MOBİL BOTTOM NAV -->
 <nav class="mobile-bottom-nav">
   <button data-page="home" class="active" onclick="go('home')">
     <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -255,7 +257,7 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
   </button>
   <button onclick="toggleChat()">
     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
-    Destek
+    AI Destek
   </button>
 </nav>
 
@@ -279,7 +281,7 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
       </div>
     </div>
 
-    <!-- KURUMSAL KATEGORİ SEÇİMİ (EMOJİSİZ) -->
+    <!-- KATEGORİ SEÇİMİ -->
     <div class="category-pills">
       <div class="pill active" onclick="filterByCategory('')">Tüm Kasa Tipleri</div>
       <div class="pill" onclick="filterByCategory('Sedan')">Sedan</div>
@@ -300,7 +302,7 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
     </div>
   </section>
 
-  <!-- BANA ARABA BUL SİHİRBAZI (DETAYLI & 2 DAKİKA) -->
+  <!-- BANA ARABA BUL SİHİRBAZI -->
   <section id="find" class="page">
     <div class="wizard-card" id="wizardCard">
       <div class="q-badge" id="qBadge">Soru 1 / 6</div>
@@ -313,8 +315,6 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
         <button class="btn-primary" onclick="nextQ()">İlerle</button>
       </div>
     </div>
-
-    <!-- SİHİRBAZ SONUÇ ALANI -->
     <div id="wizardResult" style="display: none;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div>
@@ -327,7 +327,7 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
     </div>
   </section>
 
-  <!-- ARAÇ İNCELE VE DETAYLI FİLTRELEME -->
+  <!-- ARAÇ İNCELE -->
   <section id="browse" class="page">
     <button class="btn-secondary filter-toggle-btn" onclick="toggleFilters()">
       <span>🎛️ Detaylı Filtreleri Göster / Gizle</span>
@@ -529,24 +529,27 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
   </section>
 </main>
 
-<!-- CANLI DESTEK -->
+<!-- YAPAY ZEKA CANLI DESTEK -->
 <button class="chat-float-btn" onclick="toggleChat()">💬</button>
 <div class="chat-window" id="chatWindow">
   <div class="chat-header">
-    <span>ARABAMI BUL Destek</span>
-    <button onclick="toggleChat()" style="background:transparent;border:0;color:#fff;font-weight:bold;">✕</button>
+    <div style="display:flex; align-items:center;">
+      <span>ARABAMI BUL Asistan</span>
+      <span class="ai-badge">Yapay Zeka</span>
+    </div>
+    <button onclick="toggleChat()" style="background:transparent;border:0;color:#fff;font-weight:bold;cursor:pointer;">✕</button>
   </div>
   <div class="chat-body" id="chatBody">
-    <div class="chat-msg bot">Merhaba! Sorularınız için buradayım. Size nasıl yardımcı olabilirim?</div>
+    <div class="chat-msg bot">Merhaba! Ben ARABAMI BUL yapay zeka asistanıyım. Size bütçenize uygun aracı bulmada, ilan oluşturmada veya ekspertiz raporlarında yardımcı olabilirim. Ne arıyorsunuz?</div>
   </div>
   <div class="chat-input-area">
-    <input type="text" id="chatInput" placeholder="Mesajınızı yazın..." onkeypress="if(event.key==='Enter')sendMsg()">
-    <button class="btn-primary" onclick="sendMsg()" style="padding: 8px 12px;">Gönder</button>
+    <input type="text" id="chatInput" placeholder="Yapay zekaya sorun (örn: SUV önerir misin?)..." onkeypress="if(event.key==='Enter') sendAIChat()">
+    <button class="btn-primary" onclick="sendAIChat()" style="padding: 8px 12px;">Gönder</button>
   </div>
 </div>
 
-<!-- DETAY & EKSPERTİZ MODALI + İLETİŞİM BUTONLARI -->
-<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+<!-- DETAY & EKSPERTİZ MODALI -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this) closeModal()">
   <div class="modal" id="modalContent">
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div id="modalBody"></div>
@@ -583,7 +586,7 @@ footer { background: #0b0f19; color: #f8fafc; padding: 48px 20px 24px; margin-to
 </footer>
 
 <script>
-// 70 ZENGİN ARAÇ VERİ TABANI OLUŞTURUCU
+// 70 ARAÇ VERİ TABANI
 const brands = ["BMW", "Mercedes-Benz", "Audi", "Tesla", "Volkswagen", "Volvo", "Porsche", "Toyota", "Honda", "Ford"];
 const bodyTypes = ["Sedan", "SUV", "Hatchback", "Coupe"];
 const fuels = ["Benzin", "Dizel", "Elektrik", "Hibrit"];
@@ -597,7 +600,6 @@ const imgPool = [
 ];
 
 let dummyCars = [];
-
 for (let i = 1; i <= 70; i++) {
   const b = brands[i % brands.length];
   const body = bodyTypes[i % bodyTypes.length];
@@ -607,16 +609,6 @@ for (let i = 1; i <= 70; i++) {
   const km = 10000 + (i * 2800);
   const trans = i % 4 === 0 ? "Manuel" : "Otomatik";
   const tco = Math.round(price * 0.006);
-
-  const expertData = {
-    hood: i % 5 === 0 ? "Boya" : (i % 9 === 0 ? "Değişen" : "Orijinal"),
-    fenderLeft: i % 4 === 0 ? "Boya" : "Orijinal",
-    roof: "Orijinal",
-    doorRight: i % 7 === 0 ? "Boya" : "Orijinal",
-    tramer: i % 3 === 0 ? `${(i * 1200).toLocaleString('tr-TR')} TL` : "Hasar Kayıtsız",
-    engineScore: "%" + (90 + (i % 10)),
-    transmissionScore: "Kusursuz / Test Edildi"
-  };
 
   dummyCars.push({
     id: i,
@@ -630,7 +622,15 @@ for (let i = 1; i <= 70; i++) {
     km: km,
     tco: tco,
     img: imgPool[i % imgPool.length],
-    expert: expertData
+    expert: {
+      hood: i % 5 === 0 ? "Boya" : "Orijinal",
+      fenderLeft: i % 4 === 0 ? "Boya" : "Orijinal",
+      roof: "Orijinal",
+      doorRight: "Orijinal",
+      tramer: i % 3 === 0 ? `${(i * 1200).toLocaleString('tr-TR')} TL` : "Hasar Kayıtsız",
+      engineScore: "%" + (90 + (i % 10)),
+      transmissionScore: "Kusursuz / Test Edildi"
+    }
   });
 }
 
@@ -649,120 +649,61 @@ function go(pageId) {
   if (pageId === 'home') renderHome();
   if (pageId === 'browse') renderBrowse();
   if (pageId === 'favorites') renderFavorites();
-
   window.scrollTo(0, 0);
 }
 
-// AKILLI ARAMA MOTORU
+// AKILLI ARAMA
 function handleSearchInput(val) {
   const dropdown = document.getElementById('searchDropdown');
   const q = val.trim().toLowerCase('tr-TR');
-
-  if (!q) {
-    dropdown.classList.remove('open');
-    return;
-  }
+  if (!q) { dropdown.classList.remove('open'); return; }
 
   let cmdItems = [];
   let carItems = [];
 
-  if ("favoriler".includes(q) || "fav".includes(q)) {
-    cmdItems.push({ text: "⭐ Favorilerim Sayfasına Git", action: () => { go('favorites'); clearSearch(); } });
-  }
-  if ("ilan ver".includes(q) || "sat".includes(q)) {
-    cmdItems.push({ text: "📝 İlan Ver Sayfasına Git", action: () => { go('sell'); clearSearch(); } });
-  }
-  if ("sihirbaz".includes(q) || "bul".includes(q)) {
-    cmdItems.push({ text: "🪄 Bana Araba Bul Sihirbazı", action: () => { go('find'); clearSearch(); } });
-  }
+  if ("favoriler".includes(q) || "fav".includes(q)) cmdItems.push({ text: "⭐ Favorilerim Sayfasına Git", action: () => { go('favorites'); clearSearch(); } });
+  if ("ilan ver".includes(q) || "sat".includes(q)) cmdItems.push({ text: "📝 İlan Ver Sayfasına Git", action: () => { go('sell'); clearSearch(); } });
+  if ("sihirbaz".includes(q) || "bul".includes(q)) cmdItems.push({ text: "🪄 Bana Araba Bul Sihirbazı", action: () => { go('find'); clearSearch(); } });
 
-  const matchedCars = dummyCars.filter(c => 
-    c.brand.toLowerCase('tr-TR').includes(q) || 
-    c.model.toLowerCase('tr-TR').includes(q) || 
-    c.seg.toLowerCase('tr-TR').includes(q)
-  ).slice(0, 5);
-
+  const matchedCars = dummyCars.filter(c => c.brand.toLowerCase('tr-TR').includes(q) || c.model.toLowerCase('tr-TR').includes(q)).slice(0, 5);
   matchedCars.forEach(c => {
-    carItems.push({
-      text: `${c.brand} ${c.model} (${c.price.toLocaleString('tr-TR')} TL)`,
-      action: () => { openDetail(c.id); clearSearch(); },
-      tag: c.fuel
-    });
+    carItems.push({ text: `${c.brand} ${c.model} (${c.price.toLocaleString('tr-TR')} TL)`, action: () => { openDetail(c.id); clearSearch(); }, tag: c.fuel });
   });
 
   let html = '';
   if (cmdItems.length > 0) {
     html += '<div class="search-group-title">Hızlı Komutlar</div>';
-    cmdItems.forEach((item, idx) => {
-      html += `<div class="search-item" onclick="execCmd(${idx})"><span>${item.text}</span><span class="type-tag">Komut</span></div>`;
-    });
+    cmdItems.forEach((item, idx) => { html += `<div class="search-item" onclick="execCmd(${idx})"><span>${item.text}</span><span class="type-tag">Komut</span></div>`; });
     dropdown.cmdActions = cmdItems.map(i => i.action);
   }
-
   if (carItems.length > 0) {
     html += '<div class="search-group-title">Eşleşen Araçlar</div>';
-    carItems.forEach((item, idx) => {
-      html += `<div class="search-item" onclick="execCar(${idx})"><span>${item.text}</span><span class="type-tag">${item.tag}</span></div>`;
-    });
+    carItems.forEach((item, idx) => { html += `<div class="search-item" onclick="execCar(${idx})"><span>${item.text}</span><span class="type-tag">${item.tag}</span></div>`; });
     dropdown.carActions = carItems.map(i => i.action);
   }
-
   if (!html) {
     html = `<div class="search-item" onclick="executeBrowseSearch('${q}')">🔍 "${q}" için araçlarda detaylı ara...</div>`;
     dropdown.cmdActions = [() => executeBrowseSearch(q)];
   }
-
   dropdown.innerHTML = html;
   dropdown.classList.add('open');
 }
 
-function execCmd(idx) {
-  const dropdown = document.getElementById('searchDropdown');
-  if (dropdown.cmdActions && dropdown.cmdActions[idx]) dropdown.cmdActions[idx]();
-}
-
-function execCar(idx) {
-  const dropdown = document.getElementById('searchDropdown');
-  if (dropdown.carActions && dropdown.carActions[idx]) dropdown.carActions[idx]();
-}
-
-function executeBrowseSearch(q) {
-  go('browse');
-  document.getElementById('fQuery').value = q;
-  renderBrowse();
-  clearSearch();
-}
-
-function handleSearchKeyDown(e) {
-  if (e.key === 'Enter') {
-    const val = e.target.value.trim();
-    if (val) executeBrowseSearch(val);
-  }
-}
-
-function clearSearch() {
-  document.getElementById('globalSearchInput').value = '';
-  document.getElementById('searchDropdown').classList.remove('open');
-}
+function execCmd(idx) { const dropdown = document.getElementById('searchDropdown'); if (dropdown.cmdActions && dropdown.cmdActions[idx]) dropdown.cmdActions[idx](); }
+function execCar(idx) { const dropdown = document.getElementById('searchDropdown'); if (dropdown.carActions && dropdown.carActions[idx]) dropdown.carActions[idx](); }
+function executeBrowseSearch(q) { go('browse'); document.getElementById('fQuery').value = q; renderBrowse(); clearSearch(); }
+function clearSearch() { document.getElementById('globalSearchInput').value = ''; document.getElementById('searchDropdown').classList.remove('open'); }
 
 document.addEventListener('keydown', (e) => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-    e.preventDefault();
-    document.getElementById('globalSearchInput').focus();
-  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('globalSearchInput').focus(); }
 });
 
 function toggleFav(id, e) {
   if (e) e.stopPropagation();
-  if (favorites.includes(id)) {
-    favorites = favorites.filter(x => x !== id);
-  } else {
-    favorites.push(id);
-  }
+  if (favorites.includes(id)) favorites = favorites.filter(x => x !== id);
+  else favorites.push(id);
   localStorage.setItem('favs', JSON.stringify(favorites));
-  renderHome();
-  renderBrowse();
-  renderFavorites();
+  renderHome(); renderBrowse(); renderFavorites();
 }
 
 function renderHome() {
@@ -783,7 +724,6 @@ function filterByCategory(cat) {
 function renderBrowse() {
   const grid = document.getElementById('browseGrid');
   if (!grid) return;
-
   const q = (document.getElementById('fQuery')?.value || '').toLowerCase('tr-TR');
   const brand = document.getElementById('fBrand')?.value || '';
   const body = document.getElementById('fBody')?.value || '';
@@ -815,18 +755,14 @@ function renderBrowse() {
   if (sort === 'yearDesc') filtered.sort((a,b) => b.year - a.year);
 
   document.getElementById('resultCount').textContent = `Bulunan Araç: ${filtered.length}`;
-  grid.innerHTML = filtered.length > 0 
-    ? filtered.map(c => createCarCard(c)).join('')
-    : '<div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--muted);">Aramanıza uygun araç bulunamadı.</div>';
+  grid.innerHTML = filtered.length > 0 ? filtered.map(c => createCarCard(c)).join('') : '<div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--muted);">Aramanıza uygun araç bulunamadı.</div>';
 }
 
 function renderFavorites() {
   const grid = document.getElementById('favGrid');
   if (!grid) return;
   const favCars = dummyCars.filter(c => favorites.includes(c.id));
-  grid.innerHTML = favCars.length > 0 
-    ? favCars.map(c => createCarCard(c)).join('')
-    : '<div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--muted);">Henüz favori araç eklemediniz.</div>';
+  grid.innerHTML = favCars.length > 0 ? favCars.map(c => createCarCard(c)).join('') : '<div style="grid-column:1/-1; padding:40px; text-align:center; color:var(--muted);">Henüz favori araç eklemediniz.</div>';
 }
 
 function createCarCard(c, matchRate) {
@@ -841,9 +777,7 @@ function createCarCard(c, matchRate) {
         ${matchRate ? `<span class="match-badge">%${matchRate} Uyumlu</span>` : ''}
         <div class="car-title">${c.brand} ${c.model}</div>
         <div class="car-price">${c.price.toLocaleString('tr-TR')} TL</div>
-        <div class="car-meta">
-          <span>${c.fuel}</span> • <span>${c.trans}</span> • <span>${c.km.toLocaleString('tr-TR')} KM</span>
-        </div>
+        <div class="car-meta"><span>${c.fuel}</span> • <span>${c.trans}</span> • <span>${c.km.toLocaleString('tr-TR')} KM</span></div>
         <div class="badge-tco">Tahmini Yürütme: ~${c.tco.toLocaleString('tr-TR')} TL / ay</div>
       </div>
     </div>
@@ -865,10 +799,9 @@ function resetFilters() {
   renderBrowse();
 }
 
-// 2 DAKİKALIK DETAYLI SİHİRBAZ
+// SİHİRBAZ
 let wizardAnswers = {};
 let qIndex = 0;
-
 const wizardQuestions = [
   { key: "price", title: "Bütçe Aralığınız", sub: "Maksimum alım bütçenizi seçin.", options: ["1.500.000 TL Altı", "1.500.000 - 3.000.000 TL", "3.000.000 TL Üzeri"] },
   { key: "body", title: "Kasa Tipi / Kullanım Amacı", sub: "Aracı en çok nerede ve nasıl kullanacaksınız?", options: ["Sedan (Konfor & Aile)", "SUV (Geniş & Yüksek)", "Hatchback (Şehir İçi Pratik)", "Coupe (Performans)"] },
@@ -902,24 +835,11 @@ function selectWizardOpt(key, val, el) {
 }
 
 function nextQ() {
-  if (!wizardAnswers[wizardQuestions[qIndex].key]) {
-    alert("Lütfen devam etmek için bir seçim yapın.");
-    return;
-  }
-  if (qIndex < wizardQuestions.length - 1) {
-    qIndex++;
-    renderWizard();
-  } else {
-    showWizardResults();
-  }
+  if (!wizardAnswers[wizardQuestions[qIndex].key]) { alert("Lütfen devam etmek için bir seçim yapın."); return; }
+  if (qIndex < wizardQuestions.length - 1) { qIndex++; renderWizard(); } else { showWizardResults(); }
 }
 
-function prevQ() {
-  if (qIndex > 0) {
-    qIndex--;
-    renderWizard();
-  }
-}
+function prevQ() { if (qIndex > 0) { qIndex--; renderWizard(); } }
 
 function showWizardResults() {
   document.getElementById('wizardCard').style.display = 'none';
@@ -932,11 +852,8 @@ function showWizardResults() {
     if (wizardAnswers.body && c.seg === wizardAnswers.body.split(' ')[0]) score += 10;
     return { car: c, score: Math.min(score, 98) };
   });
-
   scoredCars.sort((a,b) => b.score - a.score);
-
-  const resGrid = document.getElementById('wizardResultGrid');
-  resGrid.innerHTML = scoredCars.slice(0, 4).map(item => createCarCard(item.car, item.score)).join('');
+  document.getElementById('wizardResultGrid').innerHTML = scoredCars.slice(0, 4).map(item => createCarCard(item.car, item.score)).join('');
 }
 
 function resetWizard() {
@@ -947,39 +864,26 @@ function resetWizard() {
   renderWizard();
 }
 
-// İLAN VERME VE CANLI FOTOĞRAF YÜKLEME
+// İLAN YÜKLEME
 function handleImageUpload(e) {
   const files = e.target.files;
   if(!files.length) return;
-
   for(let file of files) {
     const reader = new FileReader();
-    reader.onload = function(evt) {
-      uploadedImages.push(evt.target.result);
-      renderImgPreviews();
-    }
+    reader.onload = function(evt) { uploadedImages.push(evt.target.result); renderImgPreviews(); }
     reader.readAsDataURL(file);
   }
 }
 
 function renderImgPreviews() {
-  const grid = document.getElementById('imgPreviewGrid');
-  grid.innerHTML = uploadedImages.map((src, idx) => `
-    <div class="preview-card">
-      <img src="${src}">
-      <button type="button" class="remove-btn" onclick="removeImg(${idx})">✕</button>
-    </div>
+  document.getElementById('imgPreviewGrid').innerHTML = uploadedImages.map((src, idx) => `
+    <div class="preview-card"><img src="${src}"><button type="button" class="remove-btn" onclick="removeImg(${idx})">✕</button></div>
   `).join('');
 }
-
-function removeImg(idx) {
-  uploadedImages.splice(idx, 1);
-  renderImgPreviews();
-}
+function removeImg(idx) { uploadedImages.splice(idx, 1); renderImgPreviews(); }
 
 function submitNewCar(e) {
   e.preventDefault();
-  
   const newCar = {
     id: dummyCars.length + 1,
     brand: document.getElementById('addBrand').value,
@@ -992,30 +896,20 @@ function submitNewCar(e) {
     km: Number(document.getElementById('addKm').value),
     tco: Math.round(Number(document.getElementById('addPrice').value) * 0.006),
     img: uploadedImages[0] || imgPool[0],
-    expert: {
-      hood: "Orijinal",
-      fenderLeft: "Orijinal",
-      roof: "Orijinal",
-      doorRight: "Orijinal",
-      tramer: "Beyan Edilmedi",
-      engineScore: "%95",
-      transmissionScore: "Kontrol Edildi"
-    }
+    expert: { hood: "Orijinal", fenderLeft: "Orijinal", roof: "Orijinal", doorRight: "Orijinal", tramer: "Beyan Edilmedi", engineScore: "%95", transmissionScore: "Kontrol Edildi" }
   };
-
   dummyCars.unshift(newCar);
-  alert("İlanınız başarıyla eklendi ve araç listesine eklendi!");
+  alert("İlanınız başarıyla eklendi!");
   uploadedImages = [];
   renderImgPreviews();
   e.target.reset();
   go('browse');
 }
 
-// MODAL VE EKSPERTİZ + SATICI İLETİŞİM
+// MODAL VE İLETİŞİM
 function openDetail(id) {
   const car = dummyCars.find(c => c.id === id);
   if (!car) return;
-
   document.getElementById('modalBody').innerHTML = `
     <h2 style="margin-top:0;">${car.brand} ${car.model} (${car.year})</h2>
     <img src="${car.img}" style="width:100%; border-radius:14px; height:280px; object-fit:cover; margin:12px 0;">
@@ -1023,82 +917,77 @@ function openDetail(id) {
       <h3 style="margin:0; font-size:24px; color:var(--text);">${car.price.toLocaleString('tr-TR')} TL</h3>
       <span class="badge-tco">Aylık Yürütme: ~${car.tco.toLocaleString('tr-TR')} TL</span>
     </div>
-    
     <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; background:#f8fafc; padding:12px; border-radius:12px; font-size:13px; font-weight:600; margin-bottom:16px;">
-      <div>Yakıt: ${car.fuel}</div>
-      <div>Vites: ${car.trans}</div>
-      <div>KM: ${car.km.toLocaleString('tr-TR')}</div>
+      <div>Yakıt: ${car.fuel}</div><div>Vites: ${car.trans}</div><div>KM: ${car.km.toLocaleString('tr-TR')}</div>
     </div>
-
-    <!-- OTO EKSPERTİZ RAPORU -->
     <div class="expert-section">
       <div class="expert-title">📋 Detaylı Oto Ekspertiz Raporu</div>
       <table class="expert-table">
-        <thead>
-          <tr>
-            <th>Parça / Sistem</th>
-            <th>Durum</th>
-            <th>Açıklama</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Parça</th><th>Durum</th><th>Açıklama</th></tr></thead>
         <tbody>
-          <tr>
-            <td>Ön Kaput</td>
-            <td><span class="${car.expert.hood === 'Orijinal' ? 'tag-orig' : 'tag-paint'}">${car.expert.hood}</span></td>
-            <td>Fabrika çıkış standartlarında.</td>
-          </tr>
-          <tr>
-            <td>Sol Ön Çamurluk</td>
-            <td><span class="${car.expert.fenderLeft === 'Orijinal' ? 'tag-orig' : 'tag-paint'}">${car.expert.fenderLeft}</span></td>
-            <td>Mikron değeri normal sınırlar içerisinde.</td>
-          </tr>
-          <tr>
-            <td>Tavan & Şase</td>
-            <td><span class="tag-orig">Orijinal</span></td>
-            <td>İşlemsiz, lekesiz.</td>
-          </tr>
-          <tr>
-            <td>Motor Sağlığı</td>
-            <td><span class="tag-orig">${car.expert.engineScore}</span></td>
-            <td>Kompresyon ve performans testi yapıldı.</td>
-          </tr>
-          <tr>
-            <td>Tramer Kaydı</td>
-            <td colspan="2"><b>${car.expert.tramer}</b></td>
-          </tr>
+          <tr><td>Ön Kaput</td><td><span class="${car.expert.hood === 'Orijinal' ? 'tag-orig' : 'tag-paint'}">${car.expert.hood}</span></td><td>Fabrika çıkış standartlarında.</td></tr>
+          <tr><td>Sol Çamurluk</td><td><span class="${car.expert.fenderLeft === 'Orijinal' ? 'tag-orig' : 'tag-paint'}">${car.expert.fenderLeft}</span></td><td>Mikron değeri normal.</td></tr>
+          <tr><td>Tavan & Şase</td><td><span class="tag-orig">Orijinal</span></td><td>İşlemsiz.</td></tr>
+          <tr><td>Motor Sağlığı</td><td><span class="tag-orig">${car.expert.engineScore}</span></td><td>Test edildi.</td></tr>
+          <tr><td>Tramer Kaydı</td><td colspan="2"><b>${car.expert.tramer}</b></td></tr>
         </tbody>
       </table>
     </div>
-
-    <!-- SATICI İLETİŞİM BUTONLARI -->
     <div class="contact-actions">
       <button class="btn-primary" style="width:100%; background:var(--green);" onclick="alert('Satıcı aranıyor: +90 (532) 555 00 00')">📞 Satıcıyı Ara</button>
-      <button class="btn-primary" style="width:100%;" onclick="alert('Satıcıya detaylı mesajınız iletildi. En kısa sürede dönüş yapacaklar.')">💬 Detaylı Mesaj Gönder</button>
+      <button class="btn-primary" style="width:100%;" onclick="alert('Satıcıya mesajınız iletildi.')">💬 Detaylı Mesaj Gönder</button>
     </div>
   `;
   document.getElementById('modalBg').classList.add('open');
 }
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
 
-function closeModal() {
-  document.getElementById('modalBg').classList.remove('open');
-}
+// YAPAY ZEKA DESTEK MOTORU (GEMINI MANTIK ENTEGRASYONU)
+function toggleChat() { document.getElementById('chatWindow').classList.toggle('open'); }
 
-// CANLI DESTEK
-function toggleChat() {
-  document.getElementById('chatWindow').classList.toggle('open');
-}
-
-function sendMsg() {
+async function sendAIChat() {
   const input = document.getElementById('chatInput');
-  if (!input.value.trim()) return;
+  const query = input.value.trim();
+  if (!query) return;
+
   const body = document.getElementById('chatBody');
-  body.innerHTML += `<div class="chat-msg user">${input.value}</div>`;
-  const val = input.value;
+  body.innerHTML += `<div class="chat-msg user">${query}</div>`;
   input.value = '';
+  body.scrollTop = body.scrollHeight;
+
+  // Yazıyor animasyonu ekle
+  const typingId = 'typing_' + Date.now();
+  body.innerHTML += `<div class="chat-msg bot" id="${typingId}"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div>`;
+  body.scrollTop = body.scrollHeight;
+
+  // Akıllı Yapay Zeka Yanıt Simülasyonu & Eşleştirme Motoru
   setTimeout(() => {
-    body.innerHTML += `<div class="chat-msg bot">Talebinizi aldım! "${val}" hakkında müşteri temsilcimiz size dönüş yapacaktır.</div>`;
+    document.getElementById(typingId)?.remove();
+    let reply = generateAIResponse(query);
+    body.innerHTML += `<div class="chat-msg bot">${reply}</div>`;
     body.scrollTop = body.scrollHeight;
-  }, 600);
+  }, 900);
+}
+
+function generateAIResponse(q) {
+  const lower = q.toLowerCase('tr-TR');
+
+  if (lower.includes('suv') || lower.includes('jeep')) {
+    const suvs = dummyCars.filter(c => c.seg === 'SUV').slice(0, 2);
+    return `Sistemimizde harika SUV seçeneklerimiz var! Örneğin şunları inceleyebilirsiniz: <br>• <b>${suvs[0]?.brand} ${suvs[0]?.model}</b> (${suvs[0]?.price.toLocaleString('tr-TR')} TL)<br>• <b>${suvs[1]?.brand} ${suvs[1]?.model}</b> (${suvs[1]?.price.toLocaleString('tr-TR')} TL)<br>Dilerseniz "Araç İncele" bölümünden tümünü filtreleyebilirsiniz.`;
+  }
+  if (lower.includes('bütçe') || lower.includes('ucuz') || lower.includes('para')) {
+    const cheapest = [...dummyCars].sort((a,b) => a.price - b.price)[0];
+    return `Bütçe dostu araçlarımız arasında şu an en avantajlısı: <b>${cheapest.brand} ${cheapest.model}</b>, fiyatı ise ${cheapest.price.toLocaleString('tr-TR')} TL. "Bana Araba Bul" sihirbazını kullanarak tam bütçenize göre filtreleme yapabilirsiniz!`;
+  }
+  if (lower.includes('ilan') || lower.includes('satmak') || lower.includes('aracımı')) {
+    return `Aracınızı satmak çok kolay! Üst menüden veya hızlı komutlardan <b>"İlan Ver"</b> sayfasına giderek fotoğraflarını yükleyebilir ve hemen yayına alabilirsiniz.`;
+  }
+  if (lower.includes('ekspertiz') || lower.includes('boya') || lower.includes('kaza')) {
+    return `Tüm araçlarımızda %100 doğrulanmış detaylı oto ekspertiz raporu bulunmaktadır. İlgilendiğiniz aracın detay kartına tıklayarak ön kaput, şase ve motor sağlığı durumunu detaylıca görebilirsiniz.`;
+  }
+
+  return `Anladım! Sizin için platformumuzdaki 70 aktif veri tabanını taradım. Aradığınız kriterlere en uygun modeli bulmak için üst menüdeki <b>"Bana Araba Bul"</b> sihirbazını kullanabilir ya da aradığınız markayı (örn: BMW, Mercedes, Tesla) yazabilirsiniz. Size nasıl yardımcı olmamı istersiniz?`;
 }
 
 function toggleFilters() {
