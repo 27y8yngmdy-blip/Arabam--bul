@@ -51,6 +51,7 @@ for (let i = 1; i <= 70; i++) {
 }
 
 let favorites = JSON.parse(localStorage.getItem('favs') || '[]');
+window.favorites = favorites;
 let uploadedImages = [];
 
 function go(pageId) {
