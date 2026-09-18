@@ -1,819 +1,1217 @@
 /* =========================================================
-   ARABAMI BUL V2 — ARAÇ DETAY SİSTEMİ
-   Profesyonel ilan detay ekranı
+   ARABAMI BUL
+   ARAÇ DETAY SAYFASI V2
    ========================================================= */
 
 (function () {
-  "use strict";
+  'use strict';
 
-  const AB_Detail = {
-
-    currentCar: null,
-    currentImageIndex: 0,
+  const state = {
+    car: null,
     images: [],
-    previousBodyOverflow: "",
+    currentImage: 0,
+    lightboxOpen: false,
+    previousOverflow: '',
+    keyHandlerAttached: false,
+    touchStartX: 0,
+    touchEndX: 0
+  };
 
-    /* =====================================================
-       AÇ
-    ===================================================== */
+  const container = document.getElementById('car-detail-container');
 
-    open(id) {
+  if (!container) {
+    console.warn('ARABAMI BUL: #car-detail-container bulunamadı.');
+    return;
+  }
 
-      const cars = window.dummyCars || [];
+  /* =======================================================
+     HELPERS
+     ======================================================= */
 
-      const car = cars.find(
-        c => String(c.id) === String(id)
-      );
+  function allCars() {
+    return Array.isArray(window.dummyCars) ? window.dummyCars : [];
+  }
 
-      if (!car) {
-        console.error("Araç bulunamadı:", id);
-        return;
-      }
+  function getCar(id) {
+    return allCars().find(function (car) {
+      return String(car.id) === String(id);
+    });
+  }
 
-      const container =
-        document.getElementById("car-detail-container");
+  function escapeHTML(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
-      if (!container) {
-        console.error(
-          "car-detail-container bulunamadı."
-        );
-        return;
-      }
+  function money(value) {
+    const number = Number(value) || 0;
 
-      this.currentCar = car;
-      this.currentImageIndex = 0;
-      this.images = this.getImages(car);
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'currency',
+      currency: 'TRY',
+      maximumFractionDigits: 0
+    }).format(number);
+  }
 
-      this.previousBodyOverflow =
-        document.body.style.overflow;
+  function number(value) {
+    return new Intl.NumberFormat('tr-TR').format(Number(value) || 0);
+  }
 
-      document.body.style.overflow = "hidden";
+  function percent(value) {
+    return Math.max(0, Math.min(100, Number(value) || 0));
+  }
 
-      container.innerHTML =
-        this.render(car);
+  function getImages(car) {
+    if (Array.isArray(car.images) && car.images.length) {
+      return car.images.filter(Boolean);
+    }
 
-      container.style.display = "block";
+    if (car.image) {
+      return [car.image];
+    }
 
-      this.bindEvents();
-      this.updateGallery();
+    return [
+      'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1400&q=85'
+    ];
+  }
 
-      window.scrollTo({
-        top: 0,
-        behavior: "instant"
-      });
-    },
+  function getBrand(car) {
+    return car.brand || 'Bilinmiyor';
+  }
 
+  function getTitle(car) {
+    return car.title || `${getBrand(car)} ${car.model || ''}`.trim();
+  }
 
-    /* =====================================================
-       KAPAT
-    ===================================================== */
+  function getBody(car) {
+    return car.body || car.bodyType || 'Otomobil';
+  }
 
-    close() {
+  function getFuel(car) {
+    return car.fuel || car.fuelType || 'Benzin';
+  }
 
-      const container =
-        document.getElementById(
-          "car-detail-container"
-        );
+  function getTransmission(car) {
+    return car.trans || car.transmission || 'Otomatik';
+  }
 
-      if (!container) return;
+  function getLocation(car) {
+    if (car.location) return car.location;
 
-      container.style.display = "none";
-      container.innerHTML = "";
+    if (car.city) {
+      return `${car.city}${car.district ? ` / ${car.district}` : ''}`;
+    }
 
-      document.body.style.overflow =
-        this.previousBodyOverflow || "";
+    return 'İstanbul / Kadıköy';
+  }
 
-      this.currentCar = null;
-    },
+  function getSeller(car) {
+    return car.seller || car.sellerName || 'İlan Sahibi';
+  }
 
+  function initials(name) {
+    return String(name || 'İS')
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map(function (word) {
+        return word.charAt(0).toUpperCase();
+      })
+      .join('');
+  }
 
-    /* =====================================================
-       FOTOĞRAFLAR
-    ===================================================== */
+  function isFavorite(id) {
+    const favorites = Array.isArray(window.favorites)
+      ? window.favorites
+      : [];
 
-    getImages(car) {
+    return favorites.some(function (fav) {
+      return String(fav) === String(id);
+    });
+  }
 
-      let images = [];
+  function expertData(car) {
+    return car.expert || {};
+  }
 
-      if (Array.isArray(car.images)) {
-        images = car.images.filter(Boolean);
-      }
+  /* =======================================================
+     PUANLAR
+     ======================================================= */
+
+  function calculateTrust(car) {
+    const expert = expertData(car);
+
+    const engine = Number(expert.engineScore ?? 90);
+    const transmission = Number(expert.transmissionScore ?? 90);
+
+    let score = 72;
+
+    score += engine * 0.10;
+    score += transmission * 0.10;
+
+    if (expert.tramer !== undefined) {
+      const tramerText = String(expert.tramer).toLowerCase();
 
       if (
-        !images.length &&
-        Array.isArray(car.photos)
+        tramerText.includes('yok') ||
+        tramerText.includes('0')
       ) {
-        images = car.photos.filter(Boolean);
+        score += 8;
       }
+    }
 
-      if (!images.length && car.img) {
-        images = [car.img];
-      }
+    if (car.year) {
+      const age = new Date().getFullYear() - Number(car.year);
 
-      if (!images.length && car.image) {
-        images = [car.image];
-      }
+      if (age <= 3) score += 4;
+      else if (age <= 6) score += 2;
+    }
 
-      if (!images.length && car.photo) {
-        images = [car.photo];
-      }
+    return Math.round(Math.max(50, Math.min(98, score)));
+  }
 
-      if (!images.length) {
+  function calculateMatch(car) {
+    if (car.matchRate !== undefined) {
+      return Math.round(Number(car.matchRate));
+    }
 
-        images = [
-          "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=85"
-        ];
+    let score = 86;
 
-      }
+    if (getTransmission(car).toLowerCase().includes('otomatik')) {
+      score += 3;
+    }
 
-      return images;
-    },
+    if (Number(car.km) < 80000) {
+      score += 3;
+    }
 
+    if (Number(car.year) >= 2021) {
+      score += 2;
+    }
 
-    /* =====================================================
-       YARDIMCI
-    ===================================================== */
+    return Math.min(97, score);
+  }
 
-    money(value) {
+  function conditionScore(car) {
+    const expert = expertData(car);
 
+    const engine = Number(expert.engineScore ?? 90);
+    const transmission = Number(expert.transmissionScore ?? 90);
+
+    return Math.round((engine + transmission) / 2);
+  }
+
+  /* =======================================================
+     FAVORİ
+     ======================================================= */
+
+  function toggleFavorite() {
+    if (!state.car) return;
+
+    let favorites = Array.isArray(window.favorites)
+      ? window.favorites
+      : [];
+
+    const id = String(state.car.id);
+
+    const index = favorites.findIndex(function (fav) {
+      return String(fav) === id;
+    });
+
+    if (index >= 0) {
+      favorites.splice(index, 1);
+    } else {
+      favorites.push(state.car.id);
+    }
+
+    /*
+      ÖNEMLİ:
+      Yeni array oluşturmak yerine mevcut array'i değiştiriyoruz.
+      Böylece app.js içindeki favorites değişkeni de güncel kalıyor.
+    */
+    window.favorites = favorites;
+
+    localStorage.setItem(
+      'arabamiBulFavorites',
+      JSON.stringify(favorites)
+    );
+
+    updateFavoriteButtons();
+  }
+
+  function updateFavoriteButtons() {
+    const active = isFavorite(state.car?.id);
+
+    container
+      .querySelectorAll('[data-action="favorite"]')
+      .forEach(function (button) {
+        button.classList.toggle('active', active);
+
+        const icon = button.querySelector('.fav-icon');
+
+        if (icon) {
+          icon.textContent = active ? '♥' : '♡';
+        }
+
+        const label = button.querySelector('.fav-label');
+
+        if (label) {
+          label.textContent = active
+            ? 'Favorilerde'
+            : 'Favoriye ekle';
+        }
+
+        button.setAttribute(
+          'aria-label',
+          active ? 'Favorilerden çıkar' : 'Favorilere ekle'
+        );
+      });
+  }
+
+  /* =======================================================
+     KARŞILAŞTIR
+     ======================================================= */
+
+  function toggleCompare() {
+    if (!state.car) return;
+
+    let compare = [];
+
+    try {
+      compare = JSON.parse(
+        localStorage.getItem('arabamiBulCompare') || '[]'
+      );
+    } catch (error) {
+      compare = [];
+    }
+
+    if (!Array.isArray(compare)) {
+      compare = [];
+    }
+
+    const id = String(state.car.id);
+
+    const existingIndex = compare.findIndex(function (item) {
+      return String(item) === id;
+    });
+
+    if (existingIndex >= 0) {
+      compare.splice(existingIndex, 1);
+
+      localStorage.setItem(
+        'arabamiBulCompare',
+        JSON.stringify(compare)
+      );
+
+      updateCompareButton();
+
+      alert('Araç karşılaştırmadan çıkarıldı.');
+      return;
+    }
+
+    if (compare.length >= 3) {
+      alert('Karşılaştırmaya en fazla 3 araç ekleyebilirsin.');
+      return;
+    }
+
+    compare.push(state.car.id);
+
+    localStorage.setItem(
+      'arabamiBulCompare',
+      JSON.stringify(compare)
+    );
+
+    updateCompareButton();
+
+    alert(
+      compare.length === 1
+        ? 'Araç karşılaştırmaya eklendi. İkinci aracı da ekleyebilirsin.'
+        : `Araç karşılaştırmaya eklendi. Toplam ${compare.length} araç var.`
+    );
+  }
+
+  function updateCompareButton() {
+    let compare = [];
+
+    try {
+      compare = JSON.parse(
+        localStorage.getItem('arabamiBulCompare') || '[]'
+      );
+    } catch (error) {
+      compare = [];
+    }
+
+    const active = compare.some(function (item) {
+      return String(item) === String(state.car?.id);
+    });
+
+    container
+      .querySelectorAll('[data-action="compare"]')
+      .forEach(function (button) {
+        button.classList.toggle('active', active);
+
+        const icon = button.querySelector('.compare-icon');
+
+        if (icon) {
+          icon.textContent = active ? '✓' : '⇄';
+        }
+      });
+  }
+
+  /* =======================================================
+     GALERİ
+     ======================================================= */
+
+  function updateGallery() {
+    if (!state.images.length) return;
+
+    const image = state.images[state.currentImage];
+
+    const mainImage = container.querySelector(
+      '[data-detail-main-image]'
+    );
+
+    if (mainImage) {
+      mainImage.src = image;
+      mainImage.alt = getTitle(state.car);
+    }
+
+    const counter = container.querySelector(
+      '[data-photo-count]'
+    );
+
+    if (counter) {
+      counter.textContent =
+        `${state.currentImage + 1} / ${state.images.length}`;
+    }
+
+    container
+      .querySelectorAll('[data-gallery-index]')
+      .forEach(function (thumb) {
+        const index = Number(
+          thumb.getAttribute('data-gallery-index')
+        );
+
+        thumb.classList.toggle(
+          'active',
+          index === state.currentImage
+        );
+      });
+  }
+
+  function changeImage(direction) {
+    if (!state.images.length) return;
+
+    state.currentImage =
+      (state.currentImage + direction + state.images.length) %
+      state.images.length;
+
+    updateGallery();
+  }
+
+  function selectImage(index) {
+    if (
+      index < 0 ||
+      index >= state.images.length
+    ) {
+      return;
+    }
+
+    state.currentImage = index;
+
+    updateGallery();
+  }
+
+  /* =======================================================
+     LIGHTBOX
+     ======================================================= */
+
+  function openLightbox() {
+    const lightbox = container.querySelector(
+      '.ab-detail-lightbox'
+    );
+
+    if (!lightbox) return;
+
+    state.lightboxOpen = true;
+
+    lightbox.classList.add('open');
+
+    updateLightbox();
+  }
+
+  function closeLightbox() {
+    const lightbox = container.querySelector(
+      '.ab-detail-lightbox'
+    );
+
+    if (!lightbox) return;
+
+    state.lightboxOpen = false;
+
+    lightbox.classList.remove('open');
+  }
+
+  function updateLightbox() {
+    const lightboxImage = container.querySelector(
+      '[data-lightbox-image]'
+    );
+
+    if (!lightboxImage || !state.images.length) return;
+
+    lightboxImage.src = state.images[state.currentImage];
+    lightboxImage.alt = getTitle(state.car);
+  }
+
+  function changeLightbox(direction) {
+    changeImage(direction);
+
+    if (state.lightboxOpen) {
+      updateLightbox();
+    }
+  }
+
+  /* =======================================================
+     CONTACT
+     ======================================================= */
+
+  function contactSeller() {
+    if (!state.car) return;
+
+    const phone =
+      state.car.phone ||
+      state.car.phoneNumber ||
+      state.car.telephone;
+
+    if (phone) {
+      window.location.href =
+        `tel:${String(phone).replace(/\s/g, '')}`;
+
+      return;
+    }
+
+    alert(
+      `${getSeller(state.car)} adlı satıcıyla iletişim özelliği demo aşamasındadır.\n\nTelefon numarası bu demo ilanda paylaşılmamıştır.`
+    );
+  }
+
+  function sendMessage() {
+    if (!state.car) return;
+
+    alert(
+      `${getSeller(state.car)} adlı satıcıya mesaj gönderme özelliği yakında aktif olacak.`
+    );
+  }
+
+  /* =======================================================
+     AI ANALİZ
+     ======================================================= */
+
+  function aiAnalysis(car) {
+    const km = Number(car.km) || 0;
+    const year = Number(car.year) || new Date().getFullYear();
+    const score = conditionScore(car);
+
+    let usageText = 'dengeli kullanım profiline sahip';
+
+    if (km < 50000) {
+      usageText = 'düşük kilometreli bir kullanım profiline sahip';
+    } else if (km > 120000) {
+      usageText = 'kilometresi yüksek bir kullanım profiline sahip';
+    }
+
+    return `${getTitle(car)}, ${year} model ve ${number(km)} km bilgisiyle ${usageText}. İlan verilerindeki motor ve şanzıman puanları birlikte değerlendirildiğinde araç için uygulama içi kondisyon göstergesi ${score}/100 seviyesinde. Bu değerlendirme yalnızca demo ilan verilerine dayanır; gerçek ekspertiz yerine geçmez.`;
+  }
+
+  function showAIAnalysis() {
+    const output = container.querySelector(
+      '[data-ai-output]'
+    );
+
+    if (!output) return;
+
+    output.hidden = false;
+    output.textContent = aiAnalysis(state.car);
+  }
+
+  /* =======================================================
+     COST
+     ======================================================= */
+
+  function costData(car) {
+    const price = Number(car.price) || 0;
+
+    const annualTax = Math.round(price * 0.012);
+    const maintenance = Math.round(price * 0.008);
+    const insurance = Math.round(price * 0.014);
+    const total = annualTax + maintenance + insurance;
+
+    return {
+      annualTax,
+      maintenance,
+      insurance,
+      total
+    };
+  }
+
+  /* =======================================================
+     MARKET
+     ======================================================= */
+
+  function marketData(car) {
+    const sameBrand = allCars().filter(function (item) {
       return (
-        Number(value || 0)
-          .toLocaleString("tr-TR") +
-        " TL"
+        String(item.brand).toLowerCase() ===
+          String(car.brand).toLowerCase() &&
+        String(item.id) !== String(car.id)
       );
+    });
 
-    },
+    if (!sameBrand.length) {
+      return {
+        average: Number(car.price) || 0,
+        count: 0
+      };
+    }
 
+    const average =
+      sameBrand.reduce(function (sum, item) {
+        return sum + (Number(item.price) || 0);
+      }, 0) / sameBrand.length;
 
-    number(value) {
+    return {
+      average: Math.round(average),
+      count: sameBrand.length
+    };
+  }
 
-      return Number(value || 0)
-        .toLocaleString("tr-TR");
+  /* =======================================================
+     SIMILAR CARS
+     ======================================================= */
 
-    },
+  function similarCars(car) {
+    const cars = allCars()
+      .filter(function (item) {
+        return String(item.id) !== String(car.id);
+      })
+      .map(function (item) {
+        let score = 0;
 
+        if (
+          String(item.brand).toLowerCase() ===
+          String(car.brand).toLowerCase()
+        ) {
+          score += 4;
+        }
 
-    fuelText(car) {
+        if (
+          String(getBody(item)).toLowerCase() ===
+          String(getBody(car)).toLowerCase()
+        ) {
+          score += 3;
+        }
 
-      return (
-        car.fuel ||
-        car.yakit ||
-        "Benzin"
-      );
+        if (
+          Math.abs(
+            Number(item.price || 0) -
+            Number(car.price || 0)
+          ) < 300000
+        ) {
+          score += 2;
+        }
 
-    },
+        if (
+          Math.abs(
+            Number(item.year || 0) -
+            Number(car.year || 0)
+          ) <= 2
+        ) {
+          score += 1;
+        }
 
+        return {
+          car: item,
+          score
+        };
+      })
+      .sort(function (a, b) {
+        return b.score - a.score;
+      });
 
-    transText(car) {
+    return cars
+      .slice(0, 3)
+      .map(function (item) {
+        return item.car;
+      });
+  }
 
-      return (
-        car.trans ||
-        car.transmission ||
-        car.vites ||
-        "Otomatik"
-      );
+  /* =======================================================
+     EXPERTISE
+     ======================================================= */
 
-    },
+  function expertiseRows(car) {
+    const expert = expertData(car);
 
-
-    bodyText(car) {
-
-      return (
-        car.body ||
-        car.kasa ||
-        car.seg ||
-        "Otomobil"
-      );
-
-    },
-
-
-    locationText(car) {
-
-      return (
-        car.location ||
-        car.city ||
-        "İstanbul"
-      );
-
-    },
-
-
-    sellerName(car) {
-
-      return (
-        car.seller ||
-        car.sellerName ||
-        "Satıcı"
-      );
-
-    },
-
-
-    getTrustScore(car) {
-
-      if (car.trustScore) {
-        return Number(car.trustScore);
+    return [
+      {
+        label: 'Kaput',
+        value: expert.hood || 'Bilgi yok'
+      },
+      {
+        label: 'Ön çamurluk',
+        value: expert.fender || 'Bilgi yok'
+      },
+      {
+        label: 'Tavan',
+        value: expert.roof || 'Bilgi yok'
+      },
+      {
+        label: 'Kapılar',
+        value: expert.door || 'Bilgi yok'
       }
+    ];
+  }
 
-      const km =
-        Number(car.km || 0);
+  function valueStatus(value) {
+    const text = String(value || '').toLowerCase();
 
-      if (km < 10000) return 94;
-      if (km < 30000) return 91;
-      if (km < 70000) return 88;
-      if (km < 120000) return 84;
+    if (
+      text.includes('orijinal') ||
+      text.includes('boyasız') ||
+      text.includes('değişensiz') ||
+      text.includes('temiz')
+    ) {
+      return 'good';
+    }
 
-      return 80;
-    },
+    if (
+      text.includes('boya') ||
+      text.includes('değişen')
+    ) {
+      return 'warning';
+    }
 
+    return '';
+  }
 
-    getMatchScore(car) {
+  /* =======================================================
+     EQUIPMENT
+     ======================================================= */
 
-      if (car.matchScore) {
-        return Number(car.matchScore);
-      }
+  function equipmentList(car) {
+    if (
+      Array.isArray(car.equipment) &&
+      car.equipment.length
+    ) {
+      return car.equipment;
+    }
 
-      return Math.min(
-        96,
-        88 + ((Number(car.id) || 1) % 8)
-      );
+    return [
+      'Klima',
+      'Multimedya ekranı',
+      'Bluetooth',
+      'Park sensörü',
+      'Hız sabitleyici',
+      'Elektrikli camlar',
+      'Merkezi kilit',
+      'ABS'
+    ];
+  }
 
-    },
+  /* =======================================================
+     RENDER
+     ======================================================= */
 
+  function render(car) {
+    state.car = car;
+    state.images = getImages(car);
+    state.currentImage = 0;
 
-    escape(value) {
+    const trust = calculateTrust(car);
+    const match = calculateMatch(car);
+    const condition = conditionScore(car);
+    const costs = costData(car);
+    const market = marketData(car);
+    const similar = similarCars(car);
+    const expert = expertData(car);
+    const equipment = equipmentList(car);
 
-      return String(value ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    const favorite = isFavorite(car.id);
 
-    },
+    const imageThumbs = state.images
+      .map(function (image, index) {
+        return `
+          <button
+            type="button"
+            class="ab-detail-thumbnail ${index === 0 ? 'active' : ''}"
+            data-gallery-index="${index}"
+            aria-label="Fotoğraf ${index + 1}"
+          >
+            <img
+              src="${escapeHTML(image)}"
+              alt="${escapeHTML(getTitle(car))} fotoğraf ${index + 1}"
+              loading="${index === 0 ? 'eager' : 'lazy'}"
+            >
+          </button>
+        `;
+      })
+      .join('');
 
+    const specs = [
+      ['Marka', getBrand(car)],
+      ['Model', car.model || getTitle(car)],
+      ['Model yılı', car.year || '—'],
+      ['Kilometre', `${number(car.km)} km`],
+      ['Yakıt', getFuel(car)],
+      ['Vites', getTransmission(car)],
+      ['Kasa', getBody(car)],
+      ['Motor', car.engine || '1.2 Turbo'],
+      ['Güç', car.power || '100 HP'],
+      ['Çekiş', car.drive || 'Ön Çekiş']
+    ];
 
-    /* =====================================================
-       ANA DETAY EKRANI
-    ===================================================== */
+    const specHTML = specs
+      .map(function (item) {
+        return `
+          <div class="ab-detail-spec-item">
+            <span>${escapeHTML(item[0])}</span>
+            <strong>${escapeHTML(item[1])}</strong>
+          </div>
+        `;
+      })
+      .join('');
 
-    render(car) {
+    const matchRows = [
+      ['Bütçe uyumu', 'Uygun'],
+      ['Kullanım tipi', `${escapeHTML(getBody(car))}`],
+      ['Vites tercihi', `${escapeHTML(getTransmission(car))}`],
+      ['Yakıt tercihi', `${escapeHTML(getFuel(car))}`],
+      ['Kilometre', Number(car.km) < 100000 ? 'Düşük' : 'Orta / yüksek']
+    ]
+      .map(function (item) {
+        return `
+          <div class="ab-detail-match-row">
+            <span class="check">✓</span>
+            <span>${item[0]}</span>
+            <strong>${item[1]}</strong>
+          </div>
+        `;
+      })
+      .join('');
 
-      const images =
-        this.getImages(car);
+    const costRows = [
+      ['Yıllık vergi tahmini', costs.annualTax],
+      ['Bakım tahmini', costs.maintenance],
+      ['Sigorta tahmini', costs.insurance]
+    ]
+      .map(function (item) {
+        return `
+          <div class="ab-detail-cost-row">
+            <i class="cost-dot"></i>
+            <span>${escapeHTML(item[0])}</span>
+            <small>yıllık</small>
+            <strong>${money(item[1])}</strong>
+          </div>
+        `;
+      })
+      .join('');
 
-      const title =
-        `${car.brand || "Otomobil"} ${car.model || ""}`.trim();
+    const expertiseHTML = expertiseRows(car)
+      .map(function (item) {
+        return `
+          <div class="ab-detail-panel-item">
+            <span>${escapeHTML(item.label)}</span>
+            <strong class="${valueStatus(item.value)}">
+              ${escapeHTML(item.value)}
+            </strong>
+          </div>
+        `;
+      })
+      .join('');
 
-      const price =
-        this.money(car.price);
+    const equipmentHTML = equipment
+      .slice(0, 12)
+      .map(function (item) {
+        return `
+          <div class="ab-detail-spec-item">
+            <span>Donanım</span>
+            <strong>${escapeHTML(item)}</strong>
+          </div>
+        `;
+      })
+      .join('');
 
-      const trust =
-        this.getTrustScore(car);
+    const similarHTML = similar
+      .map(function (item) {
+        return `
+          <article
+            class="ab-detail-similar-car"
+            data-similar-id="${escapeHTML(item.id)}"
+          >
+            <div class="ab-detail-similar-image">
+              <img
+                src="${escapeHTML(getImages(item)[0])}"
+                alt="${escapeHTML(getTitle(item))}"
+                loading="lazy"
+              >
+            </div>
 
-      const match =
-        this.getMatchScore(car);
+            <div class="ab-detail-similar-info">
+              <h3>${escapeHTML(getTitle(item))}</h3>
+              <strong>${money(item.price)}</strong>
+              <p>
+                ${escapeHTML(item.year || '—')} ·
+                ${number(item.km)} km ·
+                ${escapeHTML(getFuel(item))}
+              </p>
+              <span>Detayları gör →</span>
+            </div>
+          </article>
+        `;
+      })
+      .join('');
 
-      const favoriteActive =
-        Array.isArray(window.favorites) &&
-        window.favorites.includes(car.id);
-
-
-      const year =
-        car.year || "-";
-
-      const km =
-        this.number(car.km);
-
-      const fuel =
-        this.fuelText(car);
-
-      const trans =
-        this.transText(car);
-
-      const body =
-        this.bodyText(car);
-
-
-      return `
-
+    container.innerHTML = `
       <div class="ab-detail-page">
 
-        <!-- =============================================
-             ÜST BAR
-        ============================================== -->
-
+        <!-- TOP BAR -->
         <div class="ab-detail-topbar">
 
           <button
-            class="ab-detail-back"
-            data-detail-close
             type="button"
+            class="ab-detail-back"
+            data-action="close"
           >
-            ←
-            <span>Araçlara Dön</span>
+            <span>←</span>
+            <span>İlanlara dön</span>
           </button>
 
           <div class="ab-detail-top-title">
-            ${this.escape(title)}
+            ${escapeHTML(getTitle(car))}
           </div>
 
           <div class="ab-detail-top-actions">
 
             <button
               type="button"
-              data-detail-favorite
-              class="${favoriteActive ? "active" : ""}"
+              data-action="favorite"
+              class="${favorite ? 'active' : ''}"
+              title="Favorilere ekle"
+              aria-label="Favorilere ekle"
             >
-              ${favoriteActive ? "♥" : "♡"}
-              <span>
-                ${favoriteActive
-                  ? "Favorilerde"
-                  : "Favoriye Ekle"}
+              <span class="fav-icon">${favorite ? '♥' : '♡'}</span>
+              <span class="fav-label">
+                ${favorite ? 'Favorilerde' : 'Favori'}
               </span>
             </button>
 
             <button
               type="button"
-              data-detail-compare
+              data-action="compare"
+              title="Karşılaştır"
+              aria-label="Karşılaştır"
             >
-              ⇄
+              <span class="compare-icon">⇄</span>
               <span>Karşılaştır</span>
             </button>
 
           </div>
-
         </div>
 
-
-        <!-- =============================================
-             ANA İÇERİK
-        ============================================== -->
-
+        <!-- MAIN -->
         <main class="ab-detail-main">
 
           <!-- BREADCRUMB -->
-
           <div class="ab-detail-breadcrumb">
-
-            <button data-detail-close type="button">
+            <button type="button" data-action="close">
               Ana Sayfa
             </button>
-
             <span>›</span>
-
-            <button
-              data-detail-browse
-              type="button"
-            >
-              Araçlar
-            </button>
-
+            <span>${escapeHTML(getBody(car))}</span>
             <span>›</span>
-
-            <strong>
-              ${this.escape(title)}
-            </strong>
-
+            <strong>${escapeHTML(getTitle(car))}</strong>
           </div>
 
-
-          <!-- ===========================================
-               ÜST ARAÇ ALANI
-          ============================================ -->
-
+          <!-- HERO -->
           <section class="ab-detail-hero">
 
-            <!-- FOTOĞRAF ALANI -->
-
+            <!-- GALLERY -->
             <div class="ab-detail-gallery">
 
               <div class="ab-detail-main-photo">
 
                 ${
                   car.featured
-                    ? `
-                      <div class="ab-detail-featured">
-                        ★ Öne Çıkan İlan
-                      </div>
-                    `
-                    : ""
+                    ? `<span class="ab-detail-featured">ÖNE ÇIKAN İLAN</span>`
+                    : ''
                 }
 
                 <img
-                  id="abDetailMainImage"
-                  src="${images[0]}"
-                  alt="${this.escape(title)}"
-                />
+                  data-detail-main-image
+                  src="${escapeHTML(state.images[0])}"
+                  alt="${escapeHTML(getTitle(car))}"
+                >
 
                 ${
-                  images.length > 1
+                  state.images.length > 1
                     ? `
                       <button
-                        class="ab-detail-gallery-arrow ab-detail-gallery-prev"
-                        data-gallery-prev
                         type="button"
-                      >
-                        ‹
-                      </button>
+                        class="ab-detail-gallery-arrow ab-detail-gallery-prev"
+                        data-action="prev-image"
+                        aria-label="Önceki fotoğraf"
+                      >‹</button>
 
                       <button
-                        class="ab-detail-gallery-arrow ab-detail-gallery-next"
-                        data-gallery-next
                         type="button"
-                      >
-                        ›
-                      </button>
+                        class="ab-detail-gallery-arrow ab-detail-gallery-next"
+                        data-action="next-image"
+                        aria-label="Sonraki fotoğraf"
+                      >›</button>
                     `
-                    : ""
+                    : ''
                 }
 
-                <div class="ab-detail-photo-count">
-
-                  <span id="abDetailPhotoIndex">
-                    1
-                  </span>
-
-                  /
-
-                  <span>
-                    ${images.length}
-                  </span>
-
-                </div>
+                <span
+                  class="ab-detail-photo-count"
+                  data-photo-count
+                >
+                  1 / ${state.images.length}
+                </span>
 
                 <button
-                  class="ab-detail-fullscreen"
-                  data-gallery-fullscreen
                   type="button"
+                  class="ab-detail-fullscreen"
+                  data-action="lightbox"
                   aria-label="Fotoğrafı büyüt"
+                  title="Büyüt"
                 >
                   ⛶
                 </button>
 
               </div>
 
-
-              <!-- THUMBNAILS -->
-
               <div class="ab-detail-thumbnails">
+                ${imageThumbs}
+              </div>
 
-                ${images.map((image, index) => `
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div>
+
+              <!-- SUMMARY -->
+              <section class="ab-detail-summary">
+
+                <div class="ab-detail-brand-line">
+                  <span>${escapeHTML(getBrand(car))}</span>
+                  ${
+                    car.featured
+                      ? '<b>ÖNE ÇIKAN</b>'
+                      : '<b>İLAN</b>'
+                  }
+                </div>
+
+                <h1>${escapeHTML(getTitle(car))}</h1>
+
+                <div class="ab-detail-price">
+                  ${money(car.price)}
+                </div>
+
+                <div class="ab-detail-price-note">
+                  İlan fiyatı · Son güncelleme: bugün
+                </div>
+
+                <div class="ab-detail-quick-specs">
+
+                  <div class="ab-detail-quick-spec">
+                    <span>Model</span>
+                    <strong>${escapeHTML(car.year || '—')}</strong>
+                  </div>
+
+                  <div class="ab-detail-quick-spec">
+                    <span>Kilometre</span>
+                    <strong>${number(car.km)} km</strong>
+                  </div>
+
+                  <div class="ab-detail-quick-spec">
+                    <span>Yakıt</span>
+                    <strong>${escapeHTML(getFuel(car))}</strong>
+                  </div>
+
+                  <div class="ab-detail-quick-spec">
+                    <span>Vites</span>
+                    <strong>${escapeHTML(getTransmission(car))}</strong>
+                  </div>
+
+                </div>
+
+                <div class="ab-detail-score-row">
+
+                  <div class="ab-detail-score-card">
+                    <span>ARABAMI BUL UYUMU</span>
+                    <strong>%${match}</strong>
+
+                    <div class="ab-detail-score-bar">
+                      <i style="width:${percent(match)}%"></i>
+                    </div>
+                  </div>
+
+                  <div class="ab-detail-score-card">
+                    <span>GÜVEN GÖSTERGESİ</span>
+                    <strong>${trust}/100</strong>
+
+                    <div class="ab-detail-score-bar">
+                      <i style="width:${percent(trust)}%"></i>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="ab-detail-actions">
 
                   <button
-                    class="ab-detail-thumbnail ${
-                      index === 0 ? "active" : ""
-                    }"
-                    data-gallery-index="${index}"
                     type="button"
+                    class="ab-detail-favorite-btn ${favorite ? 'active' : ''}"
+                    data-action="favorite"
+                    aria-label="Favorilere ekle"
                   >
-
-                    <img
-                      src="${image}"
-                      alt="${this.escape(title)}"
-                    />
-
+                    <span class="fav-icon">
+                      ${favorite ? '♥' : '♡'}
+                    </span>
                   </button>
 
-                `).join("")}
+                  <button
+                    type="button"
+                    class="ab-detail-compare-btn"
+                    data-action="compare"
+                    aria-label="Karşılaştır"
+                  >
+                    <span class="compare-icon">⇄</span>
+                  </button>
 
-              </div>
-
-            </div>
-
-
-            <!-- =========================================
-                 ARAÇ BİLGİ KARTI
-            ========================================== -->
-
-            <div class="ab-detail-summary">
-
-              <div class="ab-detail-brand-line">
-
-                <span>
-                  ${this.escape(car.brand || "Otomobil")}
-                </span>
-
-                ${
-                  car.featured
-                    ? `<b>★ Öne Çıkan</b>`
-                    : ""
-                }
-
-              </div>
-
-
-              <h1>
-                ${this.escape(title)}
-              </h1>
-
-
-              <div class="ab-detail-price">
-                ${price}
-              </div>
-
-
-              <div class="ab-detail-price-note">
-                Tahmini piyasa değeriyle karşılaştırılmış ilan fiyatı
-              </div>
-
-
-              <!-- HIZLI BİLGİLER -->
-
-              <div class="ab-detail-quick-specs">
-
-                <div class="ab-detail-quick-spec">
-
-                  <span>YIL</span>
-
-                  <strong>
-                    ${year}
-                  </strong>
+                  <button
+                    type="button"
+                    class="ab-detail-contact-btn"
+                    data-action="contact"
+                  >
+                    Satıcıyla İletişime Geç
+                  </button>
 
                 </div>
 
+                <div class="ab-detail-location">
+                  <span>📍</span>
 
-                <div class="ab-detail-quick-spec">
-
-                  <span>KM</span>
-
-                  <strong>
-                    ${km}
-                  </strong>
-
+                  <div>
+                    <strong>${escapeHTML(getLocation(car))}</strong>
+                    <small>İlan konumu</small>
+                  </div>
                 </div>
 
+              </section>
 
-                <div class="ab-detail-quick-spec">
+              <!-- SELLER -->
+              <section class="ab-detail-seller">
 
-                  <span>YAKIT</span>
-
-                  <strong>
-                    ${this.escape(fuel)}
-                  </strong>
-
+                <div class="ab-detail-seller-title">
+                  SATICI
                 </div>
 
+                <div class="ab-detail-seller-head">
 
-                <div class="ab-detail-quick-spec">
+                  <div class="ab-detail-seller-avatar">
+                    ${escapeHTML(initials(getSeller(car)))}
+                  </div>
 
-                  <span>VİTES</span>
-
-                  <strong>
-                    ${this.escape(trans)}
-                  </strong>
-
-                </div>
-
-              </div>
-
-
-              <!-- GÜVEN / UYUM -->
-
-              <div class="ab-detail-score-row">
-
-                <div class="ab-detail-score-card">
-
-                  <span>İlan Güveni</span>
-
-                  <strong>
-                    %${trust}
-                  </strong>
-
-                  <div class="ab-detail-score-bar">
-                    <i style="width:${trust}%"></i>
+                  <div>
+                    <strong>${escapeHTML(getSeller(car))}</strong>
+                    <span>✓ Doğrulanmış ilan profili</span>
                   </div>
 
                 </div>
 
+                <div class="ab-detail-seller-info">
 
-                <div class="ab-detail-score-card">
+                  <div>
+                    <span>İlan tipi</span>
+                    <strong>Bireysel</strong>
+                  </div>
 
-                  <span>Size Uyumu</span>
-
-                  <strong>
-                    %${match}
-                  </strong>
-
-                  <div class="ab-detail-score-bar">
-                    <i style="width:${match}%"></i>
+                  <div>
+                    <span>İlan durumu</span>
+                    <strong>Aktif</strong>
                   </div>
 
                 </div>
 
-              </div>
-
-
-              <!-- AKSİYONLAR -->
-
-              <div class="ab-detail-actions">
-
                 <button
-                  class="ab-detail-favorite-btn ${
-                    favoriteActive ? "active" : ""
-                  }"
-                  data-detail-favorite
                   type="button"
+                  class="ab-detail-seller-message"
+                  data-action="message"
                 >
-
-                  ${
-                    favoriteActive
-                      ? "♥"
-                      : "♡"
-                  }
-
-                  <span>
-                    ${
-                      favoriteActive
-                        ? "Favorilerde"
-                        : "Favoriye Ekle"
-                    }
-                  </span>
-
+                  ✉ Mesaj Gönder
                 </button>
 
-
                 <button
-                  class="ab-detail-compare-btn"
-                  data-detail-compare
                   type="button"
+                  class="ab-detail-phone-btn"
+                  data-action="contact"
                 >
-                  ⇄
-                  <span>
-                    Karşılaştır
-                  </span>
+                  ☎ Telefonla İletişim
                 </button>
 
-              </div>
-
-
-              <button
-                class="ab-detail-contact-btn"
-                data-detail-contact
-                type="button"
-              >
-
-                ✉
-
-                <span>
-                  Satıcıyla İletişime Geç
-                </span>
-
-              </button>
-
-
-              <div class="ab-detail-location">
-
-                <span>⌖</span>
-
-                <div>
-                  <strong>
-                    ${this.escape(
-                      this.locationText(car)
-                    )}
-                  </strong>
-
-                  <small>
-                    İlan konumu
-                  </small>
+                <div class="ab-detail-seller-safe">
+                  ✓ Güvenli iletişim önerilir
                 </div>
 
-              </div>
+              </section>
 
             </div>
-
-
-            <!-- =========================================
-                 SATICI KARTI
-            ========================================== -->
-
-            <aside class="ab-detail-seller">
-
-              <div class="ab-detail-seller-title">
-                Satıcı
-              </div>
-
-
-              <div class="ab-detail-seller-head">
-
-                <div class="ab-detail-seller-avatar">
-                  ${this.getInitials(
-                    this.sellerName(car)
-                  )}
-                </div>
-
-                <div>
-
-                  <strong>
-                    ${this.escape(
-                      this.sellerName(car)
-                    )}
-                  </strong>
-
-                  <span>
-                    ● Çevrimiçi
-                  </span>
-
-                </div>
-
-              </div>
-
-
-              <div class="ab-detail-seller-info">
-
-                <div>
-                  <span>Satıcı tipi</span>
-                  <strong>Bireysel</strong>
-                </div>
-
-                <div>
-                  <span>İlan konumu</span>
-                  <strong>
-                    ${this.escape(
-                      this.locationText(car)
-                    )}
-                  </strong>
-                </div>
-
-              </div>
-
-
-              <button
-                class="ab-detail-seller-message"
-                data-detail-contact
-                type="button"
-              >
-                ✉ Mesaj Gönder
-              </button>
-
-
-              <button
-                class="ab-detail-phone-btn"
-                data-detail-phone
-                type="button"
-              >
-                ☎ Telefonu Gör
-              </button>
-
-
-              <div class="ab-detail-seller-safe">
-                ✓ ARABAMI BUL güvenli iletişim
-              </div>
-
-            </aside>
 
           </section>
 
-
-          <!-- ===========================================
-               SEKME MENÜSÜ
-          ============================================ -->
-
-          <div class="ab-detail-tabs">
+          <!-- TABS -->
+          <nav class="ab-detail-tabs">
 
             <button
-              class="active"
-              data-detail-tab="overview"
               type="button"
+              class="active"
+              data-tab="overview"
             >
               Genel Bakış
             </button>
 
             <button
-              data-detail-tab="expertise"
               type="button"
+              data-tab="technical"
+            >
+              Teknik Bilgiler
+            </button>
+
+            <button
+              type="button"
+              data-tab="expertise"
             >
               Ekspertiz
             </button>
 
             <button
-              data-detail-tab="ownership"
               type="button"
+              data-tab="cost"
             >
-              Sahiplik Maliyeti
+              Maliyet
             </button>
 
-            <button
-              data-detail-tab="price"
-              type="button"
-            >
-              Fiyat Analizi
-            </button>
+          </nav>
 
-            <button
-              data-detail-tab="comments"
-              type="button"
-            >
-              Yorumlar
-            </button>
-
-          </div>
-
-
-          <!-- ===========================================
-               GENEL BAKIŞ
-          ============================================ -->
+          <!-- =================================================
+               OVERVIEW
+               ================================================= -->
 
           <section
             class="ab-detail-tab-content active"
@@ -822,306 +1220,68 @@
 
             <div class="ab-detail-content-grid">
 
-
-              <!-- TEMEL ÖZELLİKLER -->
-
-              <section class="ab-detail-card">
+              <article class="ab-detail-card">
 
                 <div class="ab-detail-card-header">
-
                   <div>
                     <span class="ab-detail-card-kicker">
                       ARAÇ BİLGİLERİ
                     </span>
-
-                    <h2>
-                      Temel Özellikler
-                    </h2>
+                    <h2>Araç Özeti</h2>
                   </div>
-
                 </div>
-
 
                 <div class="ab-detail-spec-grid">
-
-                  ${this.specItem(
-                    "Marka",
-                    car.brand
-                  )}
-
-                  ${this.specItem(
-                    "Model",
-                    car.model
-                  )}
-
-                  ${this.specItem(
-                    "Model Yılı",
-                    year
-                  )}
-
-                  ${this.specItem(
-                    "Kilometre",
-                    `${km} km`
-                  )}
-
-                  ${this.specItem(
-                    "Yakıt",
-                    fuel
-                  )}
-
-                  ${this.specItem(
-                    "Vites",
-                    trans
-                  )}
-
-                  ${this.specItem(
-                    "Kasa Tipi",
-                    body
-                  )}
-
-                  ${this.specItem(
-                    "Motor",
-                    car.engine || "1.2 Turbo"
-                  )}
-
-                  ${this.specItem(
-                    "Güç",
-                    car.power || "100 HP"
-                  )}
-
-                  ${this.specItem(
-                    "Çekiş",
-                    car.drive || "Ön Çekiş"
-                  )}
-
+                  ${specHTML}
                 </div>
 
-              </section>
+              </article>
 
-
-              <!-- NEDEN BU ARAÇ -->
-
-              <section class="ab-detail-card">
+              <article class="ab-detail-card">
 
                 <div class="ab-detail-card-header">
-
                   <div>
                     <span class="ab-detail-card-kicker">
                       ARABAMI BUL
                     </span>
-
-                    <h2>
-                      Neden Bu Araç?
-                    </h2>
+                    <h2>Neden Bu Araç?</h2>
                   </div>
 
-                  <div class="ab-detail-match-big">
+                  <span class="ab-detail-match-big">
                     %${match}
-                  </div>
-
+                  </span>
                 </div>
-
 
                 <p class="ab-detail-card-description">
-
-                  Bu araç, belirlenen kriterlerle
-                  karşılaştırıldığında yüksek uyum
-                  gösteriyor.
-
+                  Bu uyum puanı, uygulamadaki araç verileri ve
+                  kullanıcı tercihleri üzerinden oluşturulan
+                  demo değerlendirmesidir.
                 </p>
 
-
                 <div class="ab-detail-match-list">
-
-                  ${this.matchRow(
-                    "Bütçene uygunluk",
-                    "Uygun"
-                  )}
-
-                  ${this.matchRow(
-                    "Günlük kullanıma uygunluk",
-                    "Uygun"
-                  )}
-
-                  ${this.matchRow(
-                    "Vites tercihi",
-                    trans
-                  )}
-
-                  ${this.matchRow(
-                    "Kasa tipi",
-                    body
-                  )}
-
-                  ${this.matchRow(
-                    "Model yılı",
-                    year
-                  )}
-
+                  ${matchRows}
                 </div>
 
-              </section>
+              </article>
 
-
-              <!-- SAHİPLİK MALİYETİ -->
-
-              <section class="ab-detail-card">
+              <article class="ab-detail-card">
 
                 <div class="ab-detail-card-header">
-
                   <div>
                     <span class="ab-detail-card-kicker">
-                      MALİYET
+                      DONANIM
                     </span>
-
-                    <h2>
-                      Tahmini Aylık Sahiplik
-                    </h2>
+                    <h2>Öne Çıkan Donanımlar</h2>
                   </div>
-
-                  <span class="ab-detail-card-badge">
-                    Tahmini
-                  </span>
-
                 </div>
 
-
-                <div class="ab-detail-cost-total">
-
-                  <strong>
-                    ${this.money(
-                      car.tco || 9850
-                    )}
-                  </strong>
-
-                  <span>
-                    / ay
-                  </span>
-
+                <div class="ab-detail-spec-grid">
+                  ${equipmentHTML}
                 </div>
 
+              </article>
 
-                <div class="ab-detail-cost-list">
-
-                  ${this.costRow(
-                    "Yakıt",
-                    "5.200 TL",
-                    "53%"
-                  )}
-
-                  ${this.costRow(
-                    "Bakım",
-                    "1.000 TL",
-                    "10%"
-                  )}
-
-                  ${this.costRow(
-                    "Sigorta / Kasko",
-                    "1.850 TL",
-                    "19%"
-                  )}
-
-                  ${this.costRow(
-                    "Vergi",
-                    "800 TL",
-                    "8%"
-                  )}
-
-                  ${this.costRow(
-                    "Değer Kaybı",
-                    "1.000 TL",
-                    "10%"
-                  )}
-
-                </div>
-
-
-                <div class="ab-detail-cost-total-line">
-
-                  <span>
-                    3 yıllık tahmini toplam
-                  </span>
-
-                  <strong>
-                    ${this.money(
-                      (car.tco || 9850) * 36
-                    )}
-                  </strong>
-
-                </div>
-
-
-                <small class="ab-detail-disclaimer">
-                  Tahmini değerlerdir. Gerçek maliyet
-                  kullanım koşullarına göre değişebilir.
-                </small>
-
-              </section>
-
-
-              <!-- GÜVEN SKORU -->
-
-              <section class="ab-detail-card">
-
-                <div class="ab-detail-card-header">
-
-                  <div>
-                    <span class="ab-detail-card-kicker">
-                      GÜVEN
-                    </span>
-
-                    <h2>
-                      İlan Güven Skoru
-                    </h2>
-                  </div>
-
-                  <div class="ab-detail-trust-number">
-                    %${trust}
-                  </div>
-
-                </div>
-
-
-                <div class="ab-detail-trust-bar">
-                  <span style="width:${trust}%"></span>
-                </div>
-
-
-                <div class="ab-detail-check-list">
-
-                  ${this.checkRow(
-                    "Fotoğraflar mevcut",
-                    true
-                  )}
-
-                  ${this.checkRow(
-                    "Kilometre bilgisi mevcut",
-                    true
-                  )}
-
-                  ${this.checkRow(
-                    "Ekspertiz bilgisi mevcut",
-                    true
-                  )}
-
-                  ${this.checkRow(
-                    "Hasar bilgisi mevcut",
-                    true
-                  )}
-
-                  ${this.checkRow(
-                    "Servis geçmişi belirtilmiş",
-                    false
-                  )}
-
-                </div>
-
-              </section>
-
-
-              <!-- AI ANALİZ -->
-
-              <section class="ab-detail-card ab-detail-ai-card">
+              <article class="ab-detail-card ab-detail-ai-card">
 
                 <div class="ab-detail-ai-header">
 
@@ -1131,1556 +1291,748 @@
 
                   <div>
                     <span class="ab-detail-card-kicker">
-                      YAPAY ZEKA
+                      ARABAMI BUL AI
                     </span>
-
-                    <h2>
-                      ARABAMI BUL Analizi
-                    </h2>
+                    <h2>AI Araç Analizi</h2>
                   </div>
 
                 </div>
 
-
                 <p>
-
-                  ${this.escape(
-                    `${title}, ${body.toLowerCase()} gövde tipi ve ${this.transText(car).toLowerCase()} vites yapısıyla günlük kullanım için değerlendirilebilir. ${this.fuelText(car)} motor seçeneği ve mevcut kilometresi birlikte incelenmelidir.`
-                  )}
-
+                  Araç verilerini kullanarak fiyat, kilometre,
+                  model yılı ve teknik bilgileri birlikte
+                  değerlendiren kısa bir özet oluştur.
                 </p>
 
-
                 <button
-                  class="ab-detail-ai-btn"
-                  data-detail-ai
                   type="button"
+                  class="ab-detail-ai-btn"
+                  data-action="ai"
                 >
-                  ✦ Bana benzer araçları göster
+                  ✦ Analizi Göster
                 </button>
 
-              </section>
+                <p
+                  data-ai-output
+                  hidden
+                ></p>
 
+              </article>
 
-              <!-- PİYASA ANALİZİ -->
-
-              <section class="ab-detail-card">
+              <article class="ab-detail-card">
 
                 <div class="ab-detail-card-header">
-
                   <div>
                     <span class="ab-detail-card-kicker">
                       PİYASA
                     </span>
-
-                    <h2>
-                      Fiyat Analizi
-                    </h2>
+                    <h2>Fiyat Konumu</h2>
                   </div>
 
                   <span class="ab-detail-market-badge">
-                    Piyasa İçinde
+                    Uygulama verisi
                   </span>
-
                 </div>
-
 
                 <p class="ab-detail-card-description">
-                  İlan fiyatı, sistemdeki benzer araçların
-                  fiyatlarıyla birlikte değerlendirilir.
+                  Aynı marka içindeki demo ilanlarının
+                  ortalama fiyatıyla karşılaştırılır.
                 </p>
 
-
                 <div class="ab-detail-price-position">
-
-                  <span>
-                    850K
-                  </span>
-
+                  <span>Düşük</span>
                   <div>
                     <i></i>
-                    <b></b>
                   </div>
-
-                  <span>
-                    3M+
-                  </span>
-
+                  <span>Yüksek</span>
                 </div>
-
 
                 <div class="ab-detail-price-position-current">
-                  İlan fiyatı:
-                  <strong>
-                    ${price}
-                  </strong>
+                  Araç fiyatı:
+                  <strong>${money(car.price)}</strong>
+                  <br>
+                  Örnek marka ortalaması:
+                  <strong>${money(market.average)}</strong>
                 </div>
 
-              </section>
+              </article>
 
-
-              <!-- BENZER ARAÇLAR -->
-
-              <section class="ab-detail-card ab-detail-similar-section">
+              <article class="ab-detail-card">
 
                 <div class="ab-detail-card-header">
-
                   <div>
                     <span class="ab-detail-card-kicker">
                       ALTERNATİFLER
                     </span>
-
-                    <h2>
-                      Benzer Araçlar
-                    </h2>
+                    <h2>Benzer Araçlar</h2>
                   </div>
-
-                  <button
-                    class="ab-detail-see-all"
-                    data-detail-browse
-                    type="button"
-                  >
-                    Tümünü Gör →
-                  </button>
-
                 </div>
-
 
                 <div class="ab-detail-similar-grid">
-
-                  ${this.renderSimilarCars(car)}
-
+                  ${
+                    similarHTML ||
+                    '<p class="ab-detail-card-description">Benzer araç bulunamadı.</p>'
+                  }
                 </div>
 
-              </section>
+              </article>
 
             </div>
 
           </section>
 
+          <!-- =================================================
+               TECHNICAL
+               ================================================= -->
 
-          <!-- ===========================================
-               EKSPERTİZ
-          ============================================ -->
+          <section
+            class="ab-detail-tab-content"
+            data-tab-content="technical"
+          >
+
+            <div class="ab-detail-content-grid">
+
+              <article class="ab-detail-card">
+
+                <div class="ab-detail-card-header">
+                  <div>
+                    <span class="ab-detail-card-kicker">
+                      TEKNİK
+                    </span>
+                    <h2>Teknik Özellikler</h2>
+                  </div>
+                </div>
+
+                <div class="ab-detail-spec-grid">
+                  ${specHTML}
+                </div>
+
+              </article>
+
+              <article class="ab-detail-card">
+
+                <div class="ab-detail-card-header">
+                  <div>
+                    <span class="ab-detail-card-kicker">
+                      DONANIM
+                    </span>
+                    <h2>Donanım Listesi</h2>
+                  </div>
+                </div>
+
+                <div class="ab-detail-spec-grid">
+                  ${equipmentHTML}
+                </div>
+
+              </article>
+
+            </div>
+
+          </section>
+
+          <!-- =================================================
+               EXPERTISE
+               ================================================= -->
 
           <section
             class="ab-detail-tab-content"
             data-tab-content="expertise"
           >
 
-            ${this.renderExpertise(car)}
+            <div class="ab-detail-expertise-page">
 
-          </section>
+              <article class="ab-detail-card">
 
+                <div class="ab-detail-card-header">
+                  <div>
+                    <span class="ab-detail-card-kicker">
+                      EKSPERTİZ
+                    </span>
+                    <h2>Kaporta / Boya Durumu</h2>
+                  </div>
 
-          <!-- ===========================================
-               SAHİPLİK
-          ============================================ -->
+                  <span class="ab-detail-market-badge">
+                    İlan verisi
+                  </span>
+                </div>
 
-          <section
-            class="ab-detail-tab-content"
-            data-tab-content="ownership"
-          >
+                <div class="ab-detail-panel-grid">
+                  ${expertiseHTML}
+                </div>
 
-            ${this.renderExtraSection(
-              "Sahiplik Maliyeti",
-              "Yakıt, bakım, sigorta, vergi ve değer kaybı tahminleri burada detaylandırılabilir."
-            )}
+              </article>
 
-          </section>
+              <article class="ab-detail-card">
 
+                <div class="ab-detail-card-header">
+                  <div>
+                    <span class="ab-detail-card-kicker">
+                      TRAMER
+                    </span>
+                    <h2>Hasar Kaydı</h2>
+                  </div>
+                </div>
 
-          <!-- ===========================================
-               FİYAT
-          ============================================ -->
+                <div class="ab-detail-tramer">
+                  <strong>
+                    ${escapeHTML(expert.tramer || 'Bilgi yok')}
+                  </strong>
 
-          <section
-            class="ab-detail-tab-content"
-            data-tab-content="price"
-          >
+                  <span>
+                    Bu bilgi ilan sahibinin girdiği
+                    demo verisinden alınmıştır.
+                  </span>
+                </div>
 
-            ${this.renderExtraSection(
-              "Fiyat Analizi",
-              "Aracın ilan fiyatı benzer araçlarla karşılaştırılarak piyasa konumu gösterilir."
-            )}
+              </article>
 
-          </section>
+              <article class="ab-detail-card">
 
+                <div class="ab-detail-card-header">
+                  <div>
+                    <span class="ab-detail-card-kicker">
+                      MEKANİK
+                    </span>
+                    <h2>Motor & Şanzıman</h2>
+                  </div>
+                </div>
 
-          <!-- ===========================================
-               YORUMLAR
-          ============================================ -->
+                <div class="ab-detail-mechanical-grid">
 
-          <section
-            class="ab-detail-tab-content"
-            data-tab-content="comments"
-          >
+                  <div>
+                    <span>Motor durumu</span>
+                    <strong>
+                      ${Number(expert.engineScore ?? 90)}/100
+                    </strong>
+                  </div>
 
-            ${this.renderExtraSection(
-              "Yorumlar",
-              "Bu bölümde ileride araç ve satıcı hakkında kullanıcı yorumları gösterilebilir."
-            )}
+                  <div>
+                    <span>Şanzıman durumu</span>
+                    <strong>
+                      ${Number(expert.transmissionScore ?? 90)}/100
+                    </strong>
+                  </div>
 
-          </section>
+                </div>
 
+              </article>
 
-          <!-- ALT CTA -->
+              <div class="ab-detail-disclaimer-box">
 
-          <section class="ab-detail-bottom-cta">
+                <strong>⚠ Ekspertiz notu</strong>
 
-            <div>
+                <p>
+                  Buradaki bilgiler uygulama içindeki ilan
+                  verilerinden oluşturulmuştur. Gerçek satın alma
+                  öncesinde bağımsız ekspertiz ve resmi hasar
+                  kayıtlarının kontrol edilmesi gerekir.
+                </p>
 
-              <strong>
-                ${this.escape(title)}
-              </strong>
-
-              <span>
-                ${price}
-              </span>
+              </div>
 
             </div>
 
-            <button
-              data-detail-contact
-              type="button"
-            >
-              ✉ Satıcıyla İletişime Geç
-            </button>
+          </section>
+
+          <!-- =================================================
+               COST
+               ================================================= -->
+
+          <section
+            class="ab-detail-tab-content"
+            data-tab-content="cost"
+          >
+
+            <div class="ab-detail-content-grid">
+
+              <article class="ab-detail-card">
+
+                <div class="ab-detail-card-header">
+                  <div>
+                    <span class="ab-detail-card-kicker">
+                      YILLIK TAHMİN
+                    </span>
+                    <h2>Araç Maliyeti</h2>
+                  </div>
+                </div>
+
+                <div class="ab-detail-cost-total">
+                  <strong>${money(costs.total)}</strong>
+                  <span>/ yıl</span>
+                </div>
+
+                <div class="ab-detail-cost-list">
+                  ${costRows}
+                </div>
+
+                <span class="ab-detail-disclaimer">
+                  Bu rakamlar demo amaçlı yaklaşık hesaplamadır.
+                  Gerçek vergi, sigorta ve bakım maliyetleri
+                  kişiye ve araca göre değişebilir.
+                </span>
+
+              </article>
+
+              <article class="ab-detail-card">
+
+                <div class="ab-detail-card-header">
+                  <div>
+                    <span class="ab-detail-card-kicker">
+                      GENEL DEĞERLENDİRME
+                    </span>
+                    <h2>Bu Aracın Profili</h2>
+                  </div>
+                </div>
+
+                <div class="ab-detail-spec-grid">
+
+                  <div class="ab-detail-spec-item">
+                    <span>Fiyat</span>
+                    <strong>${money(car.price)}</strong>
+                  </div>
+
+                  <div class="ab-detail-spec-item">
+                    <span>Kilometre</span>
+                    <strong>${number(car.km)} km</strong>
+                  </div>
+
+                  <div class="ab-detail-spec-item">
+                    <span>Model yılı</span>
+                    <strong>${escapeHTML(car.year || '—')}</strong>
+                  </div>
+
+                  <div class="ab-detail-spec-item">
+                    <span>Kondisyon göstergesi</span>
+                    <strong>${condition}/100</strong>
+                  </div>
+
+                </div>
+
+              </article>
+
+            </div>
 
           </section>
 
-        </main>
+          <!-- BOTTOM CTA -->
+          <div class="ab-detail-bottom-cta">
 
+            <div>
+              <strong>
+                ${escapeHTML(getTitle(car))}
+              </strong>
 
-        <!-- MOBİL SABİT BAR -->
+              <span>
+                ${money(car.price)} ·
+                ${number(car.km)} km
+              </span>
+            </div>
 
-        <div class="ab-detail-mobile-bar">
-
-          <div>
-
-            <small>
-              İlan Fiyatı
-            </small>
-
-            <strong>
-              ${price}
-            </strong>
+            <button
+              type="button"
+              data-action="contact"
+            >
+              Satıcıyla İletişime Geç
+            </button>
 
           </div>
 
+        </main>
+
+        <!-- MOBILE BAR -->
+        <div class="ab-detail-mobile-bar">
+
+          <div>
+            <small>İlan fiyatı</small>
+            <strong>${money(car.price)}</strong>
+          </div>
+
           <button
-            data-detail-contact
             type="button"
+            data-action="contact"
           >
-            ✉ İletişime Geç
+            Satıcıyla İletişime Geç
           </button>
 
         </div>
 
-      </div>
-
-
-      <!-- ===============================================
-           LIGHTBOX
-      ================================================ -->
-
-      <div
-        class="ab-detail-lightbox"
-        data-detail-lightbox
-      >
-
-        <button
-          class="ab-detail-lightbox-close"
-          data-lightbox-close
-          type="button"
-        >
-          ×
-        </button>
-
-
-        <button
-          class="ab-detail-lightbox-arrow left"
-          data-lightbox-prev
-          type="button"
-        >
-          ‹
-        </button>
-
-
-        <img
-          id="abDetailLightboxImage"
-          src="${images[0]}"
-          alt="${this.escape(title)}"
-        />
-
-
-        <button
-          class="ab-detail-lightbox-arrow right"
-          data-lightbox-next
-          type="button"
-        >
-          ›
-        </button>
-
-      </div>
-
-      `;
-    },
-
-
-    /* =====================================================
-       İLK HARFLER
-    ===================================================== */
-
-    getInitials(name) {
-
-      const parts =
-        String(name || "Satıcı")
-          .trim()
-          .split(/\s+/);
-
-      if (!parts.length) return "S";
-
-      return (
-        parts
-          .slice(0, 2)
-          .map(x => x.charAt(0).toUpperCase())
-          .join("")
-      );
-
-    },
-
-
-    /* =====================================================
-       ÖZELLİK
-    ===================================================== */
-
-    specItem(label, value) {
-
-      return `
-
-        <div class="ab-detail-spec-item">
-
-          <span>
-            ${this.escape(label)}
-          </span>
-
-          <strong>
-            ${this.escape(
-              String(value ?? "-")
-            )}
-          </strong>
-
-        </div>
-
-      `;
-
-    },
-
-
-    /* =====================================================
-       UYUM SATIRI
-    ===================================================== */
-
-    matchRow(label, result) {
-
-      return `
-
-        <div class="ab-detail-match-row">
-
-          <span class="check">
-            ✓
-          </span>
-
-          <span>
-            ${this.escape(label)}
-          </span>
-
-          <strong>
-            ${this.escape(result)}
-          </strong>
-
-        </div>
-
-      `;
-
-    },
-
-
-    /* =====================================================
-       MALİYET SATIRI
-    ===================================================== */
-
-    costRow(label, price, percentage) {
-
-      return `
-
-        <div class="ab-detail-cost-row">
-
-          <span class="cost-dot"></span>
-
-          <span>
-            ${this.escape(label)}
-          </span>
-
-          <strong>
-            ${this.escape(price)}
-          </strong>
-
-          <small>
-            ${this.escape(percentage)}
-          </small>
-
-        </div>
-
-      `;
-
-    },
-
-
-    /* =====================================================
-       GÜVEN SATIRI
-    ===================================================== */
-
-    checkRow(label, good) {
-
-      return `
-
+        <!-- LIGHTBOX -->
         <div
-          class="ab-detail-check-row ${
-            good ? "good" : "warning"
-          }"
+          class="ab-detail-lightbox"
+          aria-hidden="true"
         >
 
-          <span>
-            ${good ? "✓" : "!"}
-          </span>
-
-          <label>
-            ${this.escape(label)}
-          </label>
-
-          <strong>
-            ${good ? "Mevcut" : "Eksik"}
-          </strong>
-
-        </div>
-
-      `;
-
-    },
-
-
-    /* =====================================================
-       EKSPERTİZ
-    ===================================================== */
-
-    renderExpertise(car) {
-
-      const expert =
-        car.expert || {};
-
-      const parts = [
-        [
-          "Kaput",
-          expert.hood || "Orijinal"
-        ],
-        [
-          "Sol Ön Çamurluk",
-          expert.fenderLeft || "Orijinal"
-        ],
-        [
-          "Tavan",
-          expert.roof || "Orijinal"
-        ],
-        [
-          "Sağ Kapı",
-          expert.doorRight || "Orijinal"
-        ]
-      ];
-
-
-      return `
-
-        <div class="ab-detail-expertise-page">
-
-          <section class="ab-detail-card">
-
-            <div class="ab-detail-card-header">
-
-              <div>
-
-                <span class="ab-detail-card-kicker">
-                  ARAÇ DURUMU
-                </span>
-
-                <h2>
-                  Ekspertiz Özeti
-                </h2>
-
-              </div>
-
-              <span class="ab-detail-market-badge">
-                Kontrol Edildi
-              </span>
-
-            </div>
-
-
-            <div class="ab-detail-panel-grid">
-
-              ${parts.map(part => `
-
-                <div class="ab-detail-panel-item">
-
-                  <span>
-                    ${this.escape(part[0])}
-                  </span>
-
-                  <strong
-                    class="${
-                      String(part[1])
-                        .toLowerCase()
-                        .includes("orijinal")
-                        ? "good"
-                        : "warning"
-                    }"
-                  >
-                    ${this.escape(part[1])}
-                  </strong>
-
-                </div>
-
-              `).join("")}
-
-            </div>
-
-          </section>
-
-
-          <section class="ab-detail-card">
-
-            <div class="ab-detail-card-header">
-
-              <div>
-
-                <span class="ab-detail-card-kicker">
-                  HASAR GEÇMİŞİ
-                </span>
-
-                <h2>
-                  Tramer
-                </h2>
-
-              </div>
-
-            </div>
-
-
-            <div class="ab-detail-tramer">
-
-              <strong>
-                ${this.escape(
-                  expert.tramer ||
-                  "Beyan Edilmedi"
-                )}
-              </strong>
-
-              <span>
-                İlan verisindeki mevcut bilgi
-              </span>
-
-            </div>
-
-          </section>
-
-
-          <section class="ab-detail-card">
-
-            <div class="ab-detail-card-header">
-
-              <div>
-
-                <span class="ab-detail-card-kicker">
-                  MEKANİK
-                </span>
-
-                <h2>
-                  Motor & Şanzıman
-                </h2>
-
-              </div>
-
-            </div>
-
-
-            <div class="ab-detail-mechanical-grid">
-
-              <div>
-
-                <span>
-                  Motor Sağlığı
-                </span>
-
-                <strong>
-                  ${this.escape(
-                    expert.engineScore ||
-                    "%95"
-                  )}
-                </strong>
-
-              </div>
-
-              <div>
-
-                <span>
-                  Şanzıman
-                </span>
-
-                <strong>
-                  ${this.escape(
-                    expert.transmissionScore ||
-                    "Kontrol Edildi"
-                  )}
-                </strong>
-
-              </div>
-
-            </div>
-
-          </section>
-
-          <div class="ab-detail-disclaimer-box">
-
-            <strong>
-              Ekspertiz bilgisi hakkında
-            </strong>
-
-            <p>
-              Buradaki bilgiler demo araç verilerinden
-              oluşturulmuştur. Gerçek bir ilan sisteminde
-              ekspertiz raporu belge ve servis kayıtlarıyla
-              desteklenmelidir.
-            </p>
-
-          </div>
-
-        </div>
-
-      `;
-
-    },
-
-
-    /* =====================================================
-       BENZER ARAÇLAR
-    ===================================================== */
-
-    renderSimilarCars(currentCar) {
-
-      const cars =
-        (window.dummyCars || [])
-          .filter(
-            car =>
-              String(car.id) !==
-              String(currentCar.id)
-          )
-          .sort((a, b) => {
-
-            let scoreA = 0;
-            let scoreB = 0;
-
-            if (
-              a.seg === currentCar.seg
-            ) scoreA += 2;
-
-            if (
-              b.seg === currentCar.seg
-            ) scoreB += 2;
-
-            if (
-              a.fuel === currentCar.fuel
-            ) scoreA += 1;
-
-            if (
-              b.fuel === currentCar.fuel
-            ) scoreB += 1;
-
-            return scoreB - scoreA;
-
-          })
-          .slice(0, 3);
-
-
-      if (!cars.length) {
-
-        return `
-          <div class="ab-detail-no-similar">
-            Benzer araç bulunamadı.
-          </div>
-        `;
-
-      }
-
-
-      return cars.map(car => {
-
-        const image =
-          this.getImages(car)[0];
-
-        const title =
-          `${car.brand || ""} ${car.model || ""}`.trim();
-
-        return `
-
-          <article
-            class="ab-detail-similar-car"
-            data-similar-id="${car.id}"
+          <button
+            type="button"
+            class="ab-detail-lightbox-close"
+            data-action="close-lightbox"
+            aria-label="Kapat"
+          >
+            ×
+          </button>
+
+          ${
+            state.images.length > 1
+              ? `
+                <button
+                  type="button"
+                  class="ab-detail-lightbox-arrow left"
+                  data-action="lightbox-prev"
+                  aria-label="Önceki fotoğraf"
+                >
+                  ‹
+                </button>
+
+                <button
+                  type="button"
+                  class="ab-detail-lightbox-arrow right"
+                  data-action="lightbox-next"
+                  aria-label="Sonraki fotoğraf"
+                >
+                  ›
+                </button>
+              `
+              : ''
+          }
+
+          <img
+            data-lightbox-image
+            src="${escapeHTML(state.images[0])}"
+            alt="${escapeHTML(getTitle(car))}"
           >
 
-            <div class="ab-detail-similar-image">
-
-              <img
-                src="${image}"
-                alt="${this.escape(title)}"
-              />
-
-            </div>
-
-
-            <div class="ab-detail-similar-info">
-
-              <h3>
-                ${this.escape(title)}
-              </h3>
-
-              <strong>
-                ${this.money(car.price)}
-              </strong>
-
-              <p>
-                ${car.year || "-"}
-                ·
-                ${this.number(car.km)} km
-                ·
-                ${this.escape(
-                  this.transText(car)
-                )}
-              </p>
-
-              <span>
-                %${this.getMatchScore(car)} Uyum
-              </span>
-
-            </div>
-
-          </article>
-
-        `;
-
-      }).join("");
-
-    },
-
-
-    /* =====================================================
-       EK SEKSİYON
-    ===================================================== */
-
-    renderExtraSection(title, text) {
-
-      return `
-
-        <section class="ab-detail-extra-section">
-
-          <div class="ab-detail-extra-icon">
-            ✦
-          </div>
-
-          <div>
-
-            <span>
-              ARABAMI BUL
-            </span>
-
-            <h2>
-              ${this.escape(title)}
-            </h2>
-
-            <p>
-              ${this.escape(text)}
-            </p>
-
-          </div>
-
-        </section>
-
-      `;
-
-    },
-
-
-    /* =====================================================
-       GALERİ GÜNCELLE
-    ===================================================== */
-
-    updateGallery() {
-
-      if (!this.images.length) return;
-
-      const image =
-        this.images[
-          this.currentImageIndex
-        ];
-
-
-      const mainImage =
-        document.getElementById(
-          "abDetailMainImage"
-        );
-
-
-      const lightboxImage =
-        document.getElementById(
-          "abDetailLightboxImage"
-        );
-
-
-      const indexText =
-        document.getElementById(
-          "abDetailPhotoIndex"
-        );
-
-
-      if (mainImage) {
-        mainImage.src = image;
-      }
-
-
-      if (lightboxImage) {
-        lightboxImage.src = image;
-      }
-
-
-      if (indexText) {
-        indexText.textContent =
-          String(
-            this.currentImageIndex + 1
-          );
-      }
-
-
-      document
-        .querySelectorAll(
-          ".ab-detail-thumbnail"
-        )
-        .forEach(
-          (thumb, index) => {
-
-            thumb.classList.toggle(
-              "active",
-              index ===
-              this.currentImageIndex
-            );
-
-          }
-        );
-
-    },
-
-
-    /* =====================================================
-       SONRAKİ FOTO
-    ===================================================== */
-
-    nextImage() {
-
-      if (this.images.length <= 1) {
-        return;
-      }
-
-      this.currentImageIndex =
-        (
-          this.currentImageIndex + 1
-        ) %
-        this.images.length;
-
-      this.updateGallery();
-
-    },
-
-
-    /* =====================================================
-       ÖNCEKİ FOTO
-    ===================================================== */
-
-    previousImage() {
-
-      if (this.images.length <= 1) {
-        return;
-      }
-
-      this.currentImageIndex =
-        (
-          this.currentImageIndex -
-          1 +
-          this.images.length
-        ) %
-        this.images.length;
-
-      this.updateGallery();
-
-    },
-
-
-    /* =====================================================
-       FAVORİ
-    ===================================================== */
-
-    toggleFavorite() {
-
-      if (!this.currentCar) return;
-
-      let favorites =
-        Array.isArray(window.favorites)
-          ? [...window.favorites]
-          : [];
-
-
-      const index =
-        favorites.indexOf(
-          this.currentCar.id
-        );
-
-
-      if (index >= 0) {
-
-        favorites.splice(
-          index,
-          1
-        );
-
-      } else {
-
-        favorites.push(
-          this.currentCar.id
-        );
-
-      }
-
-
-      window.favorites =
-        favorites;
-
-
-      localStorage.setItem(
-        "favs",
-        JSON.stringify(favorites)
-      );
-
-
-      document
-        .querySelectorAll(
-          "[data-detail-favorite]"
-        )
-        .forEach(button => {
-
-          const active =
-            favorites.includes(
-              this.currentCar.id
-            );
-
-          button.classList.toggle(
-            "active",
-            active
-          );
-
-
-          button.innerHTML =
-            `
-              ${active ? "♥" : "♡"}
-              <span>
-                ${
-                  active
-                    ? "Favorilerde"
-                    : "Favoriye Ekle"
-                }
-              </span>
-            `;
-
-        });
-
-    },
-
-
-    /* =====================================================
-       İLETİŞİM
-    ===================================================== */
-
-    contactSeller() {
-
-      alert(
-        "Satıcı iletişim ekranı yakında aktif olacak."
-      );
-
-    },
-
-
-    /* =====================================================
-       TELEFON
-    ===================================================== */
-
-    showPhone() {
-
-      alert(
-        "Satıcının telefon bilgisi bir sonraki aşamada gösterilecek."
-      );
-
-    },
-
-
-    /* =====================================================
-       KARŞILAŞTIR
-    ===================================================== */
-
-    compare() {
-
-      alert(
-        "Karşılaştırma ekranı bir sonraki aşamada aktif olacak."
-      );
-
-    },
-
-
-    /* =====================================================
-       AI
-    ===================================================== */
-
-    aiSuggest() {
-
-      const car =
-        this.currentCar;
-
-      if (!car) return;
-
-      this.close();
-
-      if (
-        typeof window.go ===
-        "function"
-      ) {
-
-        window.go("find");
-
-      }
-
-    },
-
-
-    /* =====================================================
-       LIGHTBOX
-    ===================================================== */
-
-    openLightbox() {
-
-      const lightbox =
-        document.querySelector(
-          "[data-detail-lightbox]"
-        );
-
-      if (!lightbox) return;
-
-      lightbox.classList.add(
-        "open"
-      );
-
-      this.updateGallery();
-
-    },
-
-
-    closeLightbox() {
-
-      const lightbox =
-        document.querySelector(
-          "[data-detail-lightbox]"
-        );
-
-      if (!lightbox) return;
-
-      lightbox.classList.remove(
-        "open"
-      );
-
-    },
-
-
-    /* =====================================================
-       SEKME
-    ===================================================== */
-
-    setTab(tabName) {
-
-      document
-        .querySelectorAll(
-          "[data-detail-tab]"
-        )
-        .forEach(button => {
-
-          button.classList.toggle(
-            "active",
-            button.dataset.detailTab ===
-            tabName
-          );
-
-        });
-
-
-      document
-        .querySelectorAll(
-          "[data-tab-content]"
-        )
-        .forEach(content => {
-
-          content.classList.toggle(
-            "active",
-            content.dataset.tabContent ===
-            tabName
-          );
-
-        });
-
-    },
-
-
-    /* =====================================================
-       EVENTLER
-    ===================================================== */
-
-    bindEvents() {
-
-      /* GALERİ */
-
-      document
-        .querySelectorAll(
-          "[data-gallery-next]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            event => {
-
-              event.stopPropagation();
-
-              this.nextImage();
-
-            }
-          );
-
-        });
-
-
-      document
-        .querySelectorAll(
-          "[data-gallery-prev]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            event => {
-
-              event.stopPropagation();
-
-              this.previousImage();
-
-            }
-          );
-
-        });
-
-
-      document
-        .querySelectorAll(
-          "[data-gallery-index]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.currentImageIndex =
-                Number(
-                  button.dataset.galleryIndex
-                );
-
-              this.updateGallery();
-
-            }
-          );
-
-        });
-
-
-      document
-        .querySelectorAll(
-          "[data-gallery-fullscreen]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.openLightbox();
-
-            }
-          );
-
-        });
-
-
-      /* FAVORİ */
-
-      document
-        .querySelectorAll(
-          "[data-detail-favorite]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            event => {
-
-              event.stopPropagation();
-
-              this.toggleFavorite();
-
-            }
-          );
-
-        });
-
-
-      /* KARŞILAŞTIR */
-
-      document
-        .querySelectorAll(
-          "[data-detail-compare]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.compare();
-
-            }
-          );
-
-        });
-
-
-      /* İLETİŞİM */
-
-      document
-        .querySelectorAll(
-          "[data-detail-contact]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.contactSeller();
-
-            }
-          );
-
-        });
-
-
-      /* TELEFON */
-
-      document
-        .querySelectorAll(
-          "[data-detail-phone]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.showPhone();
-
-            }
-          );
-
-        });
-
-
-      /* SEKME */
-
-      document
-        .querySelectorAll(
-          "[data-detail-tab]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.setTab(
-                button.dataset.detailTab
-              );
-
-            }
-          );
-
-        });
-
-
-      /* LIGHTBOX */
-
-      document
-        .querySelectorAll(
-          "[data-lightbox-close]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.closeLightbox();
-
-            }
-          );
-
-        });
-
-
-      document
-        .querySelectorAll(
-          "[data-lightbox-next]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.nextImage();
-
-            }
-          );
-
-        });
-
-
-      document
-        .querySelectorAll(
-          "[data-lightbox-prev]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.previousImage();
-
-            }
-          );
-
-        });
-
-
-      /* ANA SİTEYE DÖNÜŞ */
-
-      document
-        .querySelectorAll(
-          "[data-detail-close]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.close();
-
-              if (
-                typeof window.go ===
-                "function"
-              ) {
-                window.go("home");
-              }
-
-            }
-          );
-
-        });
-
-
-      document
-        .querySelectorAll(
-          "[data-detail-browse]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.close();
-
-              if (
-                typeof window.go ===
-                "function"
-              ) {
-
-                window.go("browse");
-
-              }
-
-            }
-          );
-
-        });
-
-
-      /* BENZER ARAÇ */
-
-      document
-        .querySelectorAll(
-          "[data-similar-id]"
-        )
-        .forEach(card => {
-
-          card.addEventListener(
-            "click",
-            () => {
-
-              this.open(
-                card.dataset.similarId
-              );
-
-            }
-          );
-
-        });
-
-
-      /* AI */
-
-      document
-        .querySelectorAll(
-          "[data-detail-ai]"
-        )
-        .forEach(button => {
-
-          button.addEventListener(
-            "click",
-            () => {
-
-              this.aiSuggest();
-
-            }
-          );
-
-        });
-
-    },
-
-
-    /* =====================================================
-       KLAVYE
-    ===================================================== */
-
-    handleKeydown(event) {
-
-      const detail =
-        window.AB_Detail;
-
-      if (!detail) return;
-
-      const container =
-        document.getElementById(
-          "car-detail-container"
-        );
-
-      if (
-        !container ||
-        container.style.display === "none"
-      ) {
-        return;
-      }
-
-
-      if (
-        event.key === "Escape"
-      ) {
-
-        const lightbox =
-          document.querySelector(
-            "[data-detail-lightbox].open"
-          );
-
-        if (lightbox) {
-
-          detail.closeLightbox();
-
-        } else {
-
-          detail.close();
-
-        }
-
-        return;
-      }
-
-
-      if (
-        event.key === "ArrowRight"
-      ) {
-
-        detail.nextImage();
-
-      }
-
-
-      if (
-        event.key === "ArrowLeft"
-      ) {
-
-        detail.previousImage();
-
-      }
-
-    }
-
-  };
-
+        </div>
+
+      </div>
+    `;
+
+    bindEvents();
+    updateGallery();
+    updateFavoriteButtons();
+    updateCompareButton();
+  }
 
   /* =======================================================
-     GLOBAL
-  ======================================================= */
+     TABS
+     ======================================================= */
 
-  window.AB_Detail =
-    AB_Detail;
+  function setTab(tabName) {
+    container
+      .querySelectorAll('[data-tab]')
+      .forEach(function (button) {
+        button.classList.toggle(
+          'active',
+          button.getAttribute('data-tab') === tabName
+        );
+      });
 
+    container
+      .querySelectorAll('[data-tab-content]')
+      .forEach(function (section) {
+        section.classList.toggle(
+          'active',
+          section.getAttribute('data-tab-content') === tabName
+        );
+      });
+  }
 
-  /* ESC / OK TUŞLARI */
-  document.addEventListener(
-    "keydown",
-    AB_Detail.handleKeydown
-  );
+  /* =======================================================
+     EVENTS
+     ======================================================= */
+
+  function bindEvents() {
+    container
+      .querySelectorAll('[data-action]')
+      .forEach(function (element) {
+
+        element.addEventListener('click', function (event) {
+
+          event.stopPropagation();
+
+          const action =
+            element.getAttribute('data-action');
+
+          if (action === 'close') {
+            close();
+          }
+
+          if (action === 'favorite') {
+            toggleFavorite();
+          }
+
+          if (action === 'compare') {
+            toggleCompare();
+          }
+
+          if (action === 'prev-image') {
+            changeImage(-1);
+          }
+
+          if (action === 'next-image') {
+            changeImage(1);
+          }
+
+          if (action === 'lightbox') {
+            openLightbox();
+          }
+
+          if (action === 'close-lightbox') {
+            closeLightbox();
+          }
+
+          if (action === 'lightbox-prev') {
+            changeLightbox(-1);
+          }
+
+          if (action === 'lightbox-next') {
+            changeLightbox(1);
+          }
+
+          if (action === 'contact') {
+            contactSeller();
+          }
+
+          if (action === 'message') {
+            sendMessage();
+          }
+
+          if (action === 'ai') {
+            showAIAnalysis();
+          }
+        });
+      });
+
+    container
+      .querySelectorAll('[data-gallery-index]')
+      .forEach(function (thumbnail) {
+
+        thumbnail.addEventListener('click', function (event) {
+          event.stopPropagation();
+
+          selectImage(
+            Number(
+              thumbnail.getAttribute('data-gallery-index')
+            )
+          );
+        });
+      });
+
+    container
+      .querySelectorAll('[data-tab]')
+      .forEach(function (button) {
+
+        button.addEventListener('click', function () {
+          setTab(
+            button.getAttribute('data-tab')
+          );
+        });
+      });
+
+    container
+      .querySelectorAll('[data-similar-id]')
+      .forEach(function (card) {
+
+        card.addEventListener('click', function () {
+
+          const id =
+            card.getAttribute('data-similar-id');
+
+          open(id);
+        });
+      });
+
+    const mainImage = container.querySelector(
+      '[data-detail-main-image]'
+    );
+
+    if (mainImage) {
+      mainImage.addEventListener(
+        'click',
+        openLightbox
+      );
+    }
+
+    const lightbox = container.querySelector(
+      '.ab-detail-lightbox'
+    );
+
+    if (lightbox) {
+
+      lightbox.addEventListener(
+        'click',
+        function (event) {
+
+          if (event.target === lightbox) {
+            closeLightbox();
+          }
+
+        }
+      );
+    }
+
+    bindSwipe();
+  }
+
+  function bindSwipe() {
+    const mainPhoto = container.querySelector(
+      '.ab-detail-main-photo'
+    );
+
+    if (!mainPhoto) return;
+
+    mainPhoto.addEventListener(
+      'touchstart',
+      function (event) {
+
+        if (!event.touches.length) return;
+
+        state.touchStartX =
+          event.touches[0].clientX;
+
+      },
+      { passive: true }
+    );
+
+    mainPhoto.addEventListener(
+      'touchend',
+      function (event) {
+
+        if (!event.changedTouches.length) return;
+
+        state.touchEndX =
+          event.changedTouches[0].clientX;
+
+        const distance =
+          state.touchEndX - state.touchStartX;
+
+        if (Math.abs(distance) < 45) return;
+
+        if (distance < 0) {
+          changeImage(1);
+        } else {
+          changeImage(-1);
+        }
+
+      },
+      { passive: true }
+    );
+  }
+
+  /* =======================================================
+     GLOBAL KEYBOARD
+     ======================================================= */
+
+  function attachKeyboard() {
+    if (state.keyHandlerAttached) return;
+
+    document.addEventListener(
+      'keydown',
+      function (event) {
+
+        if (!state.car) return;
+
+        if (event.key === 'Escape') {
+
+          if (state.lightboxOpen) {
+            closeLightbox();
+          } else {
+            close();
+          }
+
+          return;
+        }
+
+        if (state.lightboxOpen) {
+
+          if (event.key === 'ArrowLeft') {
+            changeLightbox(-1);
+          }
+
+          if (event.key === 'ArrowRight') {
+            changeLightbox(1);
+          }
+        }
+
+      }
+    );
+
+    state.keyHandlerAttached = true;
+  }
+
+  /* =======================================================
+     OPEN
+     ======================================================= */
+
+  function open(id) {
+    const car = getCar(id);
+
+    if (!car) {
+      console.warn(
+        'ARABAMI BUL: Araç bulunamadı:',
+        id
+      );
+
+      return;
+    }
+
+    state.previousOverflow =
+      document.body.style.overflow;
+
+    state.lightboxOpen = false;
+
+    document.body.classList.add('detail-open');
+
+    document.body.style.overflow = 'hidden';
+
+    render(car);
+
+    container.style.display = 'block';
+
+    container.scrollTop = 0;
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'auto'
+    });
+
+    attachKeyboard();
+  }
+
+  /* =======================================================
+     CLOSE
+     ======================================================= */
+
+  function close() {
+    closeLightbox();
+
+    state.car = null;
+    state.images = [];
+    state.currentImage = 0;
+
+    container.style.display = 'none';
+    container.innerHTML = '';
+
+    document.body.classList.remove('detail-open');
+
+    document.body.style.overflow =
+      state.previousOverflow || '';
+  }
+
+  /* =======================================================
+     PUBLIC API
+     ======================================================= */
+
+  window.AB_Detail = {
+    open: open,
+    close: close,
+    toggleFavorite: toggleFavorite,
+    toggleCompare: toggleCompare,
+    nextImage: function () {
+      changeImage(1);
+    },
+    previousImage: function () {
+      changeImage(-1);
+    }
+  };
 
 })();
