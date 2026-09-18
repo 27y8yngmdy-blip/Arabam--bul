@@ -43,7 +43,11 @@ const imgPool = [
   "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&q=80"
 ];
 
-// Yeni detail.js modülünün kullandığı global araç listesi
+
+// ============================================================
+// ARAÇ LİSTESİ
+// ============================================================
+
 window.dummyCars = [];
 
 for (let i = 1; i <= 70; i++) {
@@ -67,16 +71,39 @@ for (let i = 1; i <= 70; i++) {
     year: year,
     km: km,
     tco: tco,
+
     img: imgPool[i % imgPool.length],
+
+    // Detay sayfası için fotoğraf galerisi
+    images: [
+      imgPool[i % imgPool.length],
+      imgPool[(i + 1) % imgPool.length],
+      imgPool[(i + 2) % imgPool.length],
+      imgPool[(i + 3) % imgPool.length]
+    ],
+
+    engine: "1.2 Turbo",
+    power: "100 HP",
+    drive: "Ön Çekiş",
+
+    location: i % 2 === 0
+      ? "İstanbul, Kadıköy"
+      : "İstanbul, Ataşehir",
+
+    seller: "Ahmet Kaya",
+
+    featured: i <= 6,
 
     expert: {
       hood: i % 5 === 0 ? "Boya" : "Orijinal",
       fenderLeft: i % 4 === 0 ? "Boya" : "Orijinal",
       roof: "Orijinal",
       doorRight: "Orijinal",
+
       tramer: i % 3 === 0
         ? `${(i * 1200).toLocaleString("tr-TR")} TL`
         : "Hasar Kayıtsız",
+
       engineScore: "%" + (90 + (i % 10)),
       transmissionScore: "Kusursuz / Test Edildi"
     }
@@ -102,9 +129,12 @@ let uploadedImages = [];
 // ============================================================
 
 function go(pageId) {
+
   document
     .querySelectorAll(".page")
-    .forEach(p => p.classList.remove("active"));
+    .forEach(page => {
+      page.classList.remove("active");
+    });
 
   const target = document.getElementById(pageId);
 
@@ -113,12 +143,16 @@ function go(pageId) {
   }
 
   document
-    .querySelectorAll(".navlinks button, .mobile-bottom-nav button")
+    .querySelectorAll(
+      ".navlinks button, .mobile-bottom-nav button"
+    )
     .forEach(button => {
+
       button.classList.toggle(
         "active",
         button.dataset.page === pageId
       );
+
     });
 
   if (pageId === "home") {
@@ -133,7 +167,10 @@ function go(pageId) {
     renderFavorites();
   }
 
-  window.scrollTo(0, 0);
+  window.scrollTo({
+    top: 0,
+    behavior: "instant"
+  });
 }
 
 
@@ -142,11 +179,16 @@ function go(pageId) {
 // ============================================================
 
 function handleSearchInput(val) {
-  const dropdown = document.getElementById("searchDropdown");
+
+  const dropdown =
+    document.getElementById("searchDropdown");
 
   if (!dropdown) return;
 
-  const q = val.trim().toLowerCase("tr-TR");
+  const q =
+    String(val || "")
+      .trim()
+      .toLocaleLowerCase("tr-TR");
 
   if (!q) {
     dropdown.classList.remove("open");
@@ -160,98 +202,140 @@ function handleSearchInput(val) {
     "favoriler".includes(q) ||
     "fav".includes(q)
   ) {
+
     cmdItems.push({
       text: "⭐ Favorilerim Sayfasına Git",
+
       action: () => {
         go("favorites");
         clearSearch();
       }
     });
+
   }
 
   if (
     "ilan ver".includes(q) ||
     "sat".includes(q)
   ) {
+
     cmdItems.push({
       text: "📝 İlan Ver Sayfasına Git",
+
       action: () => {
         go("sell");
         clearSearch();
       }
     });
+
   }
 
   if (
     "sihirbaz".includes(q) ||
     "bul".includes(q)
   ) {
+
     cmdItems.push({
       text: "🪄 Bana Araba Bul Sihirbazı",
+
       action: () => {
         go("find");
         clearSearch();
       }
     });
+
   }
 
-  const matchedCars = window.dummyCars
-    .filter(car =>
-      car.brand.toLowerCase("tr-TR").includes(q) ||
-      car.model.toLowerCase("tr-TR").includes(q)
-    )
-    .slice(0, 5);
+  const matchedCars =
+    window.dummyCars
+      .filter(car => {
+
+        const brand =
+          String(car.brand || "")
+            .toLocaleLowerCase("tr-TR");
+
+        const model =
+          String(car.model || "")
+            .toLocaleLowerCase("tr-TR");
+
+        return (
+          brand.includes(q) ||
+          model.includes(q)
+        );
+
+      })
+      .slice(0, 5);
 
   matchedCars.forEach(car => {
+
     carItems.push({
-      text: `${car.brand} ${car.model} (${car.price.toLocaleString("tr-TR")} TL)`,
+
+      text:
+        `${car.brand} ${car.model} (${car.price.toLocaleString("tr-TR")} TL)`,
+
       action: () => {
         openDetail(car.id);
         clearSearch();
       },
+
       tag: car.fuel
+
     });
+
   });
 
   let html = "";
 
   if (cmdItems.length > 0) {
-    html += '<div class="search-group-title">Hızlı Komutlar</div>';
 
-    cmdItems.forEach((item, idx) => {
+    html +=
+      '<div class="search-group-title">Hızlı Komutlar</div>';
+
+    cmdItems.forEach((item, index) => {
+
       html += `
         <div
           class="search-item"
-          onclick="execCmd(${idx})"
+          onclick="execCmd(${index})"
         >
           <span>${item.text}</span>
           <span class="type-tag">Komut</span>
         </div>
       `;
+
     });
 
-    dropdown.cmdActions = cmdItems.map(item => item.action);
+    dropdown.cmdActions =
+      cmdItems.map(item => item.action);
+
   }
 
   if (carItems.length > 0) {
-    html += '<div class="search-group-title">Eşleşen Araçlar</div>';
 
-    carItems.forEach((item, idx) => {
+    html +=
+      '<div class="search-group-title">Eşleşen Araçlar</div>';
+
+    carItems.forEach((item, index) => {
+
       html += `
         <div
           class="search-item"
-          onclick="execCar(${idx})"
+          onclick="execCar(${index})"
         >
           <span>${item.text}</span>
           <span class="type-tag">${item.tag}</span>
         </div>
       `;
+
     });
 
-    dropdown.carActions = carItems.map(item => item.action);
+    dropdown.carActions =
+      carItems.map(item => item.action);
+
   }
 
   if (!html) {
+
     html = `
       <div
         class="search-item"
@@ -264,40 +348,50 @@ function handleSearchInput(val) {
     dropdown.cmdActions = [
       () => executeBrowseSearch(q)
     ];
+
   }
 
   dropdown.innerHTML = html;
   dropdown.classList.add("open");
 }
 
-function execCmd(idx) {
-  const dropdown = document.getElementById("searchDropdown");
+
+function execCmd(index) {
+
+  const dropdown =
+    document.getElementById("searchDropdown");
 
   if (
     dropdown &&
     dropdown.cmdActions &&
-    dropdown.cmdActions[idx]
+    dropdown.cmdActions[index]
   ) {
-    dropdown.cmdActions[idx]();
+    dropdown.cmdActions[index]();
   }
 }
 
-function execCar(idx) {
-  const dropdown = document.getElementById("searchDropdown");
+
+function execCar(index) {
+
+  const dropdown =
+    document.getElementById("searchDropdown");
 
   if (
     dropdown &&
     dropdown.carActions &&
-    dropdown.carActions[idx]
+    dropdown.carActions[index]
   ) {
-    dropdown.carActions[idx]();
+    dropdown.carActions[index]();
   }
 }
 
+
 function executeBrowseSearch(q) {
+
   go("browse");
 
-  const queryInput = document.getElementById("fQuery");
+  const queryInput =
+    document.getElementById("fQuery");
 
   if (queryInput) {
     queryInput.value = q;
@@ -307,9 +401,14 @@ function executeBrowseSearch(q) {
   clearSearch();
 }
 
+
 function clearSearch() {
-  const input = document.getElementById("globalSearchInput");
-  const dropdown = document.getElementById("searchDropdown");
+
+  const input =
+    document.getElementById("globalSearchInput");
+
+  const dropdown =
+    document.getElementById("searchDropdown");
 
   if (input) {
     input.value = "";
@@ -320,21 +419,48 @@ function clearSearch() {
   }
 }
 
+
+function handleSearchKeyDown(event) {
+
+  if (event.key === "Enter") {
+
+    const input =
+      document.getElementById("globalSearchInput");
+
+    if (!input) return;
+
+    const q = input.value.trim();
+
+    if (q) {
+      executeBrowseSearch(q);
+    }
+
+  }
+
+}
+
+
+// CTRL + K
 document.addEventListener("keydown", event => {
+
   if (
     (event.ctrlKey || event.metaKey) &&
     event.key.toLowerCase() === "k"
   ) {
+
     event.preventDefault();
 
-    const input = document.getElementById(
-      "globalSearchInput"
-    );
+    const input =
+      document.getElementById(
+        "globalSearchInput"
+      );
 
     if (input) {
       input.focus();
     }
+
   }
+
 });
 
 
@@ -343,25 +469,28 @@ document.addEventListener("keydown", event => {
 // ============================================================
 
 function toggleFav(id, e) {
+
   if (e) {
     e.stopPropagation();
   }
 
   if (favorites.includes(id)) {
-    favorites = favorites.filter(
-      item => item !== id
-    );
+
+    favorites =
+      favorites.filter(item => item !== id);
+
   } else {
+
     favorites.push(id);
+
   }
+
+  window.favorites = favorites;
 
   localStorage.setItem(
     "favs",
     JSON.stringify(favorites)
   );
-
-  // Diğer modüllerin güncel favorileri görebilmesi için
-  window.favorites = favorites;
 
   renderHome();
   renderBrowse();
@@ -374,14 +503,17 @@ function toggleFav(id, e) {
 // ============================================================
 
 function renderHome() {
-  const grid = document.getElementById("homeGrid");
+
+  const grid =
+    document.getElementById("homeGrid");
 
   if (!grid) return;
 
-  grid.innerHTML = window.dummyCars
-    .slice(0, 6)
-    .map(car => createCarCard(car))
-    .join("");
+  grid.innerHTML =
+    window.dummyCars
+      .slice(0, 6)
+      .map(car => createCarCard(car))
+      .join("");
 }
 
 
@@ -390,32 +522,47 @@ function renderHome() {
 // ============================================================
 
 function filterByCategory(cat) {
+
   document
     .querySelectorAll(".category-pills .pill")
     .forEach(pill => {
+
       pill.classList.toggle(
         "active",
+
         pill.textContent.includes(cat) ||
         (
           cat === "" &&
           pill.textContent.includes("Tüm")
         )
       );
+
     });
 
   go("browse");
 
-  const bodyInput = document.getElementById("fBody");
-  const fuelInput = document.getElementById("fFuel");
+  const bodyInput =
+    document.getElementById("fBody");
+
+  const fuelInput =
+    document.getElementById("fFuel");
 
   if (bodyInput) {
+
     bodyInput.value =
-      cat === "Elektrik" ? "" : cat;
+      cat === "Elektrik"
+        ? ""
+        : cat;
+
   }
 
   if (fuelInput) {
+
     fuelInput.value =
-      cat === "Elektrik" ? "Elektrik" : "";
+      cat === "Elektrik"
+        ? "Elektrik"
+        : "";
+
   }
 
   renderBrowse();
@@ -427,13 +574,17 @@ function filterByCategory(cat) {
 // ============================================================
 
 function renderBrowse() {
-  const grid = document.getElementById("browseGrid");
+
+  const grid =
+    document.getElementById("browseGrid");
 
   if (!grid) return;
 
-  const q = (
-    document.getElementById("fQuery")?.value || ""
-  ).toLowerCase("tr-TR");
+  const q =
+    (
+      document.getElementById("fQuery")?.value ||
+      ""
+    ).toLocaleLowerCase("tr-TR");
 
   const brand =
     document.getElementById("fBrand")?.value || "";
@@ -441,28 +592,33 @@ function renderBrowse() {
   const body =
     document.getElementById("fBody")?.value || "";
 
-  const pMin = Number(
-    document.getElementById("fPriceMin")?.value || 0
-  );
+  const pMin =
+    Number(
+      document.getElementById("fPriceMin")?.value || 0
+    );
 
-  const pMax = Number(
-    document.getElementById("fPriceMax")?.value ||
-    Infinity
-  );
+  const pMax =
+    Number(
+      document.getElementById("fPriceMax")?.value ||
+      Infinity
+    );
 
-  const yMin = Number(
-    document.getElementById("fYearMin")?.value || 0
-  );
+  const yMin =
+    Number(
+      document.getElementById("fYearMin")?.value || 0
+    );
 
-  const yMax = Number(
-    document.getElementById("fYearMax")?.value ||
-    Infinity
-  );
+  const yMax =
+    Number(
+      document.getElementById("fYearMax")?.value ||
+      Infinity
+    );
 
-  const kmMax = Number(
-    document.getElementById("fKmMax")?.value ||
-    Infinity
-  );
+  const kmMax =
+    Number(
+      document.getElementById("fKmMax")?.value ||
+      Infinity
+    );
 
   const fuel =
     document.getElementById("fFuel")?.value || "";
@@ -474,97 +630,140 @@ function renderBrowse() {
     document.getElementById("fSort")?.value ||
     "default";
 
-  let filtered = window.dummyCars.filter(car => {
-    if (
-      q &&
-      !(
-        car.brand
-          .toLowerCase("tr-TR")
-          .includes(q) ||
-        car.model
-          .toLowerCase("tr-TR")
-          .includes(q)
-      )
-    ) {
-      return false;
-    }
+  let filtered =
+    window.dummyCars.filter(car => {
 
-    if (brand && car.brand !== brand) {
-      return false;
-    }
+      const carBrand =
+        String(car.brand || "")
+          .toLocaleLowerCase("tr-TR");
 
-    if (body && car.seg !== body) {
-      return false;
-    }
+      const carModel =
+        String(car.model || "")
+          .toLocaleLowerCase("tr-TR");
 
-    if (car.price < pMin) {
-      return false;
-    }
+      if (
+        q &&
+        !(
+          carBrand.includes(q) ||
+          carModel.includes(q)
+        )
+      ) {
+        return false;
+      }
 
-    if (
-      pMax !== Infinity &&
-      car.price > pMax
-    ) {
-      return false;
-    }
+      if (
+        brand &&
+        car.brand !== brand
+      ) {
+        return false;
+      }
 
-    if (car.year < yMin) {
-      return false;
-    }
+      if (
+        body &&
+        car.seg !== body
+      ) {
+        return false;
+      }
 
-    if (
-      yMax !== Infinity &&
-      car.year > yMax
-    ) {
-      return false;
-    }
+      if (
+        car.price < pMin
+      ) {
+        return false;
+      }
 
-    if (car.km > kmMax) {
-      return false;
-    }
+      if (
+        pMax !== Infinity &&
+        car.price > pMax
+      ) {
+        return false;
+      }
 
-    if (fuel && car.fuel !== fuel) {
-      return false;
-    }
+      if (
+        car.year < yMin
+      ) {
+        return false;
+      }
 
-    if (trans && car.trans !== trans) {
-      return false;
-    }
+      if (
+        yMax !== Infinity &&
+        car.year > yMax
+      ) {
+        return false;
+      }
 
-    return true;
-  });
+      if (
+        car.km > kmMax
+      ) {
+        return false;
+      }
+
+      if (
+        fuel &&
+        car.fuel !== fuel
+      ) {
+        return false;
+      }
+
+      if (
+        trans &&
+        car.trans !== trans
+      ) {
+        return false;
+      }
+
+      return true;
+
+    });
+
 
   if (sort === "priceAsc") {
+
     filtered.sort(
-      (a, b) => a.price - b.price
+      (a, b) =>
+        a.price - b.price
     );
+
   }
 
   if (sort === "priceDesc") {
+
     filtered.sort(
-      (a, b) => b.price - a.price
+      (a, b) =>
+        b.price - a.price
     );
+
   }
 
   if (sort === "yearDesc") {
+
     filtered.sort(
-      (a, b) => b.year - a.year
+      (a, b) =>
+        b.year - a.year
     );
+
   }
+
 
   const resultCount =
-    document.getElementById("resultCount");
+    document.getElementById(
+      "resultCount"
+    );
 
   if (resultCount) {
+
     resultCount.textContent =
       `Bulunan Araç: ${filtered.length}`;
+
   }
+
 
   grid.innerHTML =
     filtered.length > 0
+
       ? filtered
           .map(car => createCarCard(car))
           .join("")
+
       : `
         <div
           style="
@@ -584,8 +783,13 @@ function renderBrowse() {
 // 9. ARAÇ KARTI
 // ============================================================
 
-function createCarCard(car, matchRate) {
-  const isFav = favorites.includes(car.id);
+function createCarCard(
+  car,
+  matchRate
+) {
+
+  const isFav =
+    favorites.includes(car.id);
 
   return `
     <div
@@ -596,6 +800,7 @@ function createCarCard(car, matchRate) {
       <button
         class="fav-btn"
         onclick="toggleFav(${car.id}, event)"
+        type="button"
       >
         ${isFav ? "❤️" : "🤍"}
       </button>
@@ -604,17 +809,31 @@ function createCarCard(car, matchRate) {
         class="car-img"
         style="background-image:url('${car.img}')"
       >
+
         <div class="car-overlay">
-          <span>${car.brand} ${car.model}</span>
-          <span>${car.year}</span>
+
+          <span>
+            ${car.brand} ${car.model}
+          </span>
+
+          <span>
+            ${car.year}
+          </span>
+
         </div>
+
       </div>
+
 
       <div class="car-body">
 
         ${
           matchRate
-            ? `<span class="match-badge">%${matchRate} Uyumlu</span>`
+            ? `
+              <span class="match-badge">
+                %${matchRate} Uyumlu
+              </span>
+            `
             : ""
         }
 
@@ -627,19 +846,30 @@ function createCarCard(car, matchRate) {
         </div>
 
         <div class="car-meta">
+
           <span>${car.fuel}</span>
+
           •
+
           <span>${car.trans}</span>
+
           •
-          <span>${car.km.toLocaleString("tr-TR")} KM</span>
+
+          <span>
+            ${car.km.toLocaleString("tr-TR")} KM
+          </span>
+
         </div>
 
         <div class="badge-tco">
+
           Tahmini Yürütme:
           ~${car.tco.toLocaleString("tr-TR")} TL / ay
+
         </div>
 
       </div>
+
     </div>
   `;
 }
@@ -653,10 +883,15 @@ let wizardAnswers = {};
 let qIndex = 0;
 
 const wizardQuestions = [
+
   {
     key: "price",
+
     title: "Bütçe Aralığınız",
-    sub: "Maksimum alım bütçenizi seçin.",
+
+    sub:
+      "Maksimum alım bütçenizi seçin.",
+
     options: [
       "1.500.000 TL Altı",
       "1.500.000 - 3.000.000 TL",
@@ -666,8 +901,12 @@ const wizardQuestions = [
 
   {
     key: "body",
+
     title: "Kasa Tipi / Kullanım Amacı",
-    sub: "Aracı en çok nerede ve nasıl kullanacaksınız?",
+
+    sub:
+      "Aracı en çok nerede ve nasıl kullanacaksınız?",
+
     options: [
       "Sedan (Konfor & Aile)",
       "SUV (Geniş & Yüksek)",
@@ -678,8 +917,12 @@ const wizardQuestions = [
 
   {
     key: "fuel",
+
     title: "Yakıt & Enerji Tercihi",
-    sub: "Hangi yakıt tipi sizin için daha uygun?",
+
+    sub:
+      "Hangi yakıt tipi sizin için daha uygun?",
+
     options: [
       "Elektrik",
       "Benzin",
@@ -690,8 +933,12 @@ const wizardQuestions = [
 
   {
     key: "trans",
+
     title: "Vites Tipi",
-    sub: "Sürüş alışkanlığınız nedir?",
+
+    sub:
+      "Sürüş alışkanlığınız nedir?",
+
     options: [
       "Otomatik",
       "Manuel"
@@ -700,8 +947,12 @@ const wizardQuestions = [
 
   {
     key: "year",
+
     title: "Model Yılı Beklentisi",
-    sub: "Aracın yaşı ne olmalı?",
+
+    sub:
+      "Aracın yaşı ne olmalı?",
+
     options: [
       "2022 ve Üzeri (Yeni)",
       "2018 - 2021 (Orta Yaş)",
@@ -711,8 +962,12 @@ const wizardQuestions = [
 
   {
     key: "priority",
+
     title: "En Önemli Kriteriniz",
-    sub: "Aracınızda ilk aradığınız nitelik.",
+
+    sub:
+      "Aracınızda ilk aradığınız nitelik.",
+
     options: [
       "Düşük Yürütme Gideri",
       "Yüksek Performans",
@@ -720,9 +975,12 @@ const wizardQuestions = [
       "İkinci El Değeri"
     ]
   }
+
 ];
 
+
 function renderWizard() {
+
   const question =
     wizardQuestions[qIndex];
 
@@ -746,31 +1004,42 @@ function renderWizard() {
   const options =
     document.getElementById("qOptions");
 
+
   if (qBadge) {
+
     qBadge.textContent =
       `Soru ${qIndex + 1} / ${wizardQuestions.length}`;
+
   }
 
   if (qTitle) {
+
     qTitle.textContent =
       question.title;
+
   }
 
   if (qSub) {
+
     qSub.textContent =
       question.sub;
+
   }
 
   if (pFill) {
+
     pFill.style.width =
       `${((qIndex + 1) / wizardQuestions.length) * 100}%`;
+
   }
 
   if (prevBtn) {
+
     prevBtn.style.visibility =
       qIndex === 0
         ? "hidden"
         : "visible";
+
   }
 
   if (!options) return;
@@ -778,26 +1047,42 @@ function renderWizard() {
   options.innerHTML =
     question.options
       .map(option => `
+
         <div
           class="option-btn ${
             wizardAnswers[question.key] === option
               ? "selected"
               : ""
           }"
+
           onclick="selectWizardOpt(
             '${question.key}',
             '${option.replace(/'/g, "\\'")}',
             this
           )"
         >
-          <span>${option}</span>
-          <span class="check-icon">✓</span>
+
+          <span>
+            ${option}
+          </span>
+
+          <span class="check-icon">
+            ✓
+          </span>
+
         </div>
+
       `)
       .join("");
 }
 
-function selectWizardOpt(key, val, element) {
+
+function selectWizardOpt(
+  key,
+  val,
+  element
+) {
+
   document
     .querySelectorAll(".option-btn")
     .forEach(button =>
@@ -811,16 +1096,20 @@ function selectWizardOpt(key, val, element) {
   wizardAnswers[key] = val;
 }
 
+
 function nextQ() {
+
   const currentQuestion =
     wizardQuestions[qIndex];
 
   if (
     !wizardAnswers[currentQuestion.key]
   ) {
+
     alert(
       "Lütfen devam etmek için bir seçim yapın."
     );
+
     return;
   }
 
@@ -828,29 +1117,49 @@ function nextQ() {
     qIndex <
     wizardQuestions.length - 1
   ) {
+
     qIndex++;
+
     renderWizard();
+
   } else {
+
     showWizardResults();
+
   }
 }
+
 
 function prevQ() {
+
   if (qIndex > 0) {
+
     qIndex--;
+
     renderWizard();
+
   }
+
 }
 
+
 function showWizardResults() {
+
   const wizardCard =
-    document.getElementById("wizardCard");
+    document.getElementById(
+      "wizardCard"
+    );
 
   const wizardResult =
-    document.getElementById("wizardResult");
+    document.getElementById(
+      "wizardResult"
+    );
 
   const resultGrid =
-    document.getElementById("wizardResultGrid");
+    document.getElementById(
+      "wizardResultGrid"
+    );
+
 
   if (wizardCard) {
     wizardCard.style.display = "none";
@@ -860,20 +1169,24 @@ function showWizardResults() {
     wizardResult.style.display = "block";
   }
 
+
   let scoredCars =
     window.dummyCars.map(car => {
+
       let score = 70;
 
       if (
         wizardAnswers.fuel &&
-        car.fuel === wizardAnswers.fuel
+        car.fuel ===
+          wizardAnswers.fuel
       ) {
         score += 10;
       }
 
       if (
         wizardAnswers.trans &&
-        car.trans === wizardAnswers.trans
+        car.trans ===
+          wizardAnswers.trans
       ) {
         score += 10;
       }
@@ -888,15 +1201,21 @@ function showWizardResults() {
 
       return {
         car: car,
-        score: Math.min(score, 98)
+        score:
+          Math.min(score, 98)
       };
+
     });
 
+
   scoredCars.sort(
-    (a, b) => b.score - a.score
+    (a, b) =>
+      b.score - a.score
   );
 
+
   if (resultGrid) {
+
     resultGrid.innerHTML =
       scoredCars
         .slice(0, 4)
@@ -907,18 +1226,26 @@ function showWizardResults() {
           )
         )
         .join("");
+
   }
+
 }
 
+
 function resetWizard() {
+
   wizardAnswers = {};
   qIndex = 0;
 
   const wizardCard =
-    document.getElementById("wizardCard");
+    document.getElementById(
+      "wizardCard"
+    );
 
   const wizardResult =
-    document.getElementById("wizardResult");
+    document.getElementById(
+      "wizardResult"
+    );
 
   if (wizardCard) {
     wizardCard.style.display = "block";
@@ -937,28 +1264,40 @@ function resetWizard() {
 // ============================================================
 
 function handleImageUpload(e) {
-  const files = e.target.files;
 
-  if (!files || !files.length) {
+  const files =
+    e.target.files;
+
+  if (
+    !files ||
+    !files.length
+  ) {
     return;
   }
 
   for (const file of files) {
-    const reader = new FileReader();
 
-    reader.onload = function(event) {
-      uploadedImages.push(
-        event.target.result
-      );
+    const reader =
+      new FileReader();
 
-      renderImgPreviews();
-    };
+    reader.onload =
+      function(event) {
+
+        uploadedImages.push(
+          event.target.result
+        );
+
+        renderImgPreviews();
+
+      };
 
     reader.readAsDataURL(file);
   }
 }
 
+
 function renderImgPreviews() {
+
   const grid =
     document.getElementById(
       "imgPreviewGrid"
@@ -970,8 +1309,11 @@ function renderImgPreviews() {
     uploadedImages
       .map(
         (src, index) => `
+
           <div class="preview-card">
+
             <img src="${src}">
+
             <button
               type="button"
               class="remove-btn"
@@ -979,90 +1321,151 @@ function renderImgPreviews() {
             >
               ✕
             </button>
+
           </div>
+
         `
       )
       .join("");
 }
 
+
 function removeImg(index) {
-  uploadedImages.splice(index, 1);
+
+  uploadedImages.splice(
+    index,
+    1
+  );
+
   renderImgPreviews();
 }
 
+
 function submitNewCar(e) {
+
   e.preventDefault();
 
   const price =
     Number(
-      document.getElementById("addPrice")?.value || 0
+      document.getElementById(
+        "addPrice"
+      )?.value || 0
     );
 
-  // ID çakışmasını önlemek için mevcut en büyük ID + 1
+
   const newId =
     window.dummyCars.length > 0
+
       ? Math.max(
-          ...window.dummyCars.map(car => car.id)
+          ...window.dummyCars.map(
+            car => car.id
+          )
         ) + 1
+
       : 1;
 
+
   const newCar = {
+
     id: newId,
 
     brand:
-      document.getElementById("addBrand")?.value || "",
+      document.getElementById(
+        "addBrand"
+      )?.value || "",
 
     model:
-      document.getElementById("addModel")?.value || "",
+      document.getElementById(
+        "addModel"
+      )?.value || "",
 
     seg:
-      document.getElementById("addBody")?.value || "",
+      document.getElementById(
+        "addBody"
+      )?.value || "",
 
     price: price,
 
     fuel:
-      document.getElementById("addFuel")?.value || "",
+      document.getElementById(
+        "addFuel"
+      )?.value || "",
 
     trans:
-      document.getElementById("addTrans")?.value || "",
+      document.getElementById(
+        "addTrans"
+      )?.value || "",
 
     year:
       Number(
-        document.getElementById("addYear")?.value || 0
+        document.getElementById(
+          "addYear"
+        )?.value || 0
       ),
 
     km:
       Number(
-        document.getElementById("addKm")?.value || 0
+        document.getElementById(
+          "addKm"
+        )?.value || 0
       ),
 
     tco:
-      Math.round(price * 0.006),
+      Math.round(
+        price * 0.006
+      ),
 
     img:
-      uploadedImages[0] || imgPool[0],
+      uploadedImages[0] ||
+      imgPool[0],
 
     images:
       uploadedImages.length
         ? [...uploadedImages]
         : [imgPool[0]],
 
+    engine: "1.2 Turbo",
+    power: "100 HP",
+    drive: "Ön Çekiş",
+
+    location:
+      "İstanbul, Kadıköy",
+
+    seller:
+      "Yeni İlan Sahibi",
+
+    featured: false,
+
     expert: {
+
       hood: "Orijinal",
       fenderLeft: "Orijinal",
       roof: "Orijinal",
       doorRight: "Orijinal",
-      tramer: "Beyan Edilmedi",
-      engineScore: "%95",
-      transmissionScore: "Kontrol Edildi"
+
+      tramer:
+        "Beyan Edilmedi",
+
+      engineScore:
+        "%95",
+
+      transmissionScore:
+        "Kontrol Edildi"
+
     }
+
   };
 
-  window.dummyCars.unshift(newCar);
+
+  window.dummyCars.unshift(
+    newCar
+  );
+
 
   alert(
     "İlanınız başarıyla eklendi!"
   );
+
 
   uploadedImages = [];
 
@@ -1080,21 +1483,38 @@ function submitNewCar(e) {
 // 12. YENİ ARAÇ DETAY SİSTEMİ
 // ============================================================
 
-// Eski modal sistemi tamamen kaldırıldı.
-// Artık detail.js içindeki AB_Detail sistemi kullanılıyor.
-
 function openDetail(id) {
-  if (
-    window.AB_Detail &&
-    typeof window.AB_Detail.open === "function"
-  ) {
-    window.AB_Detail.open(id);
+
+  console.log(
+    "Araç detay isteği:",
+    id
+  );
+
+  const detailSystem =
+    window.AB_Detail;
+
+  if (!detailSystem) {
+
+    console.error(
+      "AB_Detail bulunamadı. detail.js yüklenmemiş olabilir."
+    );
+
     return;
   }
 
-  console.error(
-    "Yeni araç detay sistemi henüz yüklenmedi."
-  );
+  if (
+    typeof detailSystem.open !==
+    "function"
+  ) {
+
+    console.error(
+      "AB_Detail.open fonksiyonu bulunamadı."
+    );
+
+    return;
+  }
+
+  detailSystem.open(id);
 }
 
 
@@ -1103,8 +1523,11 @@ function openDetail(id) {
 // ============================================================
 
 async function sendAIChat() {
+
   const input =
-    document.getElementById("chatInput");
+    document.getElementById(
+      "chatInput"
+    );
 
   if (!input) return;
 
@@ -1114,9 +1537,12 @@ async function sendAIChat() {
   if (!query) return;
 
   const body =
-    document.getElementById("chatBody");
+    document.getElementById(
+      "chatBody"
+    );
 
   if (!body) return;
+
 
   body.innerHTML += `
     <div class="chat-msg user">
@@ -1129,42 +1555,63 @@ async function sendAIChat() {
   body.scrollTop =
     body.scrollHeight;
 
+
   const typingId =
-    "typing_" + Date.now();
+    "typing_" +
+    Date.now();
+
 
   body.innerHTML += `
     <div
       class="chat-msg bot"
       id="${typingId}"
     >
+
       <div class="typing-indicator">
+
         <div class="typing-dot"></div>
         <div class="typing-dot"></div>
         <div class="typing-dot"></div>
+
       </div>
+
     </div>
   `;
+
 
   body.scrollTop =
     body.scrollHeight;
 
+
   setTimeout(() => {
+
     document
-      .getElementById(typingId)
+      .getElementById(
+        typingId
+      )
       ?.remove();
 
+
     let reply;
+
 
     if (
       typeof generateAIResponse ===
       "function"
     ) {
+
       reply =
-        generateAIResponse(query);
+        generateAIResponse(
+          query
+        );
+
     } else {
+
       reply =
         "Size uygun araçları bulmak için Bana Araba Bul bölümünü kullanabilirsiniz.";
+
     }
+
 
     body.innerHTML += `
       <div class="chat-msg bot">
@@ -1172,8 +1619,10 @@ async function sendAIChat() {
       </div>
     `;
 
+
     body.scrollTop =
       body.scrollHeight;
+
   }, 900);
 }
 
@@ -1185,7 +1634,10 @@ async function sendAIChat() {
 window.addEventListener(
   "DOMContentLoaded",
   () => {
+
     go("home");
+
     renderWizard();
+
   }
 );
