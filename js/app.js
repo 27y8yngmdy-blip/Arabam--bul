@@ -15,7 +15,7 @@ const imgPool = [
   "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&q=80"
 ];
 
-let dummyCars = [];
+window.dummyCars = [];
 for (let i = 1; i <= 70; i++) {
   const b = brands[i % brands.length];
   const body = bodyTypes[i % bodyTypes.length];
@@ -26,7 +26,7 @@ for (let i = 1; i <= 70; i++) {
   const trans = i % 4 === 0 ? "Manuel" : "Otomatik";
   const tco = Math.round(price * 0.006);
 
-  dummyCars.push({
+  window.dummyCars.push({
     id: i,
     brand: b,
     model: `${body} Series ${i}`,
