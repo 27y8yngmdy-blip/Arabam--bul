@@ -6,17 +6,14 @@
   let currentImageIndex = 0;
   let isLightboxOpen = false;
   let lightboxIndex = 0;
-  let touchStartX = 0;
-  let touchEndX = 0;
-  let globalEventsAttached = false;
 
   const PLACEHOLDER_IMG =
-    'https://via.placeholder.com/800x600?text=G%C3%B6rsel+Yok';
+    'https://via.placeholder.com/900x650?text=G%C3%B6rsel+Yok';
 
 
-  /* =========================
+  /* =====================================================
      YARDIMCI FONKSİYONLAR
-  ========================= */
+  ===================================================== */
 
   function formatPrice(price) {
     if (
@@ -56,7 +53,10 @@
     }
 
     if (typeof value === 'object') {
-      if (value.text) return String(value.text);
+
+      if (value.text) {
+        return String(value.text);
+      }
 
       if (value.status) {
         return String(value.status);
@@ -75,13 +75,27 @@
   }
 
 
+  function escapeHTML(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+
   function calculateTrustScore(car) {
+
     let score = 50;
 
-    const currentYear = new Date().getFullYear();
+    const currentYear =
+      new Date().getFullYear();
 
     if (car && car.year) {
-      const age = currentYear - Number(car.year);
+
+      const age =
+        currentYear - Number(car.year);
 
       if (age <= 3) {
         score += 20;
@@ -95,6 +109,7 @@
       car.km !== undefined &&
       car.km !== null
     ) {
+
       const km = Number(car.km);
 
       if (km < 50000) {
@@ -108,8 +123,10 @@
       score += 10;
     }
 
-    if (score > 95) score = 95;
-    if (score < 0) score = 0;
+    score = Math.max(
+      0,
+      Math.min(95, score)
+    );
 
     return {
       rawScore: score,
@@ -119,25 +136,35 @@
 
 
   function prepareImageList(car) {
+
     let images = [];
 
     if (
       car &&
-      Array.isArray(car.images) &&
-      car.images.length
+      Array.isArray(car.images)
     ) {
+
       images = car.images.filter(function (img) {
-        return img && String(img).trim() !== '';
+
+        return (
+          img &&
+          String(img).trim() !== ''
+        );
+
       });
+
     }
 
     if (
       images.length === 0 &&
       car &&
-      car.img &&
-      String(car.img).trim() !== ''
+      car.img
     ) {
-      images = [car.img];
+
+      images = [
+        String(car.img)
+      ];
+
     }
 
     if (images.length === 0) {
@@ -149,6 +176,7 @@
 
 
   function getSimilarCars(car) {
+
     if (
       !window.dummyCars ||
       !Array.isArray(window.dummyCars)
@@ -158,12 +186,16 @@
 
     return window.dummyCars
       .filter(function (item) {
+
         return (
           item &&
-          String(item.id) !== String(car.id)
+          String(item.id) !==
+            String(car.id)
         );
+
       })
       .filter(function (item) {
+
         const sameSegment =
           item.seg &&
           car.seg &&
@@ -176,15 +208,19 @@
           String(item.brand).toLowerCase() ===
             String(car.brand).toLowerCase();
 
-        return sameSegment || sameBrand;
+        return (
+          sameSegment ||
+          sameBrand
+        );
+
       })
       .slice(0, 3);
   }
 
 
-  /* =========================
+  /* =====================================================
      DETAY HTML
-  ========================= */
+  ===================================================== */
 
   function generateDetailHTML(car) {
 
@@ -199,27 +235,31 @@
     const similarCars =
       getSimilarCars(car);
 
-    const hasPhone =
-      car.phone &&
-      String(car.phone).trim() !== '';
+    const brand =
+      escapeHTML(formatVal(car.brand));
 
+    const model =
+      escapeHTML(formatVal(car.model));
+
+    const title =
+      `${brand} ${model}`;
+
+    const phone =
+      car.phone
+        ? String(car.phone)
+        : '';
+
+    const expertText =
+      formatVal(car.expert);
 
     return `
+
       <div
         class="ab-detail-overlay"
         id="abDetailOverlay"
-        style="
-          position:fixed;
-          inset:0;
-          z-index:99999;
-          display:block;
-        "
       >
 
-        <div
-          class="ab-detail-wrapper"
-          id="abDetailWrapper"
-        >
+        <div class="ab-detail-wrapper">
 
           <!-- HEADER -->
 
@@ -230,28 +270,14 @@
               class="ab-detail-back-btn"
               onclick="window.AB_Detail.close()"
             >
-
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M19 12H5"/>
-                <path d="M12 19l-7-7 7-7"/>
-              </svg>
-
+              <span class="ab-detail-back-icon">←</span>
               <span>Geri</span>
-
             </button>
 
 
-            <h1 class="ab-detail-header-title">
-              ${formatVal(car.brand)}
-              ${formatVal(car.model)}
-            </h1>
+            <div class="ab-detail-header-title">
+              ${title}
+            </div>
 
 
             <div class="ab-detail-header-actions">
@@ -280,8 +306,9 @@
                 type="button"
                 class="ab-detail-close-btn"
                 onclick="window.AB_Detail.close()"
+                title="Kapat"
               >
-                &times;
+                ×
               </button>
 
             </div>
@@ -289,11 +316,14 @@
           </header>
 
 
-          <!-- BODY -->
+          <!-- ANA İÇERİK -->
 
-          <div class="ab-detail-body">
+          <main class="ab-detail-body">
 
-            <div class="ab-detail-top-grid">
+
+            <!-- ÜST ALAN -->
+
+            <section class="ab-detail-top-grid">
 
 
               <!-- GALERİ -->
@@ -311,9 +341,8 @@
                   <img
                     id="abDetailMainImg"
                     src="${galleryImages[0]}"
-                    alt="${formatVal(car.brand)} ${formatVal(car.model)}"
+                    alt="${title}"
                   >
-
 
                   <div class="ab-detail-img-counter">
 
@@ -321,7 +350,7 @@
                       1
                     </span>
 
-                    /
+                    <span>/</span>
 
                     <span id="abImgTotal">
                       ${galleryImages.length}
@@ -331,7 +360,7 @@
 
 
                   <div class="ab-detail-zoom-badge">
-                    🔍
+                    ⛶
                   </div>
 
                 </div>
@@ -341,73 +370,119 @@
                   galleryImages.length > 1
                     ? `
 
-                  <button
-                    type="button"
-                    class="ab-detail-nav-btn ab-prev"
-                    onclick="window.AB_Detail.prevImage(event)"
-                  >
-                    ❮
-                  </button>
+                    <button
+                      type="button"
+                      class="ab-detail-nav-btn ab-prev"
+                      onclick="window.AB_Detail.prevImage(event)"
+                    >
+                      ‹
+                    </button>
 
 
-                  <button
-                    type="button"
-                    class="ab-detail-nav-btn ab-next"
-                    onclick="window.AB_Detail.nextImage(event)"
-                  >
-                    ❯
-                  </button>
+                    <button
+                      type="button"
+                      class="ab-detail-nav-btn ab-next"
+                      onclick="window.AB_Detail.nextImage(event)"
+                    >
+                      ›
+                    </button>
 
 
-                  <div class="ab-detail-thumbs">
+                    <div class="ab-detail-thumbs">
 
-                    ${galleryImages
-                      .map(function (img, index) {
-                        return `
-                          <button
-                            type="button"
-                            class="ab-detail-thumb-btn ${
-                              index === 0 ? 'active' : ''
-                            }"
-                            onclick="window.AB_Detail.setGalleryIndex(${index})"
-                          >
-                            <img
-                              src="${img}"
-                              alt="Görsel ${index + 1}"
+                      ${galleryImages
+                        .map(function (img, index) {
+
+                          return `
+
+                            <button
+                              type="button"
+                              class="ab-detail-thumb-btn ${
+                                index === 0
+                                  ? 'active'
+                                  : ''
+                              }"
+                              onclick="window.AB_Detail.setGalleryIndex(${index})"
                             >
-                          </button>
-                        `;
-                      })
-                      .join('')}
 
-                  </div>
+                              <img
+                                src="${img}"
+                                alt="Araç görseli ${index + 1}"
+                              >
 
-                `
+                            </button>
+
+                          `;
+
+                        })
+                        .join('')}
+
+                    </div>
+
+                  `
                     : ''
                 }
 
               </div>
 
 
-              <!-- HIZLI BİLGİ -->
+              <!-- SAĞ BİLGİ -->
 
-              <div class="ab-detail-quick-info">
+              <aside class="ab-detail-quick-info">
+
 
                 <div class="ab-detail-title-group">
 
                   <span class="ab-detail-segment-tag">
-                    ${formatVal(car.seg)}
+                    ${escapeHTML(formatVal(car.seg))}
                   </span>
 
 
                   <h2>
-                    ${formatVal(car.brand)}
-                    ${formatVal(car.model)}
+                    ${title}
                   </h2>
 
 
                   <div class="ab-detail-price-tag">
                     ${formatPrice(car.price)}
+                  </div>
+
+                </div>
+
+
+                <!-- HIZLI BİLGİLER -->
+
+                <div class="ab-detail-mini-specs">
+
+                  <div>
+                    <span>Yıl</span>
+                    <strong>
+                      ${escapeHTML(formatVal(car.year))}
+                    </strong>
+                  </div>
+
+
+                  <div>
+                    <span>KM</span>
+                    <strong>
+                      ${formatKM(car.km)}
+                    </strong>
+                  </div>
+
+
+                  <div>
+                    <span>Yakıt</span>
+                    <strong>
+                      ${escapeHTML(formatVal(car.fuel))}
+                    </strong>
+                  </div>
+
+
+                  <div>
+                    <span>Vites</span>
+                    <strong>
+                      ${escapeHTML(formatVal(car.trans))}
+                    </strong>
                   </div>
 
                 </div>
@@ -430,21 +505,25 @@
                   </div>
 
 
+                  <div class="ab-detail-score-number">
+                    ${trustScore.formatted}
+                    <span>/10</span>
+                  </div>
+
+
                   <div class="ab-detail-score-bar-wrap">
 
                     <div
                       class="ab-detail-score-bar"
                       style="width:${trustScore.rawScore}%"
-                    >
-                      ${trustScore.formatted} / 10
-                    </div>
+                    ></div>
 
                   </div>
 
 
                   <small class="ab-detail-muted">
                     Araç yaşı, kilometre ve ekspertiz
-                    verilerine göre hesaplanan demo değerdir.
+                    verilerine göre oluşturulan demo skoru.
                   </small>
 
                 </div>
@@ -455,16 +534,19 @@
                 <div class="ab-detail-desktop-cta">
 
                   ${
-                    hasPhone
+                    phone
                       ? `
+
                         <a
-                          href="tel:${car.phone}"
+                          href="tel:${phone}"
                           class="ab-btn ab-btn-primary ab-btn-block"
                         >
-                          📞 İletişime Geç
+                          📞 Satıcıyla İletişime Geç
                         </a>
+
                       `
                       : `
+
                         <button
                           type="button"
                           class="ab-btn ab-btn-primary ab-btn-block"
@@ -472,19 +554,20 @@
                         >
                           💬 Satıcıya Mesaj Gönder
                         </button>
+
                       `
                   }
 
                 </div>
 
-              </div>
+              </aside>
 
-            </div>
+            </section>
 
 
             <!-- ARAÇ BİLGİLERİ -->
 
-            <div class="ab-detail-section">
+            <section class="ab-detail-section">
 
               <h3 class="ab-detail-section-title">
                 Araç Bilgileri
@@ -496,7 +579,7 @@
                 <div class="ab-spec-item">
                   <span class="ab-spec-label">Marka</span>
                   <span class="ab-spec-value">
-                    ${formatVal(car.brand)}
+                    ${brand}
                   </span>
                 </div>
 
@@ -504,7 +587,7 @@
                 <div class="ab-spec-item">
                   <span class="ab-spec-label">Model</span>
                   <span class="ab-spec-value">
-                    ${formatVal(car.model)}
+                    ${model}
                   </span>
                 </div>
 
@@ -512,7 +595,7 @@
                 <div class="ab-spec-item">
                   <span class="ab-spec-label">Yıl</span>
                   <span class="ab-spec-value">
-                    ${formatVal(car.year)}
+                    ${escapeHTML(formatVal(car.year))}
                   </span>
                 </div>
 
@@ -528,7 +611,7 @@
                 <div class="ab-spec-item">
                   <span class="ab-spec-label">Yakıt</span>
                   <span class="ab-spec-value">
-                    ${formatVal(car.fuel)}
+                    ${escapeHTML(formatVal(car.fuel))}
                   </span>
                 </div>
 
@@ -536,7 +619,7 @@
                 <div class="ab-spec-item">
                   <span class="ab-spec-label">Vites</span>
                   <span class="ab-spec-value">
-                    ${formatVal(car.trans)}
+                    ${escapeHTML(formatVal(car.trans))}
                   </span>
                 </div>
 
@@ -544,7 +627,7 @@
                 <div class="ab-spec-item">
                   <span class="ab-spec-label">Kasa</span>
                   <span class="ab-spec-value">
-                    ${formatVal(car.seg)}
+                    ${escapeHTML(formatVal(car.seg))}
                   </span>
                 </div>
 
@@ -561,6 +644,7 @@
                   car.tco !== undefined &&
                   car.tco !== null
                     ? `
+
                       <div class="ab-spec-item">
 
                         <span class="ab-spec-label">
@@ -568,17 +652,18 @@
                         </span>
 
                         <span class="ab-spec-value">
-                          ${formatPrice(car.tco)} / ay
+                          ${formatPrice(car.tco)}
                         </span>
 
                       </div>
+
                     `
                     : ''
                 }
 
               </div>
 
-            </div>
+            </section>
 
 
             <!-- EKSPERTİZ -->
@@ -586,7 +671,8 @@
             ${
               car.expert
                 ? `
-                  <div class="ab-detail-section">
+
+                  <section class="ab-detail-section">
 
                     <h3 class="ab-detail-section-title">
                       Ekspertiz Durumu
@@ -597,9 +683,10 @@
 
                       <div class="ab-expert-content">
 
-                        <span style="font-size:24px;">
+                        <div class="ab-expert-icon">
                           ✓
-                        </span>
+                        </div>
+
 
                         <div>
 
@@ -608,7 +695,7 @@
                           </strong>
 
                           <p>
-                            ${formatVal(car.expert)}
+                            ${escapeHTML(expertText)}
                           </p>
 
                         </div>
@@ -617,7 +704,8 @@
 
                     </div>
 
-                  </div>
+                  </section>
+
                 `
                 : ''
             }
@@ -628,7 +716,8 @@
             ${
               similarCars.length
                 ? `
-                  <div class="ab-detail-section">
+
+                  <section class="ab-detail-section">
 
                     <h3 class="ab-detail-section-title">
                       Benzer Araçlar
@@ -642,15 +731,18 @@
 
                           const image =
                             (
-                              similar.images &&
+                              Array.isArray(
+                                similar.images
+                              ) &&
                               similar.images[0]
                             ) ||
                             similar.img ||
                             PLACEHOLDER_IMG;
 
+
                           return `
 
-                            <div
+                            <article
                               class="ab-similar-card"
                               onclick="window.openDetail('${similar.id}')"
                             >
@@ -659,7 +751,11 @@
 
                                 <img
                                   src="${image}"
-                                  alt="${formatVal(similar.brand)} ${formatVal(similar.model)}"
+                                  alt="${escapeHTML(
+                                    formatVal(
+                                      similar.brand
+                                    )
+                                  )}"
                                 >
 
                               </div>
@@ -668,42 +764,66 @@
                               <div class="ab-similar-info">
 
                                 <h4>
-                                  ${formatVal(similar.brand)}
-                                  ${formatVal(similar.model)}
+                                  ${escapeHTML(
+                                    formatVal(
+                                      similar.brand
+                                    )
+                                  )}
+
+                                  ${escapeHTML(
+                                    formatVal(
+                                      similar.model
+                                    )
+                                  )}
                                 </h4>
 
 
                                 <div class="ab-similar-meta">
 
-                                  ${formatVal(similar.year)}
+                                  ${escapeHTML(
+                                    formatVal(
+                                      similar.year
+                                    )
+                                  )}
 
-                                  &bull;
+                                  <span>•</span>
 
-                                  ${formatKM(similar.km)}
+                                  ${formatKM(
+                                    similar.km
+                                  )}
 
                                 </div>
 
 
                                 <div class="ab-similar-price">
-                                  ${formatPrice(similar.price)}
+                                  ${formatPrice(
+                                    similar.price
+                                  )}
                                 </div>
 
                               </div>
 
-                            </div>
+                            </article>
 
                           `;
+
                         })
                         .join('')}
 
                     </div>
 
-                  </div>
+                  </section>
+
                 `
                 : ''
             }
 
-          </div>
+
+            <!-- ALT BOŞLUK -->
+
+            <div class="ab-detail-bottom-space"></div>
+
+          </main>
 
 
           <!-- MOBİL ALT BAR -->
@@ -724,16 +844,19 @@
 
 
             ${
-              hasPhone
+              phone
                 ? `
+
                   <a
-                    href="tel:${car.phone}"
+                    href="tel:${phone}"
                     class="ab-btn ab-btn-primary"
                   >
-                    İletişime Geç
+                    📞 İletişim
                   </a>
+
                 `
                 : `
+
                   <button
                     type="button"
                     class="ab-btn ab-btn-primary"
@@ -741,6 +864,7 @@
                   >
                     İletişim
                   </button>
+
                 `
             }
 
@@ -756,8 +880,6 @@
       <div
         class="ab-lightbox-overlay"
         id="abLightboxOverlay"
-        style="display:none;"
-        onclick="window.AB_Detail.closeLightbox(event)"
       >
 
         <button
@@ -765,7 +887,7 @@
           class="ab-lightbox-close"
           onclick="window.AB_Detail.closeLightbox(event)"
         >
-          &times;
+          ×
         </button>
 
 
@@ -777,7 +899,7 @@
           <img
             id="abLightboxImg"
             src=""
-            alt="Büyütülmüş Görsel"
+            alt="Büyük araç görseli"
           >
 
 
@@ -788,7 +910,7 @@
             </span>
 
             /
-
+            
             <span id="abLbTotal">
               ${galleryImages.length}
             </span>
@@ -799,12 +921,13 @@
           ${
             galleryImages.length > 1
               ? `
+
                 <button
                   type="button"
                   class="ab-lightbox-nav ab-lb-prev"
                   onclick="window.AB_Detail.navigateLightbox(-1)"
                 >
-                  ❮
+                  ‹
                 </button>
 
 
@@ -813,8 +936,9 @@
                   class="ab-lightbox-nav ab-lb-next"
                   onclick="window.AB_Detail.navigateLightbox(1)"
                 >
-                  ❯
+                  ›
                 </button>
+
               `
               : ''
           }
@@ -827,17 +951,21 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      GALERİ
-  ========================= */
+  ===================================================== */
 
   function updateGalleryDisplay() {
 
     const mainImg =
-      document.getElementById('abDetailMainImg');
+      document.getElementById(
+        'abDetailMainImg'
+      );
 
     const currentSpan =
-      document.getElementById('abImgCurrent');
+      document.getElementById(
+        'abImgCurrent'
+      );
 
     const thumbs =
       document.querySelectorAll(
@@ -849,18 +977,25 @@
       mainImg &&
       galleryImages[currentImageIndex]
     ) {
+
       mainImg.src =
         galleryImages[currentImageIndex];
+
     }
 
 
     if (currentSpan) {
+
       currentSpan.textContent =
         currentImageIndex + 1;
+
     }
 
 
-    thumbs.forEach(function (thumb, index) {
+    thumbs.forEach(function (
+      thumb,
+      index
+    ) {
 
       thumb.classList.toggle(
         'active',
@@ -872,78 +1007,9 @@
   }
 
 
-  /* =========================
-     KLAVYE
-  ========================= */
-
-  function attachGlobalEvents() {
-
-    if (globalEventsAttached) {
-      return;
-    }
-
-
-    document.addEventListener(
-      'keydown',
-      function (event) {
-
-        const container =
-          document.getElementById(
-            'car-detail-container'
-          );
-
-
-        if (
-          !container ||
-          container.style.display === 'none'
-        ) {
-          return;
-        }
-
-
-        if (event.key === 'Escape') {
-
-          if (isLightboxOpen) {
-            window.AB_Detail.closeLightbox();
-          } else {
-            window.AB_Detail.close();
-          }
-
-        }
-
-
-        if (event.key === 'ArrowLeft') {
-
-          if (isLightboxOpen) {
-            window.AB_Detail.navigateLightbox(-1);
-          } else {
-            window.AB_Detail.prevImage();
-          }
-
-        }
-
-
-        if (event.key === 'ArrowRight') {
-
-          if (isLightboxOpen) {
-            window.AB_Detail.navigateLightbox(1);
-          } else {
-            window.AB_Detail.nextImage();
-          }
-
-        }
-
-      }
-    );
-
-
-    globalEventsAttached = true;
-  }
-
-
-  /* =========================
-     MOBİL SWIPE
-  ========================= */
+  /* =====================================================
+     TOUCH
+  ===================================================== */
 
   function attachTouchEvents() {
 
@@ -952,10 +1018,12 @@
         'abGalleryContainer'
       );
 
-
     if (!gallery) {
       return;
     }
+
+
+    let startX = 0;
 
 
     gallery.addEventListener(
@@ -963,15 +1031,19 @@
       function (event) {
 
         if (
-          event.changedTouches &&
-          event.changedTouches[0]
+          event.touches &&
+          event.touches[0]
         ) {
-          touchStartX =
-            event.changedTouches[0].screenX;
+
+          startX =
+            event.touches[0].clientX;
+
         }
 
       },
-      { passive: true }
+      {
+        passive: true
+      }
     );
 
 
@@ -980,55 +1052,113 @@
       function (event) {
 
         if (
-          event.changedTouches &&
-          event.changedTouches[0]
+          !event.changedTouches ||
+          !event.changedTouches[0]
         ) {
-          touchEndX =
-            event.changedTouches[0].screenX;
+          return;
         }
 
-        handleSwipe();
+
+        const endX =
+          event.changedTouches[0].clientX;
+
+
+        const difference =
+          endX - startX;
+
+
+        if (Math.abs(difference) < 40) {
+          return;
+        }
+
+
+        if (difference < 0) {
+          window.AB_Detail.nextImage();
+        } else {
+          window.AB_Detail.prevImage();
+        }
 
       },
-      { passive: true }
+      {
+        passive: true
+      }
     );
 
   }
 
 
-  function handleSwipe() {
+  /* =====================================================
+     KLAVYE
+  ===================================================== */
 
-    const threshold = 40;
+  document.addEventListener(
+    'keydown',
+    function (event) {
+
+      const container =
+        document.getElementById(
+          'car-detail-container'
+        );
 
 
-    if (
-      touchEndX <
-      touchStartX - threshold
-    ) {
-      window.AB_Detail.nextImage();
+      if (
+        !container ||
+        container.style.display === 'none'
+      ) {
+        return;
+      }
+
+
+      if (event.key === 'Escape') {
+
+        if (isLightboxOpen) {
+          window.AB_Detail.closeLightbox();
+        } else {
+          window.AB_Detail.close();
+        }
+
+      }
+
+
+      if (
+        event.key === 'ArrowLeft'
+      ) {
+
+        if (isLightboxOpen) {
+          window.AB_Detail.navigateLightbox(-1);
+        } else {
+          window.AB_Detail.prevImage();
+        }
+
+      }
+
+
+      if (
+        event.key === 'ArrowRight'
+      ) {
+
+        if (isLightboxOpen) {
+          window.AB_Detail.navigateLightbox(1);
+        } else {
+          window.AB_Detail.nextImage();
+        }
+
+      }
+
     }
+  );
 
 
-    if (
-      touchEndX >
-      touchStartX + threshold
-    ) {
-      window.AB_Detail.prevImage();
-    }
-
-  }
-
-
-  /* =========================
-     ANA DETAY SİSTEMİ
-  ========================= */
+  /* =====================================================
+     DETAY SİSTEMİ
+  ===================================================== */
 
   window.AB_Detail = {
 
     open: function (carId) {
 
       console.log(
-        'AB_Detail.open çalıştı:',
+        'Araç detay açılıyor:',
         carId
       );
 
@@ -1039,33 +1169,37 @@
       ) {
 
         console.error(
-          'window.dummyCars bulunamadı.'
+          'dummyCars bulunamadı.'
         );
 
         return;
+
       }
 
 
       const car =
-        window.dummyCars.find(function (item) {
+        window.dummyCars.find(
+          function (item) {
 
-          return (
-            item &&
-            String(item.id) ===
-              String(carId)
-          );
+            return (
+              item &&
+              String(item.id) ===
+                String(carId)
+            );
 
-        });
+          }
+        );
 
 
       if (!car) {
 
         console.error(
-          'Araç bulunamadı. ID:',
+          'Araç bulunamadı:',
           carId
         );
 
         return;
+
       }
 
 
@@ -1085,6 +1219,7 @@
         );
 
         return;
+
       }
 
 
@@ -1094,34 +1229,79 @@
           generateDetailHTML(car);
 
 
-        container.style.display =
-          'block';
+        /*
+          DETAY KONTEYNERİNİ CSS'TEN
+          BAĞIMSIZ OLARAK TAM EKRAN YAP
+        */
 
+        container.style.setProperty(
+          'display',
+          'block',
+          'important'
+        );
 
-        container.style.position =
-          'relative';
+        container.style.setProperty(
+          'position',
+          'fixed',
+          'important'
+        );
 
+        container.style.setProperty(
+          'inset',
+          '0',
+          'important'
+        );
 
-        container.style.zIndex =
-          '99999';
+        container.style.setProperty(
+          'width',
+          '100%',
+          'important'
+        );
+
+        container.style.setProperty(
+          'height',
+          '100%',
+          'important'
+        );
+
+        container.style.setProperty(
+          'z-index',
+          '999999',
+          'important'
+        );
+
+        container.style.setProperty(
+          'background',
+          '#f5f6f8',
+          'important'
+        );
+
+        container.style.setProperty(
+          'overflow',
+          'auto',
+          'important'
+        );
 
 
         document.body.style.overflow =
           'hidden';
 
 
-        attachGlobalEvents();
+        isLightboxOpen = false;
+
+
         attachTouchEvents();
 
 
         window.scrollTo({
           top: 0,
+          left: 0,
           behavior: 'instant'
         });
 
 
         console.log(
-          'Araç detayı başarıyla açıldı:',
+          'Detay ekranı açıldı:',
           car.brand,
           car.model
         );
@@ -1129,7 +1309,7 @@
       } catch (error) {
 
         console.error(
-          'Araç detay ekranı oluşturulurken hata:',
+          'Detay oluşturma hatası:',
           error
         );
 
@@ -1138,26 +1318,24 @@
 
           <div
             style="
-              position:fixed;
-              inset:0;
-              z-index:999999;
+              min-height:100vh;
               background:#fff;
-              overflow:auto;
               padding:30px;
               font-family:Arial,sans-serif;
+              box-sizing:border-box;
             "
           >
 
             <button
               onclick="window.AB_Detail.close()"
               style="
-                padding:10px 18px;
-                border:0;
-                border-radius:8px;
                 background:#e30613;
                 color:white;
+                border:0;
+                padding:12px 20px;
+                border-radius:10px;
+                font-weight:700;
                 cursor:pointer;
-                margin-bottom:20px;
               "
             >
               ← Geri
@@ -1165,8 +1343,13 @@
 
 
             <h1>
-              ${formatVal(car.brand)}
-              ${formatVal(car.model)}
+              ${escapeHTML(
+                formatVal(car.brand)
+              )}
+
+              ${escapeHTML(
+                formatVal(car.model)
+              )}
             </h1>
 
 
@@ -1176,30 +1359,43 @@
 
 
             <p>
-              ${formatVal(car.year)}
-              •
-              ${formatKM(car.km)}
-              •
-              ${formatVal(car.fuel)}
-              •
-              ${formatVal(car.trans)}
-            </p>
-
-
-            <hr>
-
-
-            <p>
-              Araç detay sistemi çalıştı fakat
-              detay tasarımında bir hata oluştu.
+              Detay ekranı açıldı fakat
+              tasarım oluşturulurken bir hata oluştu.
             </p>
 
           </div>
 
         `;
 
-        container.style.display =
-          'block';
+        container.style.setProperty(
+          'display',
+          'block',
+          'important'
+        );
+
+        container.style.setProperty(
+          'position',
+          'fixed',
+          'important'
+        );
+
+        container.style.setProperty(
+          'inset',
+          '0',
+          'important'
+        );
+
+        container.style.setProperty(
+          'z-index',
+          '999999',
+          'important'
+        );
+
+        container.style.setProperty(
+          'overflow',
+          'auto',
+          'important'
+        );
 
         document.body.style.overflow =
           'hidden';
@@ -1219,8 +1415,11 @@
 
       if (container) {
 
-        container.style.display =
-          'none';
+        container.style.setProperty(
+          'display',
+          'none',
+          'important'
+        );
 
         container.innerHTML = '';
 
@@ -1232,7 +1431,8 @@
 
 
       currentCar = null;
-
+      galleryImages = [];
+      currentImageIndex = 0;
       isLightboxOpen = false;
 
     },
@@ -1262,11 +1462,15 @@
         typeof event.stopPropagation ===
           'function'
       ) {
+
         event.stopPropagation();
+
       }
 
 
-      if (galleryImages.length <= 1) {
+      if (
+        galleryImages.length <= 1
+      ) {
         return;
       }
 
@@ -1292,11 +1496,15 @@
         typeof event.stopPropagation ===
           'function'
       ) {
+
         event.stopPropagation();
+
       }
 
 
-      if (galleryImages.length <= 1) {
+      if (
+        galleryImages.length <= 1
+      ) {
         return;
       }
 
@@ -1326,7 +1534,6 @@
       lightboxIndex =
         currentImageIndex;
 
-
       isLightboxOpen = true;
 
 
@@ -1351,28 +1558,50 @@
         );
 
 
-      if (overlay && image) {
-
-        image.src =
-          galleryImages[lightboxIndex];
-
-
-        if (current) {
-          current.textContent =
-            lightboxIndex + 1;
-        }
-
-
-        if (total) {
-          total.textContent =
-            galleryImages.length;
-        }
-
-
-        overlay.style.display =
-          'flex';
-
+      if (!overlay || !image) {
+        return;
       }
+
+
+      image.src =
+        galleryImages[lightboxIndex];
+
+
+      if (current) {
+        current.textContent =
+          lightboxIndex + 1;
+      }
+
+
+      if (total) {
+        total.textContent =
+          galleryImages.length;
+      }
+
+
+      overlay.style.setProperty(
+        'display',
+        'flex',
+        'important'
+      );
+
+      overlay.style.setProperty(
+        'position',
+        'fixed',
+        'important'
+      );
+
+      overlay.style.setProperty(
+        'inset',
+        '0',
+        'important'
+      );
+
+      overlay.style.setProperty(
+        'z-index',
+        '1000000',
+        'important'
+      );
 
     },
 
@@ -1384,7 +1613,9 @@
         typeof event.stopPropagation ===
           'function'
       ) {
+
         event.stopPropagation();
+
       }
 
 
@@ -1396,8 +1627,11 @@
 
       if (overlay) {
 
-        overlay.style.display =
-          'none';
+        overlay.style.setProperty(
+          'display',
+          'none',
+          'important'
+        );
 
       }
 
@@ -1407,7 +1641,9 @@
     },
 
 
-    navigateLightbox: function (direction) {
+    navigateLightbox: function (
+      direction
+    ) {
 
       if (
         galleryImages.length <= 1
@@ -1437,27 +1673,28 @@
 
 
       if (image) {
+
         image.src =
-          galleryImages[lightboxIndex];
+          galleryImages[
+            lightboxIndex
+          ];
+
       }
 
 
       if (current) {
+
         current.textContent =
           lightboxIndex + 1;
+
       }
-
-
-      currentImageIndex =
-        lightboxIndex;
-
-
-      updateGalleryDisplay();
 
     },
 
 
-    toggleFavorite: function (carId) {
+    toggleFavorite: function (
+      carId
+    ) {
 
       if (
         typeof window.toggleFav ===
@@ -1469,11 +1706,12 @@
         );
 
         return;
+
       }
 
 
       alert(
-        'Araç favorilere eklendi / çıkarıldı.'
+        'Favori sistemi hazır değil.'
       );
 
     },
@@ -1499,24 +1737,27 @@
           'tel:' +
           currentCar.phone;
 
-      } else {
-
-        alert(
-          'Bu araç için iletişim bilgisi belirtilmemiştir.'
-        );
+        return;
 
       }
+
+
+      alert(
+        'Bu araç için iletişim bilgisi bulunmuyor.'
+      );
 
     }
 
   };
 
 
-  /* =========================
-     GLOBAL OPENDETAIL
-  ========================= */
+  /* =====================================================
+     GLOBAL OPEN DETAIL
+  ===================================================== */
 
-  window.openDetail = function (carId) {
+  window.openDetail = function (
+    carId
+  ) {
 
     if (
       window.AB_Detail &&
@@ -1524,7 +1765,9 @@
         'function'
     ) {
 
-      window.AB_Detail.open(carId);
+      window.AB_Detail.open(
+        carId
+      );
 
     } else {
 
