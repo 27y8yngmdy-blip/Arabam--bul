@@ -27,7 +27,7 @@
     <!-- AKILLI ARAMA -->
     <div class="search-container">
       <div class="search-bar">
-        <span style="margin-right: 6px; font-size: 14px; opacity: 0.6;">🔍</span>
+        <span style="margin-right:6px;font-size:14px;opacity:.6;">🔍</span>
 
         <input
           type="text"
@@ -69,14 +69,14 @@
 
   <button data-page="find" onclick="go('find')">
     <svg viewBox="0 0 24 24">
-      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+      <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
     </svg>
     Sihirbaz
   </button>
 
   <button data-page="browse" onclick="go('browse')">
     <svg viewBox="0 0 24 24">
-      <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5S16.67 13 17.5 13s1.5.67 1.5 1.5S18.33 16 17.5 16zM5 11l1.5-4.5h11L19 11H5z"/>
+      <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5S16.67 13 17.5 13s1.5.67 1.5 1.5S18.33 16 18.33 16zM5 11l1.5-4.5h11L19 11H5z"/>
     </svg>
     Araçlar
   </button>
@@ -180,7 +180,7 @@
     </div>
 
 
-    <h2 style="font-weight:900; margin-bottom:16px;">
+    <h2 style="font-weight:900;margin-bottom:16px;">
       Öne Çıkan Araçlar
     </h2>
 
@@ -322,29 +322,18 @@
 
     <div class="layout">
 
-      <aside
-        class="filters"
-        id="filterPanel"
-      >
+      <aside class="filters" id="filterPanel">
 
         <div class="filter-header">
 
-          <span
-            style="
-              font-weight:900;
-              font-size:15px;
-            "
-          >
+          <span style="font-weight:900;font-size:15px;">
             Detaylı Filtrele
           </span>
 
           <button
             class="btn-secondary"
             onclick="resetFilters()"
-            style="
-              padding:4px 10px;
-              font-size:11px;
-            "
+            style="padding:4px 10px;font-size:11px;"
           >
             Sıfırla
           </button>
@@ -370,10 +359,7 @@
 
           <label>Marka</label>
 
-          <select
-            id="fBrand"
-            onchange="renderBrowse()"
-          >
+          <select id="fBrand" onchange="renderBrowse()">
             <option value="">Tüm Markalar</option>
             <option>BMW</option>
             <option>Mercedes-Benz</option>
@@ -394,10 +380,7 @@
 
           <label>Kasa Tipi</label>
 
-          <select
-            id="fBody"
-            onchange="renderBrowse()"
-          >
+          <select id="fBody" onchange="renderBrowse()">
             <option value="">Tümü</option>
             <option>Sedan</option>
             <option>SUV</option>
@@ -476,10 +459,7 @@
 
           <label>Yakıt Tipi</label>
 
-          <select
-            id="fFuel"
-            onchange="renderBrowse()"
-          >
+          <select id="fFuel" onchange="renderBrowse()">
             <option value="">Tümü</option>
             <option>Benzin</option>
             <option>Dizel</option>
@@ -494,10 +474,7 @@
 
           <label>Vites Tipi</label>
 
-          <select
-            id="fTrans"
-            onchange="renderBrowse()"
-          >
+          <select id="fTrans" onchange="renderBrowse()">
             <option value="">Tümü</option>
             <option>Otomatik</option>
             <option>Manuel</option>
@@ -540,30 +517,15 @@
               font-size:13px;
             "
           >
-            <option value="default">
-              Varsayılan Sıralama
-            </option>
-
-            <option value="priceAsc">
-              Fiyat: Düşükten Yükseğe
-            </option>
-
-            <option value="priceDesc">
-              Fiyat: Yüksekten Düşüğe
-            </option>
-
-            <option value="yearDesc">
-              Model Yılı: En Yeni
-            </option>
-
+            <option value="default">Varsayılan Sıralama</option>
+            <option value="priceAsc">Fiyat: Düşükten Yükseğe</option>
+            <option value="priceDesc">Fiyat: Yüksekten Düşüğe</option>
+            <option value="yearDesc">Model Yılı: En Yeni</option>
           </select>
 
         </div>
 
-        <div
-          class="vehicle-grid"
-          id="browseGrid"
-        ></div>
+        <div class="vehicle-grid" id="browseGrid"></div>
 
       </div>
 
@@ -579,10 +541,7 @@
       Favori Araçlarınız
     </h2>
 
-    <div
-      class="vehicle-grid"
-      id="favGrid"
-    ></div>
+    <div class="vehicle-grid" id="favGrid"></div>
 
   </section>
 
@@ -623,21 +582,11 @@
               📷
             </div>
 
-            <div
-              style="
-                font-size:13px;
-                font-weight:700;
-              "
-            >
+            <div style="font-size:13px;font-weight:700;">
               Fotoğraf Seçin veya Sürükleyin
             </div>
 
-            <div
-              style="
-                font-size:11px;
-                color:var(--muted);
-              "
-            >
+            <div style="font-size:11px;color:var(--muted);">
               PNG, JPG, WEBP kabul edilir.
             </div>
 
@@ -652,10 +601,7 @@
             onchange="handleImageUpload(event)"
           >
 
-          <div
-            class="preview-grid"
-            id="imgPreviewGrid"
-          ></div>
+          <div class="preview-grid" id="imgPreviewGrid"></div>
 
         </div>
 
@@ -674,7 +620,6 @@
             >
 
           </div>
-
 
           <div class="form-group">
 
@@ -707,7 +652,6 @@
 
           </div>
 
-
           <div class="form-group">
 
             <label>Model Yılı</label>
@@ -730,10 +674,7 @@
 
             <label>Kasa Tipi</label>
 
-            <select
-              id="addBody"
-              required
-            >
+            <select id="addBody" required>
               <option value="Sedan">Sedan</option>
               <option value="SUV">SUV</option>
               <option value="Hatchback">Hatchback</option>
@@ -742,15 +683,11 @@
 
           </div>
 
-
           <div class="form-group">
 
             <label>Yakıt Tipi</label>
 
-            <select
-              id="addFuel"
-              required
-            >
+            <select id="addFuel" required>
               <option value="Benzin">Benzin</option>
               <option value="Dizel">Dizel</option>
               <option value="Elektrik">Elektrik</option>
@@ -768,16 +705,12 @@
 
             <label>Vites Tipi</label>
 
-            <select
-              id="addTrans"
-              required
-            >
+            <select id="addTrans" required>
               <option value="Otomatik">Otomatik</option>
               <option value="Manuel">Manuel</option>
             </select>
 
           </div>
-
 
           <div class="form-group">
 
@@ -843,7 +776,6 @@
 
       </div>
 
-
       <div class="form-group">
 
         <label>Parola</label>
@@ -854,7 +786,6 @@
         >
 
       </div>
-
 
       <button
         class="btn-primary"
@@ -880,21 +811,16 @@
 </button>
 
 
-<div
-  class="chat-window"
-  id="chatWindow"
->
+<div class="chat-window" id="chatWindow">
 
   <div class="chat-header">
 
     <div style="display:flex;align-items:center;">
-
       <span>ARABAMI BUL Asistan</span>
 
       <span class="ai-badge">
         Yapay Zeka
       </span>
-
     </div>
 
     <button
@@ -913,10 +839,7 @@
   </div>
 
 
-  <div
-    class="chat-body"
-    id="chatBody"
-  >
+  <div class="chat-body" id="chatBody">
 
     <div class="chat-msg bot">
       Merhaba! Ben ARABAMI BUL yapay zeka asistanıyım.
@@ -951,10 +874,7 @@
 
 
 <!-- YENİ ARAÇ DETAY SİSTEMİ -->
-<div
-  id="car-detail-container"
-  style="display:none;"
-></div>
+<div id="car-detail-container"></div>
 
 
 <!-- FOOTER -->
@@ -979,21 +899,10 @@
 
       <h4>Platform</h4>
 
-      <a href="#" onclick="go('home');return false;">
-        Ana Sayfa
-      </a>
-
-      <a href="#" onclick="go('find');return false;">
-        Bana Araba Bul
-      </a>
-
-      <a href="#" onclick="go('browse');return false;">
-        Araç Listesi
-      </a>
-
-      <a href="#" onclick="go('favorites');return false;">
-        Favorilerim
-      </a>
+      <a href="#" onclick="go('home');return false;">Ana Sayfa</a>
+      <a href="#" onclick="go('find');return false;">Bana Araba Bul</a>
+      <a href="#" onclick="go('browse');return false;">Araç Listesi</a>
+      <a href="#" onclick="go('favorites');return false;">Favorilerim</a>
 
     </div>
 
@@ -1002,17 +911,9 @@
 
       <h4>Hızlı Erişim</h4>
 
-      <a href="#" onclick="go('sell');return false;">
-        İlan Ver
-      </a>
-
-      <a href="#" onclick="toggleChat();return false;">
-        Canlı Destek
-      </a>
-
-      <a href="#" onclick="go('account');return false;">
-        Giriş Yap
-      </a>
+      <a href="#" onclick="go('sell');return false;">İlan Ver</a>
+      <a href="#" onclick="toggleChat();return false;">Canlı Destek</a>
+      <a href="#" onclick="go('account');return false;">Giriş Yap</a>
 
     </div>
 
