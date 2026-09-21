@@ -1,9 +1,33 @@
 /* ==========================================================================
-   js/listing.js - İlan Verme Modülü
+   js/listing.js - Gelişmiş İlan Verme Modülü (Multi-Step & Details)
    ========================================================================== */
 
-// Fotoğraf yükleme ve önizleme dizisi
 let uploadedImages = [];
+
+/**
+ * Adım Değiştirme Fonksiyonu (Multi-Step Form İçin)
+ */
+function goToSellStep(stepNumber) {
+    // Tüm adımları gizle
+    for (let i = 1; i <= 4; i++) {
+        const stepEl = document.getElementById(`sellStep${i}`);
+        const nodeEl = document.getElementById(`stepNode${i}`);
+        if (stepEl) stepEl.classList.remove('active');
+        if (nodeEl) nodeEl.classList.remove('active');
+    }
+
+    // Aktif adımı göster
+    const activeStep = document.getElementById(`sellStep${stepNumber}`);
+    const activeNode = document.getElementById(`stepNode${stepNumber}`);
+    if (activeStep) activeStep.classList.add('active');
+    if (activeNode) activeNode.classList.add('active');
+
+    // İlerleme Çubuğunu Güncelle
+    const fillEl = document.getElementById('sellStepFill');
+    if (fillEl) {
+        fillEl.style.width = `${stepNumber * 25}%`;
+    }
+}
 
 /**
  * Fotoğraf Yükleme İşleyicisi
@@ -22,30 +46,26 @@ function handleImageUpload(event) {
             const imgData = e.target.result;
             uploadedImages.push(imgData);
 
-            // Önizleme kartı oluştur
             const card = document.createElement('div');
-            card.className = 'preview-card';
             card.style.cssText = `
                 position: relative;
-                width: 80px;
-                height: 80px;
+                width: 90px;
+                height: 90px;
                 border-radius: 8px;
                 overflow: hidden;
-                border: 1px solid var(--line, #e2e8f0);
+                border: 1px solid #cbd5e1;
                 display: inline-block;
                 margin-right: 8px;
-                margin-top: 8px;
+                margin-top: 10px;
             `;
 
             card.innerHTML = `
                 <img src="${imgData}" style="width:100%; height:100%; object-fit:cover;">
                 <button type="button" onclick="removeImage(${uploadedImages.length - 1}, this)" 
-                    style="position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.6); color:#fff; border:none; border-radius:50%; width:20px; height:20px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center;">✕</button>
+                    style="position:absolute; top:3px; right:3px; background:rgba(0,0,0,0.7); color:#fff; border:none; border-radius:50%; width:22px; height:22px; cursor:pointer; font-size:12px; display:flex; align-items:center; justify-content:center;">✕</button>
             `;
 
-            if (previewGrid) {
-                previewGrid.appendChild(card);
-            }
+            if (previewGrid) previewGrid.appendChild(card);
         };
         reader.readAsDataURL(file);
     });
@@ -61,28 +81,27 @@ function removeImage(index, btnElement) {
 }
 
 /**
- * Yeni İlan Gönderme (Form Submit)
+ * Formu Tamamlama & İlanı Kaydetme
  */
 function submitNewCar(event) {
     event.preventDefault();
 
-    // Form Elemanlarından Değerleri Al
+    // Seçilen Donanımları Topla
+    const selectedFeatures = [];
+    document.querySelectorAll('input[name="feature"]:checked').forEach(cb => {
+        selectedFeatures.push(cb.value);
+    });
+
     const brand = document.getElementById('addBrand')?.value.trim();
     const model = document.getElementById('addModel')?.value.trim();
     const price = document.getElementById('addPrice')?.value;
     const year = document.getElementById('addYear')?.value;
-    const body = document.getElementById('addBody')?.value;
-    const fuel = document.getElementById('addFuel')?.value;
-    const trans = document.getElementById('addTrans')?.value;
-    const km = document.getElementById('addKm')?.value;
-    const desc = document.getElementById('addDesc')?.value.trim();
 
     if (!brand || !model || !price || !year) {
-        alert("Lütfen gerekli alanları doldurunuz!");
+        alert("Lütfen marka, model, fiyat ve yıl bilgilerini eksiksiz doldurunuz!");
         return;
     }
 
-    // Yeni Araç Objesi
     const newCar = {
         id: Date.now(),
         brand: brand,
@@ -90,41 +109,46 @@ function submitNewCar(event) {
         title: `${year} ${brand} ${model}`,
         price: Number(price),
         year: Number(year),
-        body: body,
-        fuel: fuel,
-        transmission: trans,
-        km: Number(km),
-        description: desc,
+        km: Number(document.getElementById('addKm')?.value) || 0,
+        color: document.getElementById('addColor')?.value.trim() || 'Belirtilmemiş',
+        body: document.getElementById('addBody')?.value || 'Sedan',
+        fuel: document.getElementById('addFuel')?.value || 'Benzin',
+        transmission: document.getElementById('addTrans')?.value || 'Otomatik',
+        features: selectedFeatures,
+        damageStatus: document.getElementById('addDamage')?.value || 'Hatasız',
+        tramer: Number(document.getElementById('addTramer')?.value) || 0,
+        description: document.getElementById('addDesc')?.value.trim() || '',
         image: uploadedImages.length > 0 ? uploadedImages[0] : 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800',
         images: uploadedImages.length > 0 ? uploadedImages : ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800'],
         date: new Date().toLocaleDateString('tr-TR')
     };
 
-    // Global araç listesine ekle (varsa)
+    // Global Dizilere Ekle
     if (typeof cars !== 'undefined' && Array.isArray(cars)) {
         cars.unshift(newCar);
     } else if (window.cars && Array.isArray(window.cars)) {
         window.cars.unshift(newCar);
     }
 
-    // LocalStorage'a Kaydet
+    // LocalStorage Kaydet
     try {
         let savedCars = JSON.parse(localStorage.getItem('my_listings') || '[]');
         savedCars.unshift(newCar);
         localStorage.setItem('my_listings', JSON.stringify(savedCars));
     } catch (e) {
-        console.error("LocalStorage kaydı başarısız:", e);
+        console.error("LocalStorage hatası:", e);
     }
 
-    alert("🎉 İlanınız başarıyla yayınlandı!");
+    alert("🎉 İlanınız detaylı donanım ve ekspertiz bilgileriyle yayınlandı!");
 
-    // Formu Sıfırla
+    // Formu Sıfırla ve Adım 1'e Dön
     event.target.reset();
     uploadedImages = [];
     const previewGrid = document.getElementById('imgPreviewGrid');
     if (previewGrid) previewGrid.innerHTML = '';
+    goToSellStep(1);
 
-    // Ana sayfaya veya araç listesine yönlendir
+    // Listeleme sayfasına yönlendir
     if (typeof go === 'function') {
         go('browse');
     }
