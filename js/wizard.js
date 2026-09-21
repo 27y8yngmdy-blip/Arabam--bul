@@ -2,7 +2,7 @@
   "use strict";
 
   // =========================================================
-  // ARABAMI BUL — WIZARD V2
+  // ARABAMI BUL — WIZARD V3
   // app.js -> window.dummyCars ile çalışır
   // =========================================================
 
@@ -11,7 +11,13 @@
   let currentStep = 1;
 
   const wizardState = {
-    budget: 1500000,
+    budget: {
+      type: "range",
+      min: 1000000,
+      max: 1500000,
+      label: "1.000.000 – 1.500.000 TL"
+    },
+
     usage: [],
     fuel: [],
     transmission: null,
@@ -30,7 +36,7 @@
       step: 1,
       title: "Bütçeniz nedir?",
       subtitle:
-        "Satın almayı düşündüğünüz maksimum araç fiyatını seçin.",
+        "Araç için ayırdığınız bütçe aralığını seçin.",
       type: "budget"
     },
 
@@ -230,7 +236,7 @@
 
 
   // =========================================================
-  // ELEMENTLER
+  // ELEMENT
   // =========================================================
 
   function $(id) {
@@ -273,7 +279,6 @@
     sub.textContent =
       question.subtitle;
 
-
     progress.style.width =
       `${(currentStep / TOTAL_STEPS) * 100}%`;
 
@@ -288,16 +293,15 @@
 
       prevBtn.style.visibility =
         "visible";
-
     }
 
 
     options.innerHTML = "";
 
 
-    // ---------------------------------------------------------
+    // =======================================================
     // BÜTÇE
-    // ---------------------------------------------------------
+    // =======================================================
 
     if (question.type === "budget") {
 
@@ -307,9 +311,9 @@
     }
 
 
-    // ---------------------------------------------------------
+    // =======================================================
     // DİĞER SEÇENEKLER
-    // ---------------------------------------------------------
+    // =======================================================
 
     question.options.forEach(option => {
 
@@ -378,77 +382,484 @@
 
 
   // =========================================================
-  // BÜTÇE
+  // BÜTÇE SEÇENEKLERİ
+  // =========================================================
+
+  const budgetRanges = [
+
+    {
+      min: 1000000,
+      max: 1500000,
+      label: "1.000.000 – 1.500.000 TL"
+    },
+
+    {
+      min: 1500000,
+      max: 2000000,
+      label: "1.500.000 – 2.000.000 TL"
+    },
+
+    {
+      min: 2000000,
+      max: 2500000,
+      label: "2.000.000 – 2.500.000 TL"
+    },
+
+    {
+      min: 2500000,
+      max: 3000000,
+      label: "2.500.000 – 3.000.000 TL"
+    },
+
+    {
+      min: 3000000,
+      max: 4000000,
+      label: "3.000.000 – 4.000.000 TL"
+    },
+
+    {
+      min: 4000000,
+      max: Infinity,
+      label: "4.000.000 TL ve üzeri"
+    }
+
+  ];
+
+
+  // =========================================================
+  // BÜTÇE RENDER
   // =========================================================
 
   function renderBudget(container) {
 
     container.innerHTML = `
 
-      <div class="wizard-budget">
+      <div
+        class="wizard-budget-options"
+        style="
+          display:grid;
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          gap:12px;
+          width:100%;
+        "
+      >
 
-        <div class="budget-value">
-          ${formatPrice(wizardState.budget)}
-        </div>
+        ${budgetRanges
+          .map((range, index) => {
 
-        <input
-          type="range"
-          id="wizardBudget"
-          min="500000"
-          max="5000000"
-          step="50000"
-          value="${wizardState.budget}"
+            const selected =
+              wizardState.budget &&
+              wizardState.budget.type === "range" &&
+              wizardState.budget.min === range.min &&
+              wizardState.budget.max === range.max;
+
+
+            return `
+
+              <button
+                type="button"
+                class="wizard-option budget-range-option ${
+                  selected ? "selected" : ""
+                }"
+                data-budget-index="${index}"
+              >
+
+                <div class="wizard-option-icon">
+                  💰
+                </div>
+
+                <div class="wizard-option-content">
+
+                  <strong>
+                    ${range.label}
+                  </strong>
+
+                  <span>
+                    ${index === 0
+                      ? "Ekonomik bütçe"
+                      : index === 1
+                      ? "Orta bütçe"
+                      : index === 2
+                      ? "Orta-üst bütçe"
+                      : index === 3
+                      ? "Geniş seçenek"
+                      : index === 4
+                      ? "Üst segment"
+                      : "4 milyon TL ve üzeri"
+                    }
+                  </span>
+
+                </div>
+
+                <div class="wizard-check">
+                  ${selected ? "✓" : ""}
+                </div>
+
+              </button>
+
+            `;
+
+          })
+          .join("")}
+
+
+        <button
+          type="button"
+          class="wizard-option budget-custom-option ${
+            wizardState.budget &&
+            wizardState.budget.type === "custom"
+              ? "selected"
+              : ""
+          }"
+          id="customBudgetButton"
         >
 
-        <div class="budget-labels">
+          <div class="wizard-option-icon">
+            ✏️
+          </div>
 
-          <span>500.000 TL</span>
+          <div class="wizard-option-content">
 
-          <span>5.000.000 TL</span>
+            <strong>
+              Kendi bütçemi girmek istiyorum
+            </strong>
+
+            <span>
+              Minimum ve maksimum bütçenizi kendiniz belirleyin.
+            </span>
+
+          </div>
+
+          <div class="wizard-check">
+            ${
+              wizardState.budget &&
+              wizardState.budget.type === "custom"
+                ? "✓"
+                : ""
+            }
+          </div>
+
+        </button>
+
+      </div>
+
+
+      <div
+        id="customBudgetBox"
+        style="
+          display:${
+            wizardState.budget &&
+            wizardState.budget.type === "custom"
+              ? "block"
+              : "none"
+          };
+          margin-top:16px;
+          padding:18px;
+          border:1px solid var(--line);
+          border-radius:16px;
+          background:#fff;
+        "
+      >
+
+        <div
+          style="
+            font-size:13px;
+            font-weight:800;
+            margin-bottom:12px;
+          "
+        >
+          Bütçenizi kendiniz belirleyin
+        </div>
+
+
+        <div
+          style="
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:12px;
+          "
+        >
+
+          <div>
+
+            <label
+              style="
+                display:block;
+                font-size:12px;
+                font-weight:800;
+                margin-bottom:6px;
+              "
+            >
+              Minimum bütçe
+            </label>
+
+            <input
+              type="number"
+              id="customBudgetMin"
+              min="1"
+              step="50000"
+              placeholder="1.500.000"
+              value="${
+                wizardState.budget &&
+                wizardState.budget.type === "custom"
+                  ? wizardState.budget.min
+                  : ""
+              }"
+              style="
+                width:100%;
+                padding:12px;
+                border:1px solid var(--line);
+                border-radius:10px;
+                font-size:14px;
+                box-sizing:border-box;
+              "
+            >
+
+          </div>
+
+
+          <div>
+
+            <label
+              style="
+                display:block;
+                font-size:12px;
+                font-weight:800;
+                margin-bottom:6px;
+              "
+            >
+              Maksimum bütçe
+            </label>
+
+            <input
+              type="number"
+              id="customBudgetMax"
+              min="1"
+              step="50000"
+              placeholder="2.200.000"
+              value="${
+                wizardState.budget &&
+                wizardState.budget.type === "custom"
+                  ? wizardState.budget.max
+                  : ""
+              }"
+              style="
+                width:100%;
+                padding:12px;
+                border:1px solid var(--line);
+                border-radius:10px;
+                font-size:14px;
+                box-sizing:border-box;
+              "
+            >
+
+          </div>
 
         </div>
 
-        <p class="budget-info">
-          Bu tutar araç için ayırabileceğiniz maksimum bütçedir.
-        </p>
+
+        <div
+          id="customBudgetPreview"
+          style="
+            margin-top:12px;
+            font-size:12px;
+            color:var(--muted);
+          "
+        >
+          Örnek: 1.500.000 TL – 2.200.000 TL
+        </div>
 
       </div>
 
     `;
 
 
-    const slider =
-      $("wizardBudget");
+    // =======================================================
+    // HAZIR BÜTÇE BUTONLARI
+    // =======================================================
+
+    container
+      .querySelectorAll("[data-budget-index]")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            const index =
+              Number(
+                button.dataset.budgetIndex
+              );
+
+            const range =
+              budgetRanges[index];
 
 
-    if (!slider) return;
+            wizardState.budget = {
+
+              type: "range",
+
+              min: range.min,
+
+              max: range.max,
+
+              label: range.label
+
+            };
 
 
-    slider.addEventListener(
-      "input",
-      () => {
+            renderWizard();
 
-        wizardState.budget =
-          Number(slider.value);
+          }
+        );
 
-
-        const value =
-          container.querySelector(
-            ".budget-value"
-          );
+      });
 
 
-        if (value) {
+    // =======================================================
+    // ÖZEL BÜTÇE BUTONU
+    // =======================================================
 
-          value.textContent =
-            formatPrice(
-              wizardState.budget
-            );
+    const customButton =
+      $("customBudgetButton");
+
+
+    if (customButton) {
+
+      customButton.addEventListener(
+        "click",
+        () => {
+
+          const current =
+            wizardState.budget;
+
+
+          wizardState.budget = {
+
+            type: "custom",
+
+            min:
+              current &&
+              current.type === "custom"
+                ? current.min
+                : 1500000,
+
+            max:
+              current &&
+              current.type === "custom"
+                ? current.max
+                : 2200000,
+
+            label:
+              current &&
+              current.type === "custom"
+                ? current.label
+                : "1.500.000 – 2.200.000 TL"
+
+          };
+
+
+          renderWizard();
+
+
+          setTimeout(() => {
+
+            const minInput =
+              $("customBudgetMin");
+
+            if (minInput) {
+              minInput.focus();
+            }
+
+          }, 50);
+
+        }
+      );
+
+    }
+
+
+    // =======================================================
+    // ÖZEL BÜTÇE INPUTLARI
+    // =======================================================
+
+    const minInput =
+      $("customBudgetMin");
+
+    const maxInput =
+      $("customBudgetMax");
+
+    const preview =
+      $("customBudgetPreview");
+
+
+    function updateCustomBudget() {
+
+      if (
+        !minInput ||
+        !maxInput
+      ) {
+        return;
+      }
+
+
+      const min =
+        Number(minInput.value);
+
+      const max =
+        Number(maxInput.value);
+
+
+      if (
+        min > 0 &&
+        max > 0 &&
+        max >= min
+      ) {
+
+        wizardState.budget = {
+
+          type: "custom",
+
+          min,
+
+          max,
+
+          label:
+            `${formatNumber(min)} – ${formatNumber(max)} TL`
+
+        };
+
+
+        if (preview) {
+
+          preview.textContent =
+            `Seçilen aralık: ${formatNumber(min)} TL – ${formatNumber(max)} TL`;
 
         }
 
       }
-    );
+
+    }
+
+
+    if (minInput) {
+
+      minInput.addEventListener(
+        "input",
+        updateCustomBudget
+      );
+
+    }
+
+
+    if (maxInput) {
+
+      maxInput.addEventListener(
+        "input",
+        updateCustomBudget
+      );
+
+    }
 
   }
 
@@ -495,6 +906,7 @@
         value;
 
       return;
+
     }
 
 
@@ -539,6 +951,7 @@
       scrollToWizard();
 
       return;
+
     }
 
 
@@ -577,21 +990,73 @@
       questions[currentStep - 1];
 
 
+    // -------------------------------------------------------
+    // BÜTÇE
+    // -------------------------------------------------------
+
     if (question.type === "budget") {
 
-      if (!wizardState.budget) {
+      const budget =
+        wizardState.budget;
+
+
+      if (!budget) {
 
         alert(
           "Lütfen bütçenizi seçin."
         );
 
         return false;
+
       }
+
+
+      if (
+        budget.type === "custom"
+      ) {
+
+        const min =
+          Number(budget.min);
+
+        const max =
+          Number(budget.max);
+
+
+        if (
+          !min ||
+          !max
+        ) {
+
+          alert(
+            "Lütfen minimum ve maksimum bütçenizi girin."
+          );
+
+          return false;
+
+        }
+
+
+        if (max < min) {
+
+          alert(
+            "Maksimum bütçe minimum bütçeden düşük olamaz."
+          );
+
+          return false;
+
+        }
+
+      }
+
 
       return true;
 
     }
 
+
+    // -------------------------------------------------------
+    // SINGLE
+    // -------------------------------------------------------
 
     if (question.type === "single") {
 
@@ -602,12 +1067,17 @@
         );
 
         return false;
+
       }
 
       return true;
 
     }
 
+
+    // -------------------------------------------------------
+    // MULTI
+    // -------------------------------------------------------
 
     if (
       !wizardState[question.key] ||
@@ -655,11 +1125,6 @@
     }
 
 
-    /*
-     * app.js tarafından oluşturulan
-     * gerçek demo araçları.
-     */
-
     const cars =
       Array.isArray(window.dummyCars)
         ? window.dummyCars
@@ -682,7 +1147,9 @@
         </div>
       `;
 
+
       wizardCard.style.display = "none";
+
       result.style.display = "block";
 
       return;
@@ -698,9 +1165,13 @@
 
 
         return {
+
           car: car,
+
           score: result.score,
+
           reasons: result.reasons
+
         };
 
       });
@@ -761,6 +1232,17 @@
             Size en uygun ${bestCars.length} araç
           </strong>
 
+          <div
+            style="
+              margin-top:8px;
+              font-size:12px;
+              color:var(--muted);
+            "
+          >
+            Bütçe:
+            ${wizardState.budget.label}
+          </div>
+
         </div>
 
       </div>
@@ -794,59 +1276,42 @@
 
   function calculateScore(car) {
 
-    let score = 50;
+    let score = 35;
 
     const reasons = [];
 
 
-    // ---------------------------------------------------------
+    // =======================================================
     // BÜTÇE
-    // ---------------------------------------------------------
+    // =======================================================
 
-    if (car.price <= wizardState.budget) {
+    const budget =
+      wizardState.budget;
 
-      score += 20;
 
-      reasons.push(
-        "Bütçenize uygun"
+    const budgetResult =
+      getBudgetMatch(
+        car.price,
+        budget
       );
 
-    } else {
 
-      const difference =
-        car.price -
-        wizardState.budget;
+    score +=
+      budgetResult.points;
 
 
-      const ratio =
-        difference /
-        wizardState.budget;
+    if (budgetResult.reason) {
 
-
-      if (ratio <= 0.10) {
-
-        score += 7;
-
-        reasons.push(
-          "Bütçenize oldukça yakın"
-        );
-
-      } else if (ratio <= 0.20) {
-
-        score -= 3;
-
-      } else {
-
-        score -= 15;
-
-      }
+      reasons.push(
+        budgetResult.reason
+      );
 
     }
 
 
-    // ---------------------------------------------------------
+    // =======================================================
     // YAKIT
-    // ---------------------------------------------------------
+    // =======================================================
 
     if (
       wizardState.fuel.length &&
@@ -862,14 +1327,13 @@
     }
 
 
-    // ---------------------------------------------------------
+    // =======================================================
     // VİTES
-    // ---------------------------------------------------------
+    // =======================================================
 
     if (
       wizardState.transmission &&
-      car.trans ===
-        wizardState.transmission
+      car.trans === wizardState.transmission
     ) {
 
       score += 10;
@@ -881,9 +1345,9 @@
     }
 
 
-    // ---------------------------------------------------------
+    // =======================================================
     // KASA
-    // ---------------------------------------------------------
+    // =======================================================
 
     if (
       wizardState.body.length &&
@@ -899,9 +1363,9 @@
     }
 
 
-    // ---------------------------------------------------------
+    // =======================================================
     // KULLANIM
-    // ---------------------------------------------------------
+    // =======================================================
 
     wizardState.usage.forEach(use => {
 
@@ -969,7 +1433,7 @@
 
       if (
         use === "firstCar" &&
-        car.price <= wizardState.budget
+        budgetResultIsWithinBudget(car.price)
       ) {
 
         score += 2;
@@ -979,9 +1443,9 @@
     });
 
 
-    // ---------------------------------------------------------
+    // =======================================================
     // ÖNCELİKLER
-    // ---------------------------------------------------------
+    // =======================================================
 
     wizardState.priorities.forEach(priority => {
 
@@ -1022,9 +1486,7 @@
 
       if (
         priority === "performance" &&
-        (
-          car.seg === "Coupe"
-        )
+        car.seg === "Coupe"
       ) {
 
         score += 5;
@@ -1086,9 +1548,9 @@
     });
 
 
-    /*
-     * Puan sınırları
-     */
+    // =======================================================
+    // SINIR
+    // =======================================================
 
     score =
       Math.max(
@@ -1100,19 +1562,273 @@
       );
 
 
-    /*
-     * Aynı nedenleri tekrar gösterme.
-     */
-
     const uniqueReasons =
       [...new Set(reasons)]
         .slice(0, 3);
 
 
     return {
+
       score,
-      reasons: uniqueReasons
+
+      reasons:
+        uniqueReasons
+
     };
+
+  }
+
+
+  // =========================================================
+  // BÜTÇE UYUMU
+  // =========================================================
+
+  function getBudgetMatch(
+    price,
+    budget
+  ) {
+
+    if (
+      !budget ||
+      !price
+    ) {
+
+      return {
+        points: 0,
+        reason: ""
+      };
+
+    }
+
+
+    const min =
+      Number(budget.min);
+
+    const max =
+      Number(budget.max);
+
+
+    // -------------------------------------------------------
+    // 4 MİLYON VE ÜZERİ
+    // -------------------------------------------------------
+
+    if (max === Infinity) {
+
+      if (price >= min) {
+
+        return {
+
+          points: 30,
+
+          reason:
+            "Bütçe aralığınıza uygun"
+
+        };
+
+      }
+
+
+      const difference =
+        min - price;
+
+
+      const ratio =
+        difference / min;
+
+
+      if (ratio <= 0.10) {
+
+        return {
+
+          points: 18,
+
+          reason:
+            "Bütçenize oldukça yakın"
+
+        };
+
+      }
+
+
+      if (ratio <= 0.20) {
+
+        return {
+
+          points: 8,
+
+          reason:
+            "Bütçenizin biraz altında"
+
+        };
+
+      }
+
+
+      return {
+
+        points: 0,
+
+        reason: ""
+
+      };
+
+    }
+
+
+    // -------------------------------------------------------
+    // TAM ARALIK İÇİNDE
+    // -------------------------------------------------------
+
+    if (
+      price >= min &&
+      price <= max
+    ) {
+
+      return {
+
+        points: 30,
+
+        reason:
+          "Bütçe aralığınıza uygun"
+
+      };
+
+    }
+
+
+    // -------------------------------------------------------
+    // BÜTÇENİN ALTINDA
+    // -------------------------------------------------------
+
+    if (price < min) {
+
+      const difference =
+        min - price;
+
+      const ratio =
+        difference / min;
+
+
+      if (ratio <= 0.10) {
+
+        return {
+
+          points: 24,
+
+          reason:
+            "Bütçenizin altında ve bütçenizi verimli kullanıyor"
+
+        };
+
+      }
+
+
+      if (ratio <= 0.20) {
+
+        return {
+
+          points: 18,
+
+          reason:
+            "Bütçenizin altında"
+
+        };
+
+      }
+
+
+      return {
+
+        points: 10,
+
+        reason:
+          "Bütçenizin altında"
+
+      };
+
+    }
+
+
+    // -------------------------------------------------------
+    // BÜTÇENİN ÜZERİNDE
+    // -------------------------------------------------------
+
+    const difference =
+      price - max;
+
+    const ratio =
+      difference / max;
+
+
+    if (ratio <= 0.10) {
+
+      return {
+
+        points: 18,
+
+        reason:
+          "Bütçenizin biraz üzerinde"
+
+      };
+
+    }
+
+
+    if (ratio <= 0.20) {
+
+      return {
+
+        points: 8,
+
+        reason:
+          "Bütçenizin üzerinde"
+
+      };
+
+    }
+
+
+    return {
+
+      points: 0,
+
+      reason: ""
+
+    };
+
+  }
+
+
+  // =========================================================
+  // ARAÇ BÜTÇEDE Mİ?
+  // =========================================================
+
+  function budgetResultIsWithinBudget(
+    price
+  ) {
+
+    const budget =
+      wizardState.budget;
+
+
+    if (!budget) {
+      return false;
+    }
+
+
+    if (
+      budget.max === Infinity
+    ) {
+
+      return price >= budget.min;
+
+    }
+
+
+    return (
+      price >= budget.min &&
+      price <= budget.max
+    );
 
   }
 
@@ -1296,7 +2012,20 @@
 
     currentStep = 1;
 
-    wizardState.budget = 1500000;
+
+    wizardState.budget = {
+
+      type: "range",
+
+      min: 1000000,
+
+      max: 1500000,
+
+      label:
+        "1.000.000 – 1.500.000 TL"
+
+    };
+
 
     wizardState.usage = [];
 
@@ -1342,14 +2071,18 @@
     const card =
       $("wizardCard");
 
+
     if (!card) return;
 
 
     setTimeout(() => {
 
       card.scrollIntoView({
+
         behavior: "smooth",
+
         block: "start"
+
       });
 
     }, 50);
@@ -1358,15 +2091,26 @@
 
 
   // =========================================================
-  // FİYAT
+  // SAYI FORMAT
+  // =========================================================
+
+  function formatNumber(value) {
+
+    return new Intl.NumberFormat(
+      "tr-TR"
+    ).format(value);
+
+  }
+
+
+  // =========================================================
+  // FİYAT FORMAT
   // =========================================================
 
   function formatPrice(value) {
 
     return (
-      new Intl.NumberFormat(
-        "tr-TR"
-      ).format(value) +
+      formatNumber(value) +
       " TL"
     );
 
@@ -1381,8 +2125,9 @@
 
     return {
 
-      budget:
-        wizardState.budget,
+      budget: {
+        ...wizardState.budget
+      },
 
       usage:
         [...wizardState.usage],
@@ -1413,6 +2158,7 @@
     if (!$("wizardCard")) {
       return;
     }
+
 
     renderWizard();
 
