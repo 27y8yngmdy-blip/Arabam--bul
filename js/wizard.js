@@ -1,25 +1,17 @@
 (function () {
-  'use strict';
+  "use strict";
 
-  /*
-   * =========================================================
-   * ARABAMI BUL — WIZARD
-   * 6 ADIMLI ARAÇ ÖNERİ SİSTEMİ
-   * =========================================================
-   */
+  // =========================================================
+  // ARABAMI BUL — WIZARD V2
+  // app.js -> window.dummyCars ile çalışır
+  // =========================================================
 
   const TOTAL_STEPS = 6;
 
   let currentStep = 1;
 
-  /*
-   * Kullanıcının bütün seçimleri burada tutulur.
-   *
-   * İleride gerçek araç eşleştirme algoritmasını
-   * doğrudan bu state üzerinden kuracağız.
-   */
   const wizardState = {
-    budget: null,
+    budget: 1500000,
     usage: [],
     fuel: [],
     transmission: null,
@@ -28,262 +20,208 @@
   };
 
 
-  /*
-   * =========================================================
-   * SORULAR
-   * =========================================================
-   */
+  // =========================================================
+  // SORULAR
+  // =========================================================
 
   const questions = [
 
     {
       step: 1,
-
-      title: 'Bütçeniz nedir?',
-
+      title: "Bütçeniz nedir?",
       subtitle:
-        'Satın almayı düşündüğünüz maksimum araç fiyatını seçin.',
-
-      type: 'budget'
+        "Satın almayı düşündüğünüz maksimum araç fiyatını seçin.",
+      type: "budget"
     },
-
 
     {
       step: 2,
-
-      title: 'Aracı daha çok nasıl kullanacaksınız?',
-
+      title: "Aracı daha çok nasıl kullanacaksınız?",
       subtitle:
-        'Birden fazla seçenek seçebilirsiniz.',
-
-      type: 'multi',
-
-      key: 'usage',
+        "Birden fazla seçenek seçebilirsiniz.",
+      type: "multi",
+      key: "usage",
 
       options: [
         {
-          value: 'city',
-          icon: '🏙️',
-          title: 'Şehir İçi',
-          text: 'Günlük şehir kullanımım ağırlıklı.'
+          value: "city",
+          icon: "🏙️",
+          title: "Şehir İçi",
+          text: "Günlük şehir kullanımım ağırlıklı."
         },
-
         {
-          value: 'longRoad',
-          icon: '🛣️',
-          title: 'Uzun Yol',
-          text: 'Sık sık şehirler arası yol yaparım.'
+          value: "longRoad",
+          icon: "🛣️",
+          title: "Uzun Yol",
+          text: "Sık sık şehirler arası yol yaparım."
         },
-
         {
-          value: 'family',
-          icon: '👨‍👩‍👧‍👦',
-          title: 'Aile',
-          text: 'Aile ve geniş kullanım önemli.'
+          value: "family",
+          icon: "👨‍👩‍👧‍👦",
+          title: "Aile",
+          text: "Aile ve geniş kullanım önemli."
         },
-
         {
-          value: 'daily',
-          icon: '💼',
-          title: 'Günlük Kullanım',
-          text: 'İşe, okula ve günlük işlere gitmek için.'
+          value: "daily",
+          icon: "💼",
+          title: "Günlük Kullanım",
+          text: "İşe, okula ve günlük işlere gitmek için."
         },
-
         {
-          value: 'fun',
-          icon: '🏎️',
-          title: 'Keyif / Performans',
-          text: 'Sürüş keyfi ve performans önemli.'
+          value: "fun",
+          icon: "🏎️",
+          title: "Keyif / Performans",
+          text: "Sürüş keyfi ve performans önemli."
         },
-
         {
-          value: 'firstCar',
-          icon: '🚗',
-          title: 'İlk Arabam',
-          text: 'İlk otomobilimi alıyorum.'
+          value: "firstCar",
+          icon: "🚗",
+          title: "İlk Arabam",
+          text: "İlk otomobilimi alıyorum."
         }
       ]
     },
-
 
     {
       step: 3,
-
-      title: 'Hangi yakıt tiplerini düşünüyorsunuz?',
-
+      title: "Hangi yakıt tiplerini düşünüyorsunuz?",
       subtitle:
-        'Birden fazla seçenek seçebilirsiniz.',
-
-      type: 'multi',
-
-      key: 'fuel',
+        "Birden fazla seçenek seçebilirsiniz.",
+      type: "multi",
+      key: "fuel",
 
       options: [
         {
-          value: 'Benzin',
-          icon: '⛽',
-          title: 'Benzin',
-          text: 'Klasik benzinli motor.'
+          value: "Benzin",
+          icon: "⛽",
+          title: "Benzin",
+          text: "Klasik benzinli motor."
         },
-
         {
-          value: 'Dizel',
-          icon: '🛢️',
-          title: 'Dizel',
-          text: 'Uzun yol ve düşük tüketim odaklı.'
+          value: "Dizel",
+          icon: "🛢️",
+          title: "Dizel",
+          text: "Uzun yol ve düşük tüketim odaklı."
         },
-
         {
-          value: 'Hibrit',
-          icon: '🔋',
-          title: 'Hibrit',
-          text: 'Yakıt ekonomisi ve elektrik desteği.'
+          value: "Hibrit",
+          icon: "🔋",
+          title: "Hibrit",
+          text: "Yakıt ekonomisi ve elektrik desteği."
         },
-
         {
-          value: 'Elektrik',
-          icon: '⚡',
-          title: 'Elektrik',
-          text: 'Tamamen elektrikli araçlar.'
+          value: "Elektrik",
+          icon: "⚡",
+          title: "Elektrik",
+          text: "Tamamen elektrikli araçlar."
         }
       ]
     },
-
 
     {
       step: 4,
-
-      title: 'Vites tercihiniz nedir?',
-
+      title: "Vites tercihiniz nedir?",
       subtitle:
-        'Size uygun vites tipini seçin.',
-
-      type: 'single',
-
-      key: 'transmission',
+        "Size uygun vites tipini seçin.",
+      type: "single",
+      key: "transmission",
 
       options: [
         {
-          value: 'Otomatik',
-          icon: '⚙️',
-          title: 'Otomatik',
-          text: 'Konforlu ve kolay kullanım.'
+          value: "Otomatik",
+          icon: "⚙️",
+          title: "Otomatik",
+          text: "Konforlu ve kolay kullanım."
         },
-
         {
-          value: 'Manuel',
-          icon: '🕹️',
-          title: 'Manuel',
-          text: 'Daha kontrollü sürüş deneyimi.'
+          value: "Manuel",
+          icon: "🕹️",
+          title: "Manuel",
+          text: "Daha kontrollü sürüş deneyimi."
         }
       ]
     },
-
 
     {
       step: 5,
-
-      title: 'Sizin için en önemli özellikler neler?',
-
+      title: "Sizin için en önemli özellikler neler?",
       subtitle:
-        'Birden fazla özellik seçebilirsiniz.',
-
-      type: 'multi',
-
-      key: 'priorities',
+        "Birden fazla özellik seçebilirsiniz.",
+      type: "multi",
+      key: "priorities",
 
       options: [
         {
-          value: 'economy',
-          icon: '💰',
-          title: 'Az Tüketim',
-          text: 'Yakıt ve kullanım maliyeti düşük olsun.'
+          value: "economy",
+          icon: "💰",
+          title: "Az Tüketim",
+          text: "Yakıt ve kullanım maliyeti düşük olsun."
         },
-
         {
-          value: 'comfort',
-          icon: '🛋️',
-          title: 'Konfor',
-          text: 'Rahat ve konforlu bir sürüş istiyorum.'
+          value: "comfort",
+          icon: "🛋️",
+          title: "Konfor",
+          text: "Rahat ve konforlu bir sürüş istiyorum."
         },
-
         {
-          value: 'performance',
-          icon: '🚀',
-          title: 'Performans',
-          text: 'Güçlü motor ve hızlı tepki önemli.'
+          value: "performance",
+          icon: "🚀",
+          title: "Performans",
+          text: "Güçlü motor ve hızlı tepki önemli."
         },
-
         {
-          value: 'safety',
-          icon: '🛡️',
-          title: 'Güvenlik',
-          text: 'Güvenlik donanımları öncelikli.'
+          value: "safety",
+          icon: "🛡️",
+          title: "Güvenlik",
+          text: "Güvenlik donanımları öncelikli."
         },
-
         {
-          value: 'space',
-          icon: '🧳',
-          title: 'Genişlik',
-          text: 'İç hacim ve bagaj önemli.'
+          value: "space",
+          icon: "🧳",
+          title: "Genişlik",
+          text: "İç hacim ve bagaj önemli."
         },
-
         {
-          value: 'technology',
-          icon: '📱',
-          title: 'Teknoloji',
-          text: 'Modern ekranlar ve teknolojik özellikler.'
+          value: "technology",
+          icon: "📱",
+          title: "Teknoloji",
+          text: "Modern ve teknolojik özellikler."
         }
       ]
     },
 
-
     {
       step: 6,
-
-      title: 'Hangi kasa tiplerini düşünüyorsunuz?',
-
+      title: "Hangi kasa tiplerini düşünüyorsunuz?",
       subtitle:
-        'Birden fazla kasa tipi seçebilirsiniz.',
-
-      type: 'multi',
-
-      key: 'body',
+        "Birden fazla kasa tipi seçebilirsiniz.",
+      type: "multi",
+      key: "body",
 
       options: [
         {
-          value: 'Hatchback',
-          icon: '🚗',
-          title: 'Hatchback',
-          text: 'Kompakt ve şehir dostu.'
+          value: "Hatchback",
+          icon: "🚗",
+          title: "Hatchback",
+          text: "Kompakt ve şehir dostu."
         },
-
         {
-          value: 'Sedan',
-          icon: '🚘',
-          title: 'Sedan',
-          text: 'Konforlu ve klasik gövde.'
+          value: "Sedan",
+          icon: "🚘",
+          title: "Sedan",
+          text: "Konforlu ve klasik gövde."
         },
-
         {
-          value: 'SUV',
-          icon: '🚙',
-          title: 'SUV',
-          text: 'Yüksek oturma ve geniş alan.'
+          value: "SUV",
+          icon: "🚙",
+          title: "SUV",
+          text: "Yüksek oturma ve geniş alan."
         },
-
         {
-          value: 'Coupe',
-          icon: '🏎️',
-          title: 'Coupe',
-          text: 'Sportif ve dinamik tasarım.'
-        },
-
-        {
-          value: 'Elektrik',
-          icon: '⚡',
-          title: 'Elektrikli',
-          text: 'Elektrikli otomobil gövde seçenekleri.'
+          value: "Coupe",
+          icon: "🏎️",
+          title: "Coupe",
+          text: "Sportif ve dinamik tasarım."
         }
       ]
     }
@@ -291,47 +229,40 @@
   ];
 
 
-  /*
-   * =========================================================
-   * ELEMENTLER
-   * =========================================================
-   */
+  // =========================================================
+  // ELEMENTLER
+  // =========================================================
 
-  function getElement(id) {
+  function $(id) {
     return document.getElementById(id);
   }
 
 
-  /*
-   * =========================================================
-   * WIZARD'I GÖSTER
-   * =========================================================
-   */
+  // =========================================================
+  // WIZARD'I GÖSTER
+  // =========================================================
 
   function renderWizard() {
 
-    const question = questions[currentStep - 1];
+    const question =
+      questions[currentStep - 1];
 
     if (!question) return;
 
 
-    const badge = getElement('qBadge');
-    const title = getElement('qTitle');
-    const subtitle = getElement('qSub');
-    const progress = getElement('pFill');
-    const options = getElement('qOptions');
-    const prevButton = getElement('prevBtn');
+    const badge = $("qBadge");
+    const title = $("qTitle");
+    const sub = $("qSub");
+    const progress = $("pFill");
+    const options = $("qOptions");
+    const prevBtn = $("prevBtn");
 
 
-    if (!badge || !title || !subtitle || !progress || !options) {
-      console.warn('Wizard elementleri bulunamadı.');
+    if (!badge || !title || !sub || !progress || !options) {
+      console.warn("Wizard HTML elementleri bulunamadı.");
       return;
     }
 
-
-    /*
-     * Başlıklar
-     */
 
     badge.textContent =
       `Soru ${currentStep} / ${TOTAL_STEPS}`;
@@ -339,50 +270,36 @@
     title.textContent =
       question.title;
 
-    subtitle.textContent =
+    sub.textContent =
       question.subtitle;
 
 
-    /*
-     * Progress
-     */
-
-    const progressPercent =
-      (currentStep / TOTAL_STEPS) * 100;
-
     progress.style.width =
-      `${progressPercent}%`;
+      `${(currentStep / TOTAL_STEPS) * 100}%`;
 
 
-    /*
-     * Geri butonu
-     */
+    if (prevBtn) {
 
-    if (prevButton) {
-
-      prevButton.disabled =
+      prevBtn.disabled =
         currentStep === 1;
 
-      prevButton.style.opacity =
-        currentStep === 1 ? '0.5' : '1';
+      prevBtn.style.opacity =
+        currentStep === 1 ? "0.5" : "1";
 
-      prevButton.style.cursor =
-        currentStep === 1 ? 'not-allowed' : 'pointer';
+      prevBtn.style.visibility =
+        "visible";
+
     }
 
 
-    /*
-     * Seçenekleri temizle
-     */
-
-    options.innerHTML = '';
+    options.innerHTML = "";
 
 
-    /*
-     * Bütçe sorusu
-     */
+    // ---------------------------------------------------------
+    // BÜTÇE
+    // ---------------------------------------------------------
 
-    if (question.type === 'budget') {
+    if (question.type === "budget") {
 
       renderBudget(options);
 
@@ -390,31 +307,30 @@
     }
 
 
-    /*
-     * Normal seçenekler
-     */
+    // ---------------------------------------------------------
+    // DİĞER SEÇENEKLER
+    // ---------------------------------------------------------
 
     question.options.forEach(option => {
 
       const selected =
-        isSelected(question, option.value);
+        isSelected(
+          question,
+          option.value
+        );
 
 
-      const card =
-        document.createElement('button');
+      const button =
+        document.createElement("button");
 
-      card.type = 'button';
+      button.type = "button";
 
-      card.className =
-        'wizard-option' +
-        (selected ? ' selected' : '');
-
-
-      card.dataset.value =
-        option.value;
+      button.className =
+        "wizard-option" +
+        (selected ? " selected" : "");
 
 
-      card.innerHTML = `
+      button.innerHTML = `
 
         <div class="wizard-option-icon">
           ${option.icon}
@@ -433,15 +349,15 @@
         </div>
 
         <div class="wizard-check">
-          ${selected ? '✓' : ''}
+          ${selected ? "✓" : ""}
         </div>
 
       `;
 
 
-      card.addEventListener(
-        'click',
-        function () {
+      button.addEventListener(
+        "click",
+        () => {
 
           selectOption(
             question,
@@ -454,144 +370,126 @@
       );
 
 
-      options.appendChild(card);
+      options.appendChild(button);
 
     });
 
   }
 
 
-  /*
-   * =========================================================
-   * BÜTÇE
-   * =========================================================
-   */
+  // =========================================================
+  // BÜTÇE
+  // =========================================================
 
   function renderBudget(container) {
 
-    const currentBudget =
-      wizardState.budget || 1500000;
+    container.innerHTML = `
 
+      <div class="wizard-budget">
 
-    const wrapper =
-      document.createElement('div');
+        <div class="budget-value">
+          ${formatPrice(wizardState.budget)}
+        </div>
 
-    wrapper.className =
-      'wizard-budget';
+        <input
+          type="range"
+          id="wizardBudget"
+          min="500000"
+          max="5000000"
+          step="50000"
+          value="${wizardState.budget}"
+        >
 
+        <div class="budget-labels">
 
-    wrapper.innerHTML = `
+          <span>500.000 TL</span>
 
-      <div class="budget-value">
-        ${formatPrice(currentBudget)}
-      </div>
+          <span>5.000.000 TL</span>
 
-      <input
-        type="range"
-        id="wizardBudget"
-        min="500000"
-        max="5000000"
-        step="50000"
-        value="${currentBudget}"
-      >
+        </div>
 
-      <div class="budget-labels">
-
-        <span>
-          500.000 TL
-        </span>
-
-        <span>
-          5.000.000 TL
-        </span>
+        <p class="budget-info">
+          Bu tutar araç için ayırabileceğiniz maksimum bütçedir.
+        </p>
 
       </div>
-
-      <p class="budget-info">
-        Bu tutar, araç için ayırabileceğiniz maksimum bütçedir.
-      </p>
 
     `;
 
 
-    container.appendChild(wrapper);
-
-
     const slider =
-      getElement('wizardBudget');
+      $("wizardBudget");
 
 
-    if (slider) {
-
-      slider.addEventListener(
-        'input',
-        function () {
-
-          wizardState.budget =
-            Number(this.value);
+    if (!slider) return;
 
 
-          const value =
-            wrapper.querySelector('.budget-value');
+    slider.addEventListener(
+      "input",
+      () => {
+
+        wizardState.budget =
+          Number(slider.value);
 
 
-          if (value) {
+        const value =
+          container.querySelector(
+            ".budget-value"
+          );
 
-            value.textContent =
-              formatPrice(wizardState.budget);
 
-          }
+        if (value) {
+
+          value.textContent =
+            formatPrice(
+              wizardState.budget
+            );
 
         }
+
+      }
+    );
+
+  }
+
+
+  // =========================================================
+  // SEÇİM KONTROLÜ
+  // =========================================================
+
+  function isSelected(question, value) {
+
+    if (question.type === "single") {
+
+      return (
+        wizardState[question.key] === value
       );
 
     }
 
 
-    wizardState.budget =
-      currentBudget;
-  }
+    if (question.type === "multi") {
 
-
-  /*
-   * =========================================================
-   * SEÇİM KONTROLÜ
-   * =========================================================
-   */
-
-  function isSelected(question, value) {
-
-    if (question.type === 'single') {
-
-      return wizardState[question.key] === value;
-
-    }
-
-
-    if (question.type === 'multi') {
-
-      return wizardState[question.key].includes(value);
+      return (
+        wizardState[question.key]
+          .includes(value)
+      );
 
     }
 
 
     return false;
+
   }
 
 
-  /*
-   * =========================================================
-   * SEÇİM YAP
-   * =========================================================
-   */
+  // =========================================================
+  // SEÇİM YAP
+  // =========================================================
 
   function selectOption(question, value) {
 
-    /*
-     * Tek seçim
-     */
-
-    if (question.type === 'single') {
+    if (question.type === "single") {
 
       wizardState[question.key] =
         value;
@@ -600,45 +498,34 @@
     }
 
 
-    /*
-     * Çoklu seçim
-     */
-
-    if (question.type === 'multi') {
-
-      const list =
-        wizardState[question.key];
+    const list =
+      wizardState[question.key];
 
 
-      const index =
-        list.indexOf(value);
+    const index =
+      list.indexOf(value);
 
 
-      if (index === -1) {
+    if (index === -1) {
 
-        list.push(value);
+      list.push(value);
 
-      } else {
+    } else {
 
-        list.splice(index, 1);
-
-      }
+      list.splice(index, 1);
 
     }
 
   }
 
 
-  /*
-   * =========================================================
-   * SONRAKİ SORU
-   * =========================================================
-   */
+  // =========================================================
+  // İLERİ
+  // =========================================================
 
   window.nextQ = function () {
 
-    if (!validateCurrentStep()) {
-
+    if (!validateStep()) {
       return;
     }
 
@@ -655,25 +542,18 @@
     }
 
 
-    /*
-     * Son soru tamamlandı.
-     */
-
-    finishWizard();
+    showWizardResults();
 
   };
 
 
-  /*
-   * =========================================================
-   * ÖNCEKİ SORU
-   * =========================================================
-   */
+  // =========================================================
+  // GERİ
+  // =========================================================
 
   window.prevQ = function () {
 
     if (currentStep <= 1) {
-
       return;
     }
 
@@ -687,167 +567,160 @@
   };
 
 
-  /*
-   * =========================================================
-   * VALIDATION
-   * =========================================================
-   */
+  // =========================================================
+  // VALIDATION
+  // =========================================================
 
-  function validateCurrentStep() {
+  function validateStep() {
 
     const question =
       questions[currentStep - 1];
 
 
-    /*
-     * Bütçe
-     */
-
-    if (question.type === 'budget') {
+    if (question.type === "budget") {
 
       if (!wizardState.budget) {
 
-        showWizardMessage(
-          'Lütfen bütçenizi seçin.'
+        alert(
+          "Lütfen bütçenizi seçin."
         );
 
         return false;
       }
 
       return true;
+
     }
 
 
-    /*
-     * Tek seçim
-     */
-
-    if (question.type === 'single') {
+    if (question.type === "single") {
 
       if (!wizardState[question.key]) {
 
-        showWizardMessage(
-          'Lütfen bir seçim yapın.'
+        alert(
+          "Lütfen bir seçim yapın."
         );
 
         return false;
       }
 
       return true;
+
     }
 
 
-    /*
-     * Çoklu seçim
-     */
+    if (
+      !wizardState[question.key] ||
+      wizardState[question.key].length === 0
+    ) {
 
-    if (question.type === 'multi') {
+      alert(
+        "Devam etmek için en az bir seçenek seçin."
+      );
 
-      if (
-        !wizardState[question.key] ||
-        wizardState[question.key].length === 0
-      ) {
+      return false;
 
-        showWizardMessage(
-          'Devam etmek için en az bir seçenek seçin.'
-        );
-
-        return false;
-      }
-
-      return true;
     }
 
 
     return true;
+
   }
 
 
-  /*
-   * =========================================================
-   * WIZARD TAMAMLANDI
-   * =========================================================
-   */
+  // =========================================================
+  // SONUÇLARI HESAPLA
+  // =========================================================
 
-  function finishWizard() {
-
-    console.log(
-      'ARABAMI BUL — Kullanıcı tercihleri:',
-      wizardState
-    );
-
-
-    /*
-     * Burada henüz gerçek araç algoritmasını
-     * çalıştırmıyoruz.
-     *
-     * Bir sonraki aşamada:
-     *
-     * wizardState
-     *       ↓
-     * araç verileri
-     *       ↓
-     * puanlama
-     *       ↓
-     * eşleşen araçlar
-     *       ↓
-     * wizardResultGrid
-     *
-     * şeklinde bağlayacağız.
-     */
-
+  function showWizardResults() {
 
     const wizardCard =
-      getElement('wizardCard');
+      $("wizardCard");
 
     const result =
-      getElement('wizardResult');
+      $("wizardResult");
+
+    const grid =
+      $("wizardResultGrid");
 
 
-    if (!wizardCard || !result) {
+    if (!wizardCard || !result || !grid) {
 
-      console.warn(
-        'Wizard sonuç alanı bulunamadı.'
+      console.error(
+        "Wizard sonuç alanı bulunamadı."
       );
 
       return;
+
     }
 
 
+    /*
+     * app.js tarafından oluşturulan
+     * gerçek demo araçları.
+     */
+
+    const cars =
+      Array.isArray(window.dummyCars)
+        ? window.dummyCars
+        : [];
+
+
+    if (!cars.length) {
+
+      console.error(
+        "window.dummyCars bulunamadı."
+      );
+
+      grid.innerHTML = `
+        <div style="
+          grid-column:1/-1;
+          padding:40px;
+          text-align:center;
+        ">
+          Araç verileri bulunamadı.
+        </div>
+      `;
+
+      wizardCard.style.display = "none";
+      result.style.display = "block";
+
+      return;
+
+    }
+
+
+    const scoredCars =
+      cars.map(car => {
+
+        const result =
+          calculateScore(car);
+
+
+        return {
+          car: car,
+          score: result.score,
+          reasons: result.reasons
+        };
+
+      });
+
+
+    scoredCars.sort(
+      (a, b) =>
+        b.score - a.score
+    );
+
+
+    const bestCars =
+      scoredCars.slice(0, 6);
+
+
     wizardCard.style.display =
-      'none';
+      "none";
 
     result.style.display =
-      'block';
-
-
-    renderTemporaryResults();
-
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-
-  }
-
-
-  /*
-   * =========================================================
-   * GEÇİCİ SONUÇ EKRANI
-   * =========================================================
-   *
-   * Gerçek araç algoritması gelene kadar
-   * kullanıcının seçimlerini gösteriyoruz.
-   */
-
-  function renderTemporaryResults() {
-
-    const grid =
-      getElement('wizardResultGrid');
-
-
-    if (!grid) return;
+      "block";
 
 
     grid.innerHTML = `
@@ -855,42 +728,556 @@
       <div
         style="
           grid-column:1/-1;
-          background:#fff;
-          border:1px solid var(--line);
-          border-radius:16px;
-          padding:28px;
-          text-align:center;
+          margin-bottom:4px;
         "
       >
 
-        <div style="font-size:42px;margin-bottom:10px;">
-          🎯
-        </div>
-
-        <h3 style="margin:0 0 8px;">
-          Tercihleriniz kaydedildi
-        </h3>
-
-        <p
-          style="
-            color:var(--muted);
-            font-size:14px;
-            margin:0 0 20px;
-          "
-        >
-          Araç eşleştirme sistemi için seçimleriniz hazır.
-        </p>
-
         <div
           style="
-            display:flex;
-            flex-wrap:wrap;
-            justify-content:center;
-            gap:8px;
+            background:#fff;
+            border:1px solid var(--line);
+            border-radius:16px;
+            padding:18px;
+            margin-bottom:16px;
           "
         >
 
-          ${createSummaryBadges()}
+          <div
+            style="
+              font-size:13px;
+              color:var(--muted);
+              margin-bottom:6px;
+            "
+          >
+            Tercihleriniz analiz edildi
+          </div>
+
+          <strong
+            style="
+              font-size:18px;
+              font-weight:900;
+            "
+          >
+            Size en uygun ${bestCars.length} araç
+          </strong>
+
+        </div>
+
+      </div>
+
+      ${bestCars
+        .map(item => {
+
+          return createResultCard(
+            item.car,
+            item.score,
+            item.reasons
+          );
+
+        })
+        .join("")}
+
+    `;
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+
+
+  // =========================================================
+  // PUANLAMA
+  // =========================================================
+
+  function calculateScore(car) {
+
+    let score = 50;
+
+    const reasons = [];
+
+
+    // ---------------------------------------------------------
+    // BÜTÇE
+    // ---------------------------------------------------------
+
+    if (car.price <= wizardState.budget) {
+
+      score += 20;
+
+      reasons.push(
+        "Bütçenize uygun"
+      );
+
+    } else {
+
+      const difference =
+        car.price -
+        wizardState.budget;
+
+
+      const ratio =
+        difference /
+        wizardState.budget;
+
+
+      if (ratio <= 0.10) {
+
+        score += 7;
+
+        reasons.push(
+          "Bütçenize oldukça yakın"
+        );
+
+      } else if (ratio <= 0.20) {
+
+        score -= 3;
+
+      } else {
+
+        score -= 15;
+
+      }
+
+    }
+
+
+    // ---------------------------------------------------------
+    // YAKIT
+    // ---------------------------------------------------------
+
+    if (
+      wizardState.fuel.length &&
+      wizardState.fuel.includes(car.fuel)
+    ) {
+
+      score += 12;
+
+      reasons.push(
+        `${car.fuel} tercihinizle uyumlu`
+      );
+
+    }
+
+
+    // ---------------------------------------------------------
+    // VİTES
+    // ---------------------------------------------------------
+
+    if (
+      wizardState.transmission &&
+      car.trans ===
+        wizardState.transmission
+    ) {
+
+      score += 10;
+
+      reasons.push(
+        `${car.trans} vites tercihinizle uyumlu`
+      );
+
+    }
+
+
+    // ---------------------------------------------------------
+    // KASA
+    // ---------------------------------------------------------
+
+    if (
+      wizardState.body.length &&
+      wizardState.body.includes(car.seg)
+    ) {
+
+      score += 12;
+
+      reasons.push(
+        `${car.seg} kasa tercihinizle uyumlu`
+      );
+
+    }
+
+
+    // ---------------------------------------------------------
+    // KULLANIM
+    // ---------------------------------------------------------
+
+    wizardState.usage.forEach(use => {
+
+      if (
+        use === "city" &&
+        car.seg === "Hatchback"
+      ) {
+
+        score += 3;
+
+        reasons.push(
+          "Şehir içi kullanım için uygun"
+        );
+
+      }
+
+
+      if (
+        use === "family" &&
+        (
+          car.seg === "SUV" ||
+          car.seg === "Sedan"
+        )
+      ) {
+
+        score += 3;
+
+        reasons.push(
+          "Aile kullanımı için uygun"
+        );
+
+      }
+
+
+      if (
+        use === "fun" &&
+        car.seg === "Coupe"
+      ) {
+
+        score += 4;
+
+        reasons.push(
+          "Sürüş keyfi önceliğinizle uyumlu"
+        );
+
+      }
+
+
+      if (
+        use === "longRoad" &&
+        (
+          car.seg === "Sedan" ||
+          car.seg === "SUV"
+        )
+      ) {
+
+        score += 3;
+
+        reasons.push(
+          "Uzun yol kullanımına uygun"
+        );
+
+      }
+
+
+      if (
+        use === "firstCar" &&
+        car.price <= wizardState.budget
+      ) {
+
+        score += 2;
+
+      }
+
+    });
+
+
+    // ---------------------------------------------------------
+    // ÖNCELİKLER
+    // ---------------------------------------------------------
+
+    wizardState.priorities.forEach(priority => {
+
+      if (
+        priority === "economy" &&
+        (
+          car.fuel === "Hibrit" ||
+          car.fuel === "Elektrik" ||
+          car.fuel === "Dizel"
+        )
+      ) {
+
+        score += 4;
+
+        reasons.push(
+          "Ekonomi önceliğinize uygun"
+        );
+
+      }
+
+
+      if (
+        priority === "comfort" &&
+        (
+          car.seg === "Sedan" ||
+          car.seg === "SUV"
+        )
+      ) {
+
+        score += 3;
+
+        reasons.push(
+          "Konfor önceliğinize uygun"
+        );
+
+      }
+
+
+      if (
+        priority === "performance" &&
+        (
+          car.seg === "Coupe"
+        )
+      ) {
+
+        score += 5;
+
+        reasons.push(
+          "Performans önceliğinize uygun"
+        );
+
+      }
+
+
+      if (
+        priority === "space" &&
+        (
+          car.seg === "SUV" ||
+          car.seg === "Sedan"
+        )
+      ) {
+
+        score += 3;
+
+        reasons.push(
+          "Genişlik önceliğinize uygun"
+        );
+
+      }
+
+
+      if (
+        priority === "technology" &&
+        (
+          car.fuel === "Elektrik" ||
+          car.year >= 2023
+        )
+      ) {
+
+        score += 3;
+
+        reasons.push(
+          "Teknoloji önceliğinize uygun"
+        );
+
+      }
+
+
+      if (
+        priority === "safety" &&
+        car.year >= 2022
+      ) {
+
+        score += 3;
+
+        reasons.push(
+          "Yeni model yılı güvenlik tercihinizle uyumlu"
+        );
+
+      }
+
+    });
+
+
+    /*
+     * Puan sınırları
+     */
+
+    score =
+      Math.max(
+        35,
+        Math.min(
+          99,
+          Math.round(score)
+        )
+      );
+
+
+    /*
+     * Aynı nedenleri tekrar gösterme.
+     */
+
+    const uniqueReasons =
+      [...new Set(reasons)]
+        .slice(0, 3);
+
+
+    return {
+      score,
+      reasons: uniqueReasons
+    };
+
+  }
+
+
+  // =========================================================
+  // SONUÇ KARTI
+  // =========================================================
+
+  function createResultCard(
+    car,
+    score,
+    reasons
+  ) {
+
+    const isFav =
+      Array.isArray(window.favorites) &&
+      window.favorites.includes(car.id);
+
+
+    return `
+
+      <div
+        class="vehicle-card wizard-result-card"
+        onclick="openDetail(${car.id})"
+      >
+
+        <button
+          class="fav-btn"
+          type="button"
+          onclick="toggleFav(${car.id}, event)"
+        >
+          ${isFav ? "❤️" : "🤍"}
+        </button>
+
+
+        <div
+          class="car-img"
+          style="
+            background-image:url('${car.img}')
+          "
+        >
+
+          <div class="car-overlay">
+
+            <span>
+              ${car.brand} ${car.model}
+            </span>
+
+            <span>
+              ${car.year}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="car-body">
+
+          <span
+            class="match-badge"
+            style="
+              display:inline-block;
+              margin-bottom:8px;
+            "
+          >
+            %${score} Uyumlu
+          </span>
+
+
+          <div class="car-title">
+            ${car.brand} ${car.model}
+          </div>
+
+
+          <div class="car-price">
+            ${car.price.toLocaleString("tr-TR")} TL
+          </div>
+
+
+          <div class="car-meta">
+
+            <span>
+              ${car.fuel}
+            </span>
+
+            •
+
+            <span>
+              ${car.trans}
+            </span>
+
+            •
+
+            <span>
+              ${car.km.toLocaleString("tr-TR")} KM
+            </span>
+
+          </div>
+
+
+          <div
+            style="
+              margin-top:12px;
+              padding-top:12px;
+              border-top:1px solid var(--line);
+            "
+          >
+
+            <div
+              style="
+                font-size:11px;
+                font-weight:900;
+                margin-bottom:6px;
+              "
+            >
+              Neden öneriyoruz?
+            </div>
+
+            <div
+              style="
+                display:flex;
+                flex-direction:column;
+                gap:4px;
+              "
+            >
+
+              ${
+                reasons.length
+                  ? reasons
+                      .map(reason => `
+                        <span
+                          style="
+                            font-size:11px;
+                            color:var(--muted);
+                          "
+                        >
+                          ✓ ${reason}
+                        </span>
+                      `)
+                      .join("")
+                  : `
+                    <span
+                      style="
+                        font-size:11px;
+                        color:var(--muted);
+                      "
+                    >
+                      ✓ Genel tercihlerinize uyumlu
+                    </span>
+                  `
+              }
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="badge-tco"
+            style="margin-top:12px;"
+          >
+            Tahmini Yürütme:
+            ~${car.tco.toLocaleString("tr-TR")} TL / ay
+          </div>
 
         </div>
 
@@ -901,106 +1288,15 @@
   }
 
 
-  /*
-   * =========================================================
-   * SEÇİMLERİ ÖZETLE
-   * =========================================================
-   */
-
-  function createSummaryBadges() {
-
-    const badges = [];
-
-
-    if (wizardState.budget) {
-
-      badges.push(
-        `Bütçe: ${formatPrice(wizardState.budget)}`
-      );
-
-    }
-
-
-    if (wizardState.transmission) {
-
-      badges.push(
-        `Vites: ${wizardState.transmission}`
-      );
-
-    }
-
-
-    if (wizardState.fuel.length) {
-
-      badges.push(
-        `Yakıt: ${wizardState.fuel.join(', ')}`
-      );
-
-    }
-
-
-    if (wizardState.body.length) {
-
-      badges.push(
-        `Kasa: ${wizardState.body.join(', ')}`
-      );
-
-    }
-
-
-    if (wizardState.usage.length) {
-
-      badges.push(
-        `Kullanım: ${wizardState.usage.join(', ')}`
-      );
-
-    }
-
-
-    if (wizardState.priorities.length) {
-
-      badges.push(
-        `Öncelik: ${wizardState.priorities.join(', ')}`
-      );
-
-    }
-
-
-    return badges
-      .map(
-        badge => `
-          <span
-            style="
-              background:#fff1f1;
-              color:#c62828;
-              border:1px solid #ffd5d5;
-              border-radius:999px;
-              padding:7px 12px;
-              font-size:12px;
-              font-weight:700;
-            "
-          >
-            ${badge}
-          </span>
-        `
-      )
-      .join('');
-
-  }
-
-
-  /*
-   * =========================================================
-   * RESET
-   * =========================================================
-   */
+  // =========================================================
+  // RESET
+  // =========================================================
 
   window.resetWizard = function () {
 
     currentStep = 1;
 
-
-    wizardState.budget = null;
+    wizardState.budget = 1500000;
 
     wizardState.usage = [];
 
@@ -1013,229 +1309,122 @@
     wizardState.body = [];
 
 
-    const wizardCard =
-      getElement('wizardCard');
+    const card =
+      $("wizardCard");
 
     const result =
-      getElement('wizardResult');
+      $("wizardResult");
 
 
-    if (wizardCard) {
-
-      wizardCard.style.display =
-        'block';
-
+    if (card) {
+      card.style.display = "block";
     }
 
 
     if (result) {
-
-      result.style.display =
-        'none';
-
+      result.style.display = "none";
     }
 
 
     renderWizard();
-
 
     scrollToWizard();
 
   };
 
 
-  /*
-   * =========================================================
-   * WIZARD MESAJI
-   * =========================================================
-   */
-
-  function showWizardMessage(message) {
-
-    /*
-     * Önce varsa eski mesajı kaldır.
-     */
-
-    const oldMessage =
-      document.getElementById(
-        'wizardMessage'
-      );
-
-
-    if (oldMessage) {
-
-      oldMessage.remove();
-
-    }
-
-
-    const messageBox =
-      document.createElement('div');
-
-
-    messageBox.id =
-      'wizardMessage';
-
-
-    messageBox.style.cssText = `
-      margin-top:12px;
-      padding:11px 14px;
-      border-radius:10px;
-      background:#fff1f1;
-      border:1px solid #ffd0d0;
-      color:#c62828;
-      font-size:13px;
-      font-weight:700;
-      text-align:center;
-    `;
-
-
-    messageBox.textContent =
-      message;
-
-
-    const options =
-      getElement('qOptions');
-
-
-    if (options) {
-
-      options.parentNode.insertBefore(
-        messageBox,
-        options.nextSibling
-      );
-
-    }
-
-
-    setTimeout(
-      function () {
-
-        if (messageBox.parentNode) {
-
-          messageBox.remove();
-
-        }
-
-      },
-      2500
-    );
-
-  }
-
-
-  /*
-   * =========================================================
-   * SAYFAYI WIZARD'A KAYDIR
-   * =========================================================
-   */
+  // =========================================================
+  // SCROLL
+  // =========================================================
 
   function scrollToWizard() {
 
     const card =
-      getElement('wizardCard');
-
+      $("wizardCard");
 
     if (!card) return;
 
 
-    setTimeout(
-      function () {
+    setTimeout(() => {
 
-        card.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+      card.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
 
-      },
-      50
+    }, 50);
+
+  }
+
+
+  // =========================================================
+  // FİYAT
+  // =========================================================
+
+  function formatPrice(value) {
+
+    return (
+      new Intl.NumberFormat(
+        "tr-TR"
+      ).format(value) +
+      " TL"
     );
 
   }
 
 
-  /*
-   * =========================================================
-   * FİYAT FORMATLAMA
-   * =========================================================
-   */
-
-  function formatPrice(value) {
-
-    return new Intl.NumberFormat(
-      'tr-TR'
-    ).format(value) + ' TL';
-
-  }
-
-
-  /*
-   * =========================================================
-   * GLOBAL ERİŞİM
-   * =========================================================
-   *
-   * İleride başka dosyalardan da kullanıcı
-   * tercihlerini okuyabilmek için.
-   */
+  // =========================================================
+  // DIŞARIDAN STATE'E ERİŞİM
+  // =========================================================
 
   window.getWizardState = function () {
 
     return {
-      ...wizardState,
 
-      usage: [
-        ...wizardState.usage
-      ],
+      budget:
+        wizardState.budget,
 
-      fuel: [
-        ...wizardState.fuel
-      ],
+      usage:
+        [...wizardState.usage],
 
-      priorities: [
-        ...wizardState.priorities
-      ],
+      fuel:
+        [...wizardState.fuel],
 
-      body: [
-        ...wizardState.body
-      ]
+      transmission:
+        wizardState.transmission,
+
+      priorities:
+        [...wizardState.priorities],
+
+      body:
+        [...wizardState.body]
+
     };
 
   };
 
 
-  /*
-   * =========================================================
-   * BAŞLAT
-   * =========================================================
-   */
+  // =========================================================
+  // BAŞLAT
+  // =========================================================
 
   function initWizard() {
 
-    if (!getElement('wizardCard')) {
-
-      console.warn(
-        'Wizard başlatılamadı: wizardCard bulunamadı.'
-      );
-
+    if (!$("wizardCard")) {
       return;
     }
-
 
     renderWizard();
 
   }
 
 
-  /*
-   * DOM hazır
-   */
-
   if (
-    document.readyState === 'loading'
+    document.readyState === "loading"
   ) {
 
     document.addEventListener(
-      'DOMContentLoaded',
+      "DOMContentLoaded",
       initWizard
     );
 
