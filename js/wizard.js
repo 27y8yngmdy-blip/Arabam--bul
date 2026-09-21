@@ -1,1546 +1,1248 @@
-```html
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Araba Bul Wizard</title>
-
-<style>
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-:root{
-    --red:#e53935;
-    --red-dark:#c62828;
-    --red-soft:#fff1f1;
-    --bg:#f5f6f8;
-    --white:#fff;
-    --text:#17191c;
-    --muted:#737980;
-    --border:#e2e4e8;
-}
-
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    min-height:100vh;
-}
-
-/* =========================
-   HEADER
-========================= */
-
-.header{
-    height:70px;
-    background:#fff;
-    border-bottom:1px solid var(--border);
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    padding:0 6%;
-}
-
-.logo{
-    font-size:22px;
-    font-weight:800;
-}
-
-.logo span{
-    color:var(--red);
-}
-
-.close-btn{
-    text-decoration:none;
-    color:var(--muted);
-    font-size:14px;
-}
-
-/* =========================
-   PAGE
-========================= */
-
-.page{
-    width:min(1000px,92%);
-    margin:35px auto 60px;
-}
-
-.heading{
-    text-align:center;
-    margin-bottom:28px;
-}
-
-.heading h1{
-    font-size:32px;
-    margin-bottom:8px;
-}
-
-.heading p{
-    color:var(--muted);
-    font-size:15px;
-}
-
-/* =========================
-   WIZARD
-========================= */
-
-.wizard{
-    background:#fff;
-    border-radius:22px;
-    overflow:hidden;
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.08);
-}
-
-/* =========================
-   PROGRESS
-========================= */
-
-.progress-area{
-    padding:25px 30px 22px;
-    border-bottom:1px solid var(--border);
-}
-
-.progress-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-
-    margin-bottom:12px;
-}
-
-.progress-step{
-    font-size:13px;
-    font-weight:700;
-}
-
-.progress-percent{
-    font-size:13px;
-    font-weight:700;
-    color:var(--red);
-}
-
-.progress{
-    height:7px;
-    background:#eee;
-    border-radius:20px;
-    overflow:hidden;
-}
-
-.progress-bar{
-    width:16.66%;
-    height:100%;
-    background:var(--red);
-    border-radius:20px;
-
-    transition:.3s ease;
-}
-
-.dots{
-    display:flex;
-    justify-content:space-between;
-
-    margin-top:17px;
-}
-
-.dot{
-    width:28px;
-    height:28px;
-
-    border-radius:50%;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    background:#eee;
-    color:#888;
-
-    font-size:12px;
-    font-weight:700;
-
-    transition:.25s;
-}
-
-.dot.active{
-    background:var(--red);
-    color:#fff;
-}
-
-.dot.done{
-    background:#ffd9d9;
-    color:var(--red-dark);
-}
-
-/* =========================
-   CONTENT
-========================= */
-
-.content{
-    padding:42px;
-}
-
-.step{
-    display:none;
-}
-
-.step.active{
-    display:block;
-}
-
-.step-title{
-    text-align:center;
-    font-size:26px;
-    margin-bottom:9px;
-}
-
-.step-description{
-    text-align:center;
-    color:var(--muted);
-    font-size:14px;
-
-    margin-bottom:30px;
-}
-
-/* =========================
-   OPTIONS
-========================= */
-
-.options{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-}
-
-.option{
-    position:relative;
-
-    padding:20px;
-
-    border:2px solid var(--border);
-    border-radius:15px;
-
-    background:#fff;
-
-    cursor:pointer;
-
-    transition:.2s;
-}
-
-.option:hover{
-    border-color:#f0a09e;
-    transform:translateY(-2px);
-}
-
-.option.selected{
-    border-color:var(--red);
-    background:var(--red-soft);
-}
-
-.option.selected::after{
-    content:"✓";
-
-    position:absolute;
-
-    top:12px;
-    right:12px;
-
-    width:23px;
-    height:23px;
-
-    border-radius:50%;
-
-    background:var(--red);
-    color:#fff;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:12px;
-    font-weight:bold;
-}
-
-.option-icon{
-    font-size:28px;
-    margin-bottom:12px;
-}
-
-.option-title{
-    font-size:16px;
-    font-weight:700;
-
-    margin-bottom:5px;
-}
-
-.option-description{
-    color:var(--muted);
-
-    font-size:12px;
-    line-height:1.4;
-}
-
-/* =========================
-   BUDGET
-========================= */
-
-.budget-wrapper{
-    max-width:700px;
-    margin:0 auto;
-}
-
-.budget-value{
-    text-align:center;
-
-    color:var(--red);
-
-    font-size:34px;
-    font-weight:800;
-
-    margin-bottom:25px;
-}
-
-input[type="range"]{
-    width:100%;
-    accent-color:var(--red);
-}
-
-.range-labels{
-    display:flex;
-    justify-content:space-between;
-
-    margin-top:10px;
-
-    color:var(--muted);
-    font-size:12px;
-}
-
-.info-box{
-    margin-top:25px;
-
-    background:#f7f7f8;
-
-    border-radius:12px;
-
-    padding:15px;
-
-    text-align:center;
-
-    color:var(--muted);
-
-    font-size:12px;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.actions{
-    border-top:1px solid var(--border);
-
-    padding:20px 30px;
-
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-
-.btn{
-    border:0;
-    border-radius:12px;
-
-    padding:13px 22px;
-
-    font-size:14px;
-    font-weight:700;
-
-    cursor:pointer;
-}
-
-.btn-back{
-    background:#f0f1f3;
-    color:#333;
-}
-
-.btn-next{
-    background:var(--red);
-    color:#fff;
-}
-
-.btn-next:hover{
-    background:var(--red-dark);
-}
-
-.btn-back:hover{
-    background:#e7e8ea;
-}
-
-.btn:disabled{
-    opacity:.45;
-    cursor:not-allowed;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:800px){
-
-    .options{
-        grid-template-columns:repeat(2,1fr);
+(function () {
+  'use strict';
+
+  /*
+   * =========================================================
+   * ARABAMI BUL — WIZARD
+   * 6 ADIMLI ARAÇ ÖNERİ SİSTEMİ
+   * =========================================================
+   */
+
+  const TOTAL_STEPS = 6;
+
+  let currentStep = 1;
+
+  /*
+   * Kullanıcının bütün seçimleri burada tutulur.
+   *
+   * İleride gerçek araç eşleştirme algoritmasını
+   * doğrudan bu state üzerinden kuracağız.
+   */
+  const wizardState = {
+    budget: null,
+    usage: [],
+    fuel: [],
+    transmission: null,
+    priorities: [],
+    body: []
+  };
+
+
+  /*
+   * =========================================================
+   * SORULAR
+   * =========================================================
+   */
+
+  const questions = [
+
+    {
+      step: 1,
+
+      title: 'Bütçeniz nedir?',
+
+      subtitle:
+        'Satın almayı düşündüğünüz maksimum araç fiyatını seçin.',
+
+      type: 'budget'
+    },
+
+
+    {
+      step: 2,
+
+      title: 'Aracı daha çok nasıl kullanacaksınız?',
+
+      subtitle:
+        'Birden fazla seçenek seçebilirsiniz.',
+
+      type: 'multi',
+
+      key: 'usage',
+
+      options: [
+        {
+          value: 'city',
+          icon: '🏙️',
+          title: 'Şehir İçi',
+          text: 'Günlük şehir kullanımım ağırlıklı.'
+        },
+
+        {
+          value: 'longRoad',
+          icon: '🛣️',
+          title: 'Uzun Yol',
+          text: 'Sık sık şehirler arası yol yaparım.'
+        },
+
+        {
+          value: 'family',
+          icon: '👨‍👩‍👧‍👦',
+          title: 'Aile',
+          text: 'Aile ve geniş kullanım önemli.'
+        },
+
+        {
+          value: 'daily',
+          icon: '💼',
+          title: 'Günlük Kullanım',
+          text: 'İşe, okula ve günlük işlere gitmek için.'
+        },
+
+        {
+          value: 'fun',
+          icon: '🏎️',
+          title: 'Keyif / Performans',
+          text: 'Sürüş keyfi ve performans önemli.'
+        },
+
+        {
+          value: 'firstCar',
+          icon: '🚗',
+          title: 'İlk Arabam',
+          text: 'İlk otomobilimi alıyorum.'
+        }
+      ]
+    },
+
+
+    {
+      step: 3,
+
+      title: 'Hangi yakıt tiplerini düşünüyorsunuz?',
+
+      subtitle:
+        'Birden fazla seçenek seçebilirsiniz.',
+
+      type: 'multi',
+
+      key: 'fuel',
+
+      options: [
+        {
+          value: 'Benzin',
+          icon: '⛽',
+          title: 'Benzin',
+          text: 'Klasik benzinli motor.'
+        },
+
+        {
+          value: 'Dizel',
+          icon: '🛢️',
+          title: 'Dizel',
+          text: 'Uzun yol ve düşük tüketim odaklı.'
+        },
+
+        {
+          value: 'Hibrit',
+          icon: '🔋',
+          title: 'Hibrit',
+          text: 'Yakıt ekonomisi ve elektrik desteği.'
+        },
+
+        {
+          value: 'Elektrik',
+          icon: '⚡',
+          title: 'Elektrik',
+          text: 'Tamamen elektrikli araçlar.'
+        }
+      ]
+    },
+
+
+    {
+      step: 4,
+
+      title: 'Vites tercihiniz nedir?',
+
+      subtitle:
+        'Size uygun vites tipini seçin.',
+
+      type: 'single',
+
+      key: 'transmission',
+
+      options: [
+        {
+          value: 'Otomatik',
+          icon: '⚙️',
+          title: 'Otomatik',
+          text: 'Konforlu ve kolay kullanım.'
+        },
+
+        {
+          value: 'Manuel',
+          icon: '🕹️',
+          title: 'Manuel',
+          text: 'Daha kontrollü sürüş deneyimi.'
+        }
+      ]
+    },
+
+
+    {
+      step: 5,
+
+      title: 'Sizin için en önemli özellikler neler?',
+
+      subtitle:
+        'Birden fazla özellik seçebilirsiniz.',
+
+      type: 'multi',
+
+      key: 'priorities',
+
+      options: [
+        {
+          value: 'economy',
+          icon: '💰',
+          title: 'Az Tüketim',
+          text: 'Yakıt ve kullanım maliyeti düşük olsun.'
+        },
+
+        {
+          value: 'comfort',
+          icon: '🛋️',
+          title: 'Konfor',
+          text: 'Rahat ve konforlu bir sürüş istiyorum.'
+        },
+
+        {
+          value: 'performance',
+          icon: '🚀',
+          title: 'Performans',
+          text: 'Güçlü motor ve hızlı tepki önemli.'
+        },
+
+        {
+          value: 'safety',
+          icon: '🛡️',
+          title: 'Güvenlik',
+          text: 'Güvenlik donanımları öncelikli.'
+        },
+
+        {
+          value: 'space',
+          icon: '🧳',
+          title: 'Genişlik',
+          text: 'İç hacim ve bagaj önemli.'
+        },
+
+        {
+          value: 'technology',
+          icon: '📱',
+          title: 'Teknoloji',
+          text: 'Modern ekranlar ve teknolojik özellikler.'
+        }
+      ]
+    },
+
+
+    {
+      step: 6,
+
+      title: 'Hangi kasa tiplerini düşünüyorsunuz?',
+
+      subtitle:
+        'Birden fazla kasa tipi seçebilirsiniz.',
+
+      type: 'multi',
+
+      key: 'body',
+
+      options: [
+        {
+          value: 'Hatchback',
+          icon: '🚗',
+          title: 'Hatchback',
+          text: 'Kompakt ve şehir dostu.'
+        },
+
+        {
+          value: 'Sedan',
+          icon: '🚘',
+          title: 'Sedan',
+          text: 'Konforlu ve klasik gövde.'
+        },
+
+        {
+          value: 'SUV',
+          icon: '🚙',
+          title: 'SUV',
+          text: 'Yüksek oturma ve geniş alan.'
+        },
+
+        {
+          value: 'Coupe',
+          icon: '🏎️',
+          title: 'Coupe',
+          text: 'Sportif ve dinamik tasarım.'
+        },
+
+        {
+          value: 'Elektrik',
+          icon: '⚡',
+          title: 'Elektrikli',
+          text: 'Elektrikli otomobil gövde seçenekleri.'
+        }
+      ]
     }
 
-    .content{
-        padding:28px 22px;
+  ];
+
+
+  /*
+   * =========================================================
+   * ELEMENTLER
+   * =========================================================
+   */
+
+  function getElement(id) {
+    return document.getElementById(id);
+  }
+
+
+  /*
+   * =========================================================
+   * WIZARD'I GÖSTER
+   * =========================================================
+   */
+
+  function renderWizard() {
+
+    const question = questions[currentStep - 1];
+
+    if (!question) return;
+
+
+    const badge = getElement('qBadge');
+    const title = getElement('qTitle');
+    const subtitle = getElement('qSub');
+    const progress = getElement('pFill');
+    const options = getElement('qOptions');
+    const prevButton = getElement('prevBtn');
+
+
+    if (!badge || !title || !subtitle || !progress || !options) {
+      console.warn('Wizard elementleri bulunamadı.');
+      return;
     }
 
-}
 
-@media(max-width:550px){
+    /*
+     * Başlıklar
+     */
 
-    .header{
-        height:62px;
-        padding:0 5%;
+    badge.textContent =
+      `Soru ${currentStep} / ${TOTAL_STEPS}`;
+
+    title.textContent =
+      question.title;
+
+    subtitle.textContent =
+      question.subtitle;
+
+
+    /*
+     * Progress
+     */
+
+    const progressPercent =
+      (currentStep / TOTAL_STEPS) * 100;
+
+    progress.style.width =
+      `${progressPercent}%`;
+
+
+    /*
+     * Geri butonu
+     */
+
+    if (prevButton) {
+
+      prevButton.disabled =
+        currentStep === 1;
+
+      prevButton.style.opacity =
+        currentStep === 1 ? '0.5' : '1';
+
+      prevButton.style.cursor =
+        currentStep === 1 ? 'not-allowed' : 'pointer';
     }
 
-    .page{
-        width:94%;
-        margin-top:22px;
+
+    /*
+     * Seçenekleri temizle
+     */
+
+    options.innerHTML = '';
+
+
+    /*
+     * Bütçe sorusu
+     */
+
+    if (question.type === 'budget') {
+
+      renderBudget(options);
+
+      return;
     }
 
-    .heading h1{
-        font-size:27px;
-    }
 
-    .heading p{
-        font-size:13px;
-    }
+    /*
+     * Normal seçenekler
+     */
 
-    .wizard{
-        border-radius:17px;
-    }
+    question.options.forEach(option => {
 
-    .progress-area{
-        padding:18px;
-    }
-
-    .content{
-        padding:25px 15px;
-    }
-
-    .options{
-        grid-template-columns:1fr;
-    }
-
-    .option{
-        padding:17px;
-    }
-
-    .step-title{
-        font-size:22px;
-    }
-
-    .actions{
-        padding:15px;
-    }
-
-    .btn{
-        padding:12px 17px;
-    }
-
-    .dot{
-        width:24px;
-        height:24px;
-        font-size:10px;
-    }
-
-}
-
-</style>
-</head>
-
-<body>
-
-<header class="header">
-
-    <div class="logo">
-        Arabamı <span>Bul</span>
-    </div>
-
-    <a href="#" class="close-btn">
-        ← Geri
-    </a>
-
-</header>
+      const selected =
+        isSelected(question, option.value);
 
 
-<main class="page">
+      const card =
+        document.createElement('button');
 
-    <div class="heading">
+      card.type = 'button';
 
-        <h1>Sana Uygun Arabayı Bul</h1>
-
-        <p>
-            Birkaç soruyu cevapla, sana uygun araçları bulalım.
-        </p>
-
-    </div>
+      card.className =
+        'wizard-option' +
+        (selected ? ' selected' : '');
 
 
-    <div class="wizard">
-
-        <!-- PROGRESS -->
-
-        <div class="progress-area">
-
-            <div class="progress-top">
-
-                <span
-                    class="progress-step"
-                    id="progressStep"
-                >
-                    Adım 1 / 6
-                </span>
-
-                <span
-                    class="progress-percent"
-                    id="progressPercent"
-                >
-                    %17
-                </span>
-
-            </div>
+      card.dataset.value =
+        option.value;
 
 
-            <div class="progress">
+      card.innerHTML = `
 
-                <div
-                    class="progress-bar"
-                    id="progressBar"
-                ></div>
+        <div class="wizard-option-icon">
+          ${option.icon}
+        </div>
 
-            </div>
+        <div class="wizard-option-content">
 
+          <strong>
+            ${option.title}
+          </strong>
 
-            <div class="dots">
-
-                <div class="dot active" data-dot="1">1</div>
-                <div class="dot" data-dot="2">2</div>
-                <div class="dot" data-dot="3">3</div>
-                <div class="dot" data-dot="4">4</div>
-                <div class="dot" data-dot="5">5</div>
-                <div class="dot" data-dot="6">6</div>
-
-            </div>
+          <span>
+            ${option.text}
+          </span>
 
         </div>
 
-
-        <!-- CONTENT -->
-
-        <div class="content">
-
-
-            <!-- STEP 1 -->
-
-            <section
-                class="step active"
-                data-step="1"
-            >
-
-                <h2 class="step-title">
-                    Bütçen ne kadar?
-                </h2>
-
-                <p class="step-description">
-                    Araç için ayırdığın yaklaşık bütçeyi seç.
-                </p>
-
-
-                <div class="budget-wrapper">
-
-                    <div
-                        class="budget-value"
-                        id="budgetValue"
-                    >
-                        1.500.000 TL
-                    </div>
-
-
-                    <input
-                        type="range"
-                        id="budget"
-                        min="800000"
-                        max="3000000"
-                        step="50000"
-                        value="1500000"
-                    >
-
-
-                    <div class="range-labels">
-
-                        <span>
-                            800.000 TL
-                        </span>
-
-                        <span>
-                            3.000.000 TL
-                        </span>
-
-                    </div>
-
-
-                    <div class="info-box">
-
-                        Bütçene yakın araçları da
-                        sonuçlarda değerlendirebiliriz.
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- STEP 2 -->
-
-            <section
-                class="step"
-                data-step="2"
-            >
-
-                <h2 class="step-title">
-                    Arabayı ne için kullanacaksın?
-                </h2>
-
-                <p class="step-description">
-                    Birden fazla seçenek seçebilirsin.
-                </p>
-
-
-                <div class="options">
-
-                    <div
-                        class="option"
-                        data-group="usage"
-                        data-value="sehir"
-                    >
-
-                        <div class="option-icon">🏙️</div>
-
-                        <div class="option-title">
-                            Şehir içi
-                        </div>
-
-                        <div class="option-description">
-                            Günlük kullanım ve kısa mesafeler.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="usage"
-                        data-value="uzun"
-                    >
-
-                        <div class="option-icon">🛣️</div>
-
-                        <div class="option-title">
-                            Uzun yol
-                        </div>
-
-                        <div class="option-description">
-                            Sık şehirler arası yolculuk.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="usage"
-                        data-value="aile"
-                    >
-
-                        <div class="option-icon">👨‍👩‍👧</div>
-
-                        <div class="option-title">
-                            Aile
-                        </div>
-
-                        <div class="option-description">
-                            Geniş ve kullanışlı otomobil.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="usage"
-                        data-value="is"
-                    >
-
-                        <div class="option-icon">💼</div>
-
-                        <div class="option-title">
-                            İş / Günlük
-                        </div>
-
-                        <div class="option-description">
-                            Her gün düzenli kullanım.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="usage"
-                        data-value="keyif"
-                    >
-
-                        <div class="option-icon">🏁</div>
-
-                        <div class="option-title">
-                            Keyif
-                        </div>
-
-                        <div class="option-description">
-                            Sürüş keyfi ve performans.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="usage"
-                        data-value="ilk"
-                    >
-
-                        <div class="option-icon">🚗</div>
-
-                        <div class="option-title">
-                            İlk arabam
-                        </div>
-
-                        <div class="option-description">
-                            Kolay kullanılabilen otomobil.
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- STEP 3 -->
-
-            <section
-                class="step"
-                data-step="3"
-            >
-
-                <h2 class="step-title">
-                    Yakıt tercihin nedir?
-                </h2>
-
-                <p class="step-description">
-                    Birden fazla seçenek seçebilirsin.
-                </p>
-
-
-                <div class="options">
-
-                    <div
-                        class="option"
-                        data-group="fuel"
-                        data-value="benzin"
-                    >
-
-                        <div class="option-icon">⛽</div>
-
-                        <div class="option-title">
-                            Benzin
-                        </div>
-
-                        <div class="option-description">
-                            Sessiz ve günlük kullanıma uygun.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="fuel"
-                        data-value="dizel"
-                    >
-
-                        <div class="option-icon">🚛</div>
-
-                        <div class="option-title">
-                            Dizel
-                        </div>
-
-                        <div class="option-description">
-                            Uzun yol ve yüksek kilometre.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="fuel"
-                        data-value="hibrit"
-                    >
-
-                        <div class="option-icon">🔋</div>
-
-                        <div class="option-title">
-                            Hibrit
-                        </div>
-
-                        <div class="option-description">
-                            Düşük tüketim odaklı.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="fuel"
-                        data-value="elektrik"
-                    >
-
-                        <div class="option-icon">⚡</div>
-
-                        <div class="option-title">
-                            Elektrik
-                        </div>
-
-                        <div class="option-description">
-                            Sessiz ve elektrikli sürüş.
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- STEP 4 -->
-
-            <section
-                class="step"
-                data-step="4"
-            >
-
-                <h2 class="step-title">
-                    Vites tercihin?
-                </h2>
-
-                <p class="step-description">
-                    Sana uygun şanzıman tipini seç.
-                </p>
-
-
-                <div class="options">
-
-                    <div
-                        class="option"
-                        data-group="gear"
-                        data-value="otomatik"
-                    >
-
-                        <div class="option-icon">⚙️</div>
-
-                        <div class="option-title">
-                            Otomatik
-                        </div>
-
-                        <div class="option-description">
-                            Konforlu ve kolay kullanım.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="gear"
-                        data-value="manuel"
-                    >
-
-                        <div class="option-icon">🔧</div>
-
-                        <div class="option-title">
-                            Manuel
-                        </div>
-
-                        <div class="option-description">
-                            Daha kontrollü sürüş.
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- STEP 5 -->
-
-            <section
-                class="step"
-                data-step="5"
-            >
-
-                <h2 class="step-title">
-                    Senin için en önemli şey ne?
-                </h2>
-
-                <p class="step-description">
-                    Birden fazla seçenek seçebilirsin.
-                </p>
-
-
-                <div class="options">
-
-                    <div
-                        class="option"
-                        data-group="priority"
-                        data-value="ekonomi"
-                    >
-
-                        <div class="option-icon">💰</div>
-
-                        <div class="option-title">
-                            Az tüketim
-                        </div>
-
-                        <div class="option-description">
-                            Yakıt ekonomisi öncelikli.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="priority"
-                        data-value="konfor"
-                    >
-
-                        <div class="option-icon">🛋️</div>
-
-                        <div class="option-title">
-                            Konfor
-                        </div>
-
-                        <div class="option-description">
-                            Rahat ve sessiz sürüş.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="priority"
-                        data-value="performans"
-                    >
-
-                        <div class="option-icon">🚀</div>
-
-                        <div class="option-title">
-                            Performans
-                        </div>
-
-                        <div class="option-description">
-                            Güçlü motor ve hızlanma.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="priority"
-                        data-value="guvenlik"
-                    >
-
-                        <div class="option-icon">🛡️</div>
-
-                        <div class="option-title">
-                            Güvenlik
-                        </div>
-
-                        <div class="option-description">
-                            Güvenlik ve sürüş destekleri.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="priority"
-                        data-value="bagaj"
-                    >
-
-                        <div class="option-icon">🧳</div>
-
-                        <div class="option-title">
-                            Bagaj / Alan
-                        </div>
-
-                        <div class="option-description">
-                            Geniş iç hacim ve bagaj.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="priority"
-                        data-value="teknoloji"
-                    >
-
-                        <div class="option-icon">📱</div>
-
-                        <div class="option-title">
-                            Teknoloji
-                        </div>
-
-                        <div class="option-description">
-                            Modern ekranlar ve donanımlar.
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- STEP 6 -->
-
-            <section
-                class="step"
-                data-step="6"
-            >
-
-                <h2 class="step-title">
-                    Nasıl bir araç istiyorsun?
-                </h2>
-
-                <p class="step-description">
-                    Birden fazla kasa tipi seçebilirsin.
-                </p>
-
-
-                <div class="options">
-
-                    <div
-                        class="option"
-                        data-group="body"
-                        data-value="hatchback"
-                    >
-
-                        <div class="option-icon">🚘</div>
-
-                        <div class="option-title">
-                            Hatchback
-                        </div>
-
-                        <div class="option-description">
-                            Kompakt ve şehir dostu.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="body"
-                        data-value="sedan"
-                    >
-
-                        <div class="option-icon">🚙</div>
-
-                        <div class="option-title">
-                            Sedan
-                        </div>
-
-                        <div class="option-description">
-                            Konforlu ve geniş.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="body"
-                        data-value="suv"
-                    >
-
-                        <div class="option-icon">🚙</div>
-
-                        <div class="option-title">
-                            SUV
-                        </div>
-
-                        <div class="option-description">
-                            Yüksek sürüş ve geniş alan.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="body"
-                        data-value="station"
-                    >
-
-                        <div class="option-icon">🚗</div>
-
-                        <div class="option-title">
-                            Station Wagon
-                        </div>
-
-                        <div class="option-description">
-                            Geniş bagaj ve kullanım alanı.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="body"
-                        data-value="coupe"
-                    >
-
-                        <div class="option-icon">🏎️</div>
-
-                        <div class="option-title">
-                            Coupe / Sportif
-                        </div>
-
-                        <div class="option-description">
-                            Sportif görünüm ve sürüş.
-                        </div>
-
-                    </div>
-
-
-                    <div
-                        class="option"
-                        data-group="body"
-                        data-value="farketmez"
-                    >
-
-                        <div class="option-icon">✨</div>
-
-                        <div class="option-title">
-                            Fark etmez
-                        </div>
-
-                        <div class="option-description">
-                            Önemli olan bana uygun olması.
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
+        <div class="wizard-check">
+          ${selected ? '✓' : ''}
         </div>
 
+      `;
 
-        <!-- ACTIONS -->
 
-        <div class="actions">
+      card.addEventListener(
+        'click',
+        function () {
 
-            <button
-                class="btn btn-back"
-                id="backBtn"
-                disabled
-            >
-                ← Geri
-            </button>
+          selectOption(
+            question,
+            option.value
+          );
 
-
-            <button
-                class="btn btn-next"
-                id="nextBtn"
-            >
-                Devam Et →
-            </button>
-
-        </div>
-
-    </div>
-
-</main>
-
-
-<script>
-
-const state = {
-
-    step:1,
-
-    budget:1500000,
-
-    usage:[],
-
-    fuel:[],
-
-    gear:[],
-
-    priority:[],
-
-    body:[]
-
-};
-
-
-const steps =
-    document.querySelectorAll(".step");
-
-
-const nextBtn =
-    document.getElementById("nextBtn");
-
-
-const backBtn =
-    document.getElementById("backBtn");
-
-
-const budget =
-    document.getElementById("budget");
-
-
-const budgetValue =
-    document.getElementById("budgetValue");
-
-
-/* =========================
-   BÜTÇE
-========================= */
-
-function updateBudget(){
-
-    state.budget =
-        Number(budget.value);
-
-    budgetValue.textContent =
-        new Intl.NumberFormat("tr-TR")
-        .format(state.budget)
-        + " TL";
-
-}
-
-budget.addEventListener(
-    "input",
-    updateBudget
-);
-
-
-/* =========================
-   OPTION SELECTION
-========================= */
-
-document
-.querySelectorAll(".option")
-.forEach(option => {
-
-    option.addEventListener(
-        "click",
-        () => {
-
-            const group =
-                option.dataset.group;
-
-            const value =
-                option.dataset.value;
-
-
-            if(!state[group]){
-                state[group] = [];
-            }
-
-
-            /*
-                Fark etmez seçilirse
-                diğer seçimleri temizle
-            */
-
-            if(value === "farketmez"){
-
-                state[group] =
-                    ["farketmez"];
-
-                document
-                .querySelectorAll(
-                    `.option[data-group="${group}"]`
-                )
-                .forEach(item => {
-
-                    item.classList.remove(
-                        "selected"
-                    );
-
-                });
-
-                option.classList.add(
-                    "selected"
-                );
-
-                return;
-
-            }
-
-
-            /*
-                Fark etmez seçimini kaldır
-            */
-
-            const farketmez =
-                document.querySelector(
-                    `.option[data-group="${group}"][data-value="farketmez"]`
-                );
-
-            if(farketmez){
-
-                farketmez.classList.remove(
-                    "selected"
-                );
-
-            }
-
-
-            state[group] =
-                state[group]
-                .filter(
-                    item => item !== "farketmez"
-                );
-
-
-            const index =
-                state[group]
-                .indexOf(value);
-
-
-            if(index !== -1){
-
-                state[group]
-                .splice(index,1);
-
-                option.classList.remove(
-                    "selected"
-                );
-
-            }else{
-
-                state[group]
-                .push(value);
-
-                option.classList.add(
-                    "selected"
-                );
-
-            }
+          renderWizard();
 
         }
+      );
+
+
+      options.appendChild(card);
+
+    });
+
+  }
+
+
+  /*
+   * =========================================================
+   * BÜTÇE
+   * =========================================================
+   */
+
+  function renderBudget(container) {
+
+    const currentBudget =
+      wizardState.budget || 1500000;
+
+
+    const wrapper =
+      document.createElement('div');
+
+    wrapper.className =
+      'wizard-budget';
+
+
+    wrapper.innerHTML = `
+
+      <div class="budget-value">
+        ${formatPrice(currentBudget)}
+      </div>
+
+      <input
+        type="range"
+        id="wizardBudget"
+        min="500000"
+        max="5000000"
+        step="50000"
+        value="${currentBudget}"
+      >
+
+      <div class="budget-labels">
+
+        <span>
+          500.000 TL
+        </span>
+
+        <span>
+          5.000.000 TL
+        </span>
+
+      </div>
+
+      <p class="budget-info">
+        Bu tutar, araç için ayırabileceğiniz maksimum bütçedir.
+      </p>
+
+    `;
+
+
+    container.appendChild(wrapper);
+
+
+    const slider =
+      getElement('wizardBudget');
+
+
+    if (slider) {
+
+      slider.addEventListener(
+        'input',
+        function () {
+
+          wizardState.budget =
+            Number(this.value);
+
+
+          const value =
+            wrapper.querySelector('.budget-value');
+
+
+          if (value) {
+
+            value.textContent =
+              formatPrice(wizardState.budget);
+
+          }
+
+        }
+      );
+
+    }
+
+
+    wizardState.budget =
+      currentBudget;
+  }
+
+
+  /*
+   * =========================================================
+   * SEÇİM KONTROLÜ
+   * =========================================================
+   */
+
+  function isSelected(question, value) {
+
+    if (question.type === 'single') {
+
+      return wizardState[question.key] === value;
+
+    }
+
+
+    if (question.type === 'multi') {
+
+      return wizardState[question.key].includes(value);
+
+    }
+
+
+    return false;
+  }
+
+
+  /*
+   * =========================================================
+   * SEÇİM YAP
+   * =========================================================
+   */
+
+  function selectOption(question, value) {
+
+    /*
+     * Tek seçim
+     */
+
+    if (question.type === 'single') {
+
+      wizardState[question.key] =
+        value;
+
+      return;
+    }
+
+
+    /*
+     * Çoklu seçim
+     */
+
+    if (question.type === 'multi') {
+
+      const list =
+        wizardState[question.key];
+
+
+      const index =
+        list.indexOf(value);
+
+
+      if (index === -1) {
+
+        list.push(value);
+
+      } else {
+
+        list.splice(index, 1);
+
+      }
+
+    }
+
+  }
+
+
+  /*
+   * =========================================================
+   * SONRAKİ SORU
+   * =========================================================
+   */
+
+  window.nextQ = function () {
+
+    if (!validateCurrentStep()) {
+
+      return;
+    }
+
+
+    if (currentStep < TOTAL_STEPS) {
+
+      currentStep++;
+
+      renderWizard();
+
+      scrollToWizard();
+
+      return;
+    }
+
+
+    /*
+     * Son soru tamamlandı.
+     */
+
+    finishWizard();
+
+  };
+
+
+  /*
+   * =========================================================
+   * ÖNCEKİ SORU
+   * =========================================================
+   */
+
+  window.prevQ = function () {
+
+    if (currentStep <= 1) {
+
+      return;
+    }
+
+
+    currentStep--;
+
+    renderWizard();
+
+    scrollToWizard();
+
+  };
+
+
+  /*
+   * =========================================================
+   * VALIDATION
+   * =========================================================
+   */
+
+  function validateCurrentStep() {
+
+    const question =
+      questions[currentStep - 1];
+
+
+    /*
+     * Bütçe
+     */
+
+    if (question.type === 'budget') {
+
+      if (!wizardState.budget) {
+
+        showWizardMessage(
+          'Lütfen bütçenizi seçin.'
+        );
+
+        return false;
+      }
+
+      return true;
+    }
+
+
+    /*
+     * Tek seçim
+     */
+
+    if (question.type === 'single') {
+
+      if (!wizardState[question.key]) {
+
+        showWizardMessage(
+          'Lütfen bir seçim yapın.'
+        );
+
+        return false;
+      }
+
+      return true;
+    }
+
+
+    /*
+     * Çoklu seçim
+     */
+
+    if (question.type === 'multi') {
+
+      if (
+        !wizardState[question.key] ||
+        wizardState[question.key].length === 0
+      ) {
+
+        showWizardMessage(
+          'Devam etmek için en az bir seçenek seçin.'
+        );
+
+        return false;
+      }
+
+      return true;
+    }
+
+
+    return true;
+  }
+
+
+  /*
+   * =========================================================
+   * WIZARD TAMAMLANDI
+   * =========================================================
+   */
+
+  function finishWizard() {
+
+    console.log(
+      'ARABAMI BUL — Kullanıcı tercihleri:',
+      wizardState
     );
 
-});
+
+    /*
+     * Burada henüz gerçek araç algoritmasını
+     * çalıştırmıyoruz.
+     *
+     * Bir sonraki aşamada:
+     *
+     * wizardState
+     *       ↓
+     * araç verileri
+     *       ↓
+     * puanlama
+     *       ↓
+     * eşleşen araçlar
+     *       ↓
+     * wizardResultGrid
+     *
+     * şeklinde bağlayacağız.
+     */
 
 
-/* =========================
-   SHOW STEP
-========================= */
+    const wizardCard =
+      getElement('wizardCard');
 
-function showStep(){
+    const result =
+      getElement('wizardResult');
 
-    steps.forEach(step => {
 
-        step.classList.toggle(
-            "active",
-            Number(step.dataset.step)
-            === state.step
-        );
+    if (!wizardCard || !result) {
 
+      console.warn(
+        'Wizard sonuç alanı bulunamadı.'
+      );
+
+      return;
+    }
+
+
+    wizardCard.style.display =
+      'none';
+
+    result.style.display =
+      'block';
+
+
+    renderTemporaryResults();
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
     });
 
-
-    const percent =
-        Math.round(
-            (state.step / 6) * 100
-        );
+  }
 
 
-    document.getElementById(
-        "progressStep"
-    ).textContent =
-        `Adım ${state.step} / 6`;
+  /*
+   * =========================================================
+   * GEÇİCİ SONUÇ EKRANI
+   * =========================================================
+   *
+   * Gerçek araç algoritması gelene kadar
+   * kullanıcının seçimlerini gösteriyoruz.
+   */
+
+  function renderTemporaryResults() {
+
+    const grid =
+      getElement('wizardResultGrid');
 
 
-    document.getElementById(
-        "progressPercent"
-    ).textContent =
-        `%${percent}`;
+    if (!grid) return;
 
 
-    document.getElementById(
-        "progressBar"
-    ).style.width =
-        `${percent}%`;
+    grid.innerHTML = `
+
+      <div
+        style="
+          grid-column:1/-1;
+          background:#fff;
+          border:1px solid var(--line);
+          border-radius:16px;
+          padding:28px;
+          text-align:center;
+        "
+      >
+
+        <div style="font-size:42px;margin-bottom:10px;">
+          🎯
+        </div>
+
+        <h3 style="margin:0 0 8px;">
+          Tercihleriniz kaydedildi
+        </h3>
+
+        <p
+          style="
+            color:var(--muted);
+            font-size:14px;
+            margin:0 0 20px;
+          "
+        >
+          Araç eşleştirme sistemi için seçimleriniz hazır.
+        </p>
+
+        <div
+          style="
+            display:flex;
+            flex-wrap:wrap;
+            justify-content:center;
+            gap:8px;
+          "
+        >
+
+          ${createSummaryBadges()}
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
 
 
-    document
-    .querySelectorAll(".dot")
-    .forEach(dot => {
+  /*
+   * =========================================================
+   * SEÇİMLERİ ÖZETLE
+   * =========================================================
+   */
 
-        const number =
-            Number(dot.dataset.dot);
+  function createSummaryBadges() {
 
-
-        dot.classList.remove(
-            "active",
-            "done"
-        );
+    const badges = [];
 
 
-        if(number === state.step){
+    if (wizardState.budget) {
 
-            dot.classList.add(
-                "active"
-            );
+      badges.push(
+        `Bütçe: ${formatPrice(wizardState.budget)}`
+      );
 
-        }
-
-
-        if(number < state.step){
-
-            dot.classList.add(
-                "done"
-            );
-
-        }
-
-    });
+    }
 
 
-    backBtn.disabled =
-        state.step === 1;
+    if (wizardState.transmission) {
 
-
-    if(state.step === 6){
-
-        nextBtn.textContent =
-            "Tercihlerimi Tamamla ✓";
-
-    }else{
-
-        nextBtn.textContent =
-            "Devam Et →";
+      badges.push(
+        `Vites: ${wizardState.transmission}`
+      );
 
     }
 
-}
+
+    if (wizardState.fuel.length) {
+
+      badges.push(
+        `Yakıt: ${wizardState.fuel.join(', ')}`
+      );
+
+    }
 
 
-/* =========================
-   NEXT
-========================= */
+    if (wizardState.body.length) {
 
-nextBtn.addEventListener(
-    "click",
-    () => {
+      badges.push(
+        `Kasa: ${wizardState.body.join(', ')}`
+      );
 
-        if(state.step < 6){
+    }
 
-            state.step++;
 
-            showStep();
+    if (wizardState.usage.length) {
 
-        }else{
+      badges.push(
+        `Kullanım: ${wizardState.usage.join(', ')}`
+      );
 
-            /*
-                BURASI DAHA SONRA
-                GERÇEK ARAÇ ÖNERİ SİSTEMİNE
-                BAĞLANACAK.
-            */
+    }
 
-            console.log(
-                "Wizard tamamlandı:",
-                state
-            );
 
-            alert(
-                "Tercihlerin kaydedildi. Araç öneri sistemi bir sonraki aşamada bağlanacak."
-            );
+    if (wizardState.priorities.length) {
+
+      badges.push(
+        `Öncelik: ${wizardState.priorities.join(', ')}`
+      );
+
+    }
+
+
+    return badges
+      .map(
+        badge => `
+          <span
+            style="
+              background:#fff1f1;
+              color:#c62828;
+              border:1px solid #ffd5d5;
+              border-radius:999px;
+              padding:7px 12px;
+              font-size:12px;
+              font-weight:700;
+            "
+          >
+            ${badge}
+          </span>
+        `
+      )
+      .join('');
+
+  }
+
+
+  /*
+   * =========================================================
+   * RESET
+   * =========================================================
+   */
+
+  window.resetWizard = function () {
+
+    currentStep = 1;
+
+
+    wizardState.budget = null;
+
+    wizardState.usage = [];
+
+    wizardState.fuel = [];
+
+    wizardState.transmission = null;
+
+    wizardState.priorities = [];
+
+    wizardState.body = [];
+
+
+    const wizardCard =
+      getElement('wizardCard');
+
+    const result =
+      getElement('wizardResult');
+
+
+    if (wizardCard) {
+
+      wizardCard.style.display =
+        'block';
+
+    }
+
+
+    if (result) {
+
+      result.style.display =
+        'none';
+
+    }
+
+
+    renderWizard();
+
+
+    scrollToWizard();
+
+  };
+
+
+  /*
+   * =========================================================
+   * WIZARD MESAJI
+   * =========================================================
+   */
+
+  function showWizardMessage(message) {
+
+    /*
+     * Önce varsa eski mesajı kaldır.
+     */
+
+    const oldMessage =
+      document.getElementById(
+        'wizardMessage'
+      );
+
+
+    if (oldMessage) {
+
+      oldMessage.remove();
+
+    }
+
+
+    const messageBox =
+      document.createElement('div');
+
+
+    messageBox.id =
+      'wizardMessage';
+
+
+    messageBox.style.cssText = `
+      margin-top:12px;
+      padding:11px 14px;
+      border-radius:10px;
+      background:#fff1f1;
+      border:1px solid #ffd0d0;
+      color:#c62828;
+      font-size:13px;
+      font-weight:700;
+      text-align:center;
+    `;
+
+
+    messageBox.textContent =
+      message;
+
+
+    const options =
+      getElement('qOptions');
+
+
+    if (options) {
+
+      options.parentNode.insertBefore(
+        messageBox,
+        options.nextSibling
+      );
+
+    }
+
+
+    setTimeout(
+      function () {
+
+        if (messageBox.parentNode) {
+
+          messageBox.remove();
 
         }
 
+      },
+      2500
+    );
+
+  }
+
+
+  /*
+   * =========================================================
+   * SAYFAYI WIZARD'A KAYDIR
+   * =========================================================
+   */
+
+  function scrollToWizard() {
+
+    const card =
+      getElement('wizardCard');
+
+
+    if (!card) return;
+
+
+    setTimeout(
+      function () {
+
+        card.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+
+      },
+      50
+    );
+
+  }
+
+
+  /*
+   * =========================================================
+   * FİYAT FORMATLAMA
+   * =========================================================
+   */
+
+  function formatPrice(value) {
+
+    return new Intl.NumberFormat(
+      'tr-TR'
+    ).format(value) + ' TL';
+
+  }
+
+
+  /*
+   * =========================================================
+   * GLOBAL ERİŞİM
+   * =========================================================
+   *
+   * İleride başka dosyalardan da kullanıcı
+   * tercihlerini okuyabilmek için.
+   */
+
+  window.getWizardState = function () {
+
+    return {
+      ...wizardState,
+
+      usage: [
+        ...wizardState.usage
+      ],
+
+      fuel: [
+        ...wizardState.fuel
+      ],
+
+      priorities: [
+        ...wizardState.priorities
+      ],
+
+      body: [
+        ...wizardState.body
+      ]
+    };
+
+  };
+
+
+  /*
+   * =========================================================
+   * BAŞLAT
+   * =========================================================
+   */
+
+  function initWizard() {
+
+    if (!getElement('wizardCard')) {
+
+      console.warn(
+        'Wizard başlatılamadı: wizardCard bulunamadı.'
+      );
+
+      return;
     }
-);
 
 
-/* =========================
-   BACK
-========================= */
+    renderWizard();
 
-backBtn.addEventListener(
-    "click",
-    () => {
-
-        if(state.step > 1){
-
-            state.step--;
-
-            showStep();
-
-        }
-
-    }
-);
+  }
 
 
-/* =========================
-   INIT
-========================= */
+  /*
+   * DOM hazır
+   */
 
-updateBudget();
+  if (
+    document.readyState === 'loading'
+  ) {
 
-showStep();
+    document.addEventListener(
+      'DOMContentLoaded',
+      initWizard
+    );
 
-</script>
+  } else {
 
-</body>
-</html>
-```
+    initWizard();
+
+  }
+
+})();
