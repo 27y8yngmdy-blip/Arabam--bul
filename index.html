@@ -10,9 +10,9 @@
 <link rel="stylesheet" href="css/listing.css">
 
 <style>
+
 /* =========================================================
    ARABAMI BUL V2 — ARAÇ İNCELE
-   Sadece browse alanı için ek tasarım
    ========================================================= */
 
 .browse-v2{
@@ -283,55 +283,27 @@
   font-size:13px;
 }
 
-@media(max-width:900px){
 
-  .browse-hero{
-    align-items:stretch;
-    flex-direction:column;
-    gap:14px;
-  }
+/* =========================================================
+   ÇOKLU FİLTRELER
+   ========================================================= */
 
-  .browse-summary{
-    text-align:left;
-    min-width:0;
-  }
-
-  .browse-layout{
-    grid-template-columns:1fr;
-  }
-
-  .browse-filter-toggle{
-    display:flex!important;
-  }
-
-  .browse-filter-panel{
-    display:none;
-    position:static;
-  }
-
-  .browse-filter-panel.open{
-    display:block;
-  }
+.browse-filter-panel select[multiple]{
+  min-height:44px;
+  max-height:130px;
+  overflow-y:auto;
+  padding:6px;
+  background:#fff;
 }
 
-@media(max-width:650px){
+.browse-filter-panel select[multiple] option{
+  padding:8px 7px;
+  border-radius:6px;
+}
 
-  .browse-hero h1{
-    font-size:27px;
-  }
-
-  .browse-toolbar{
-    align-items:stretch;
-    flex-direction:column;
-  }
-
-  .browse-toolbar-actions{
-    justify-content:space-between;
-  }
-
-  .browse-sort{
-    width:100%;
-  }
+.browse-filter-panel select[multiple] option:checked{
+  background:var(--red);
+  color:#fff;
 }
 
 
@@ -364,8 +336,61 @@
 
 
 /* =========================================================
-   HEADER
+   RESPONSIVE
    ========================================================= */
+
+@media(max-width:900px){
+
+  .browse-hero{
+    align-items:stretch;
+    flex-direction:column;
+    gap:14px;
+  }
+
+  .browse-summary{
+    text-align:left;
+    min-width:0;
+  }
+
+  .browse-layout{
+    grid-template-columns:1fr;
+  }
+
+  .browse-filter-toggle{
+    display:flex!important;
+  }
+
+  .browse-filter-panel{
+    display:none;
+    position:static;
+  }
+
+  .browse-filter-panel.open{
+    display:block;
+  }
+
+}
+
+@media(max-width:650px){
+
+  .browse-hero h1{
+    font-size:27px;
+  }
+
+  .browse-toolbar{
+    align-items:stretch;
+    flex-direction:column;
+  }
+
+  .browse-toolbar-actions{
+    justify-content:space-between;
+  }
+
+  .browse-sort{
+    width:100%;
+  }
+
+}
 
 </style>
 
@@ -373,20 +398,42 @@
 
 <body>
 
-<!-- HEADER -->
+
+<!-- =====================================================
+     HEADER
+     ===================================================== -->
+
 <header>
+
   <div class="nav">
 
     <div class="logo" onclick="go('home')">
+
       <div class="logo-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+
           <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C1.4 11.2 1 12 1 13v3c0 .6.4 1 1 1h2"/>
+
           <circle cx="7" cy="17" r="2"/>
+
           <circle cx="17" cy="17" r="2"/>
+
         </svg>
+
       </div>
+
       ARABAMI <span>BUL</span>
+
     </div>
+
 
     <div class="search-container">
 
@@ -467,10 +514,14 @@
     </button>
 
   </div>
+
 </header>
 
 
-<!-- MOBİL BOTTOM NAV -->
+<!-- =====================================================
+     MOBİL BOTTOM NAV
+     ===================================================== -->
+
 <nav class="mobile-bottom-nav">
 
   <button
@@ -521,7 +572,7 @@
   <button onclick="toggleChat()">
 
     <svg viewBox="0 0 24 24">
-      <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+      <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
     </svg>
 
     AI Destek
@@ -538,10 +589,7 @@
      ANA SAYFA
      ===================================================== -->
 
-<section
-  id="home"
-  class="page active"
->
+<section id="home" class="page active">
 
   <div class="hero">
 
@@ -690,20 +738,11 @@
      BANA ARABA BUL
      ===================================================== -->
 
-<section
-  id="find"
-  class="page"
->
+<section id="find" class="page">
 
-  <div
-    class="wizard-card"
-    id="wizardCard"
-  >
+  <div class="wizard-card" id="wizardCard">
 
-    <div
-      class="q-badge"
-      id="qBadge"
-    >
+    <div class="q-badge" id="qBadge">
       Soru 1 / 6
     </div>
 
@@ -814,10 +853,7 @@
      ARAÇ İNCELE
      ===================================================== -->
 
-<section
-  id="browse"
-  class="page"
->
+<section id="browse" class="page">
 
   <div class="browse-v2">
 
@@ -834,8 +870,8 @@
         </h1>
 
         <p>
-          Marka, kasa tipi, bütçe, kilometre, yakıt ve vites gibi
-          kriterlerle araçları filtrele.
+          Marka, model, kasa tipi, bütçe, kilometre, yakıt ve vites
+          gibi kriterlerle araçları filtrele.
         </p>
 
       </div>
@@ -856,15 +892,15 @@
     </div>
 
 
+    <!-- HIZLI FİLTRELER -->
+
     <div class="browse-quick">
 
       <button
         type="button"
         class="active"
         onclick="
-          document.getElementById('fBody').value='';
-          document.getElementById('fFuel').value='';
-          renderBrowse();
+          filterByCategory('');
           document.querySelectorAll('.browse-quick button').forEach(b=>b.classList.remove('active'));
           this.classList.add('active');
         "
@@ -872,12 +908,11 @@
         Tüm Araçlar
       </button>
 
+
       <button
         type="button"
         onclick="
-          document.getElementById('fBody').value='Sedan';
-          document.getElementById('fFuel').value='';
-          renderBrowse();
+          filterByCategory('Sedan');
           document.querySelectorAll('.browse-quick button').forEach(b=>b.classList.remove('active'));
           this.classList.add('active');
         "
@@ -885,12 +920,11 @@
         Sedan
       </button>
 
+
       <button
         type="button"
         onclick="
-          document.getElementById('fBody').value='SUV';
-          document.getElementById('fFuel').value='';
-          renderBrowse();
+          filterByCategory('SUV');
           document.querySelectorAll('.browse-quick button').forEach(b=>b.classList.remove('active'));
           this.classList.add('active');
         "
@@ -898,12 +932,11 @@
         SUV
       </button>
 
+
       <button
         type="button"
         onclick="
-          document.getElementById('fBody').value='Hatchback';
-          document.getElementById('fFuel').value='';
-          renderBrowse();
+          filterByCategory('Hatchback');
           document.querySelectorAll('.browse-quick button').forEach(b=>b.classList.remove('active'));
           this.classList.add('active');
         "
@@ -911,12 +944,11 @@
         Hatchback
       </button>
 
+
       <button
         type="button"
         onclick="
-          document.getElementById('fBody').value='Coupe';
-          document.getElementById('fFuel').value='';
-          renderBrowse();
+          filterByCategory('Coupe');
           document.querySelectorAll('.browse-quick button').forEach(b=>b.classList.remove('active'));
           this.classList.add('active');
         "
@@ -924,12 +956,11 @@
         Coupe
       </button>
 
+
       <button
         type="button"
         onclick="
-          document.getElementById('fBody').value='';
-          document.getElementById('fFuel').value='Elektrik';
-          renderBrowse();
+          filterByCategory('Elektrik');
           document.querySelectorAll('.browse-quick button').forEach(b=>b.classList.remove('active'));
           this.classList.add('active');
         "
@@ -937,12 +968,11 @@
         Elektrikli
       </button>
 
+
       <button
         type="button"
         onclick="
-          document.getElementById('fBody').value='';
-          document.getElementById('fFuel').value='Hibrit';
-          renderBrowse();
+          filterByCategory('Hibrit');
           document.querySelectorAll('.browse-quick button').forEach(b=>b.classList.remove('active'));
           this.classList.add('active');
         "
@@ -953,17 +983,31 @@
     </div>
 
 
+    <!-- MOBİL FİLTRE BUTONU -->
+
     <button
       type="button"
       class="btn-secondary browse-filter-toggle"
       onclick="toggleFilters()"
     >
-      <span>🎛️ Filtreleri Göster / Gizle</span>
-      <b id="filterState">+</b>
+
+      <span>
+        🎛️ Filtreleri Göster / Gizle
+      </span>
+
+      <b id="filterState">
+        +
+      </b>
+
     </button>
 
 
     <div class="browse-layout">
+
+
+      <!-- =================================================
+           FİLTRE PANELİ
+           ================================================= -->
 
       <aside
         class="browse-filter-panel"
@@ -987,6 +1031,8 @@
         </div>
 
 
+        <!-- ARAMA -->
+
         <div class="browse-filter-section">
 
           <div class="browse-filter-section-title">
@@ -1003,6 +1049,8 @@
         </div>
 
 
+        <!-- MARKA -->
+
         <div class="browse-filter-section">
 
           <div class="browse-filter-section-title">
@@ -1011,39 +1059,63 @@
 
           <select
             id="fBrand"
+            multiple
+            size="4"
             onchange="renderBrowse()"
           >
 
-            <option value="">
-              Tüm Markalar
-            </option>
-
-            <option>BMW</option>
-            <option>Mercedes-Benz</option>
-            <option>Audi</option>
-            <option>Tesla</option>
-            <option>Volkswagen</option>
-            <option>Volvo</option>
-            <option>Porsche</option>
-            <option>Toyota</option>
-            <option>Honda</option>
-            <option>Ford</option>
-            <option>Renault</option>
-            <option>Fiat</option>
-            <option>Opel</option>
-            <option>Peugeot</option>
-            <option>Hyundai</option>
-            <option>Skoda</option>
-            <option>SEAT</option>
-            <option>Dacia</option>
-            <option>Nissan</option>
-            <option>Kia</option>
-            <option>Cupra</option>
+            <option value="BMW">BMW</option>
+            <option value="Mercedes-Benz">Mercedes-Benz</option>
+            <option value="Audi">Audi</option>
+            <option value="Tesla">Tesla</option>
+            <option value="Volkswagen">Volkswagen</option>
+            <option value="Volvo">Volvo</option>
+            <option value="Porsche">Porsche</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Honda">Honda</option>
+            <option value="Ford">Ford</option>
+            <option value="Renault">Renault</option>
+            <option value="Fiat">Fiat</option>
+            <option value="Opel">Opel</option>
+            <option value="Peugeot">Peugeot</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Skoda">Skoda</option>
+            <option value="SEAT">SEAT</option>
+            <option value="Dacia">Dacia</option>
+            <option value="Nissan">Nissan</option>
+            <option value="Kia">Kia</option>
+            <option value="Cupra">Cupra</option>
 
           </select>
 
         </div>
 
+
+        <!-- MODEL -->
+
+        <div class="browse-filter-section">
+
+          <div class="browse-filter-section-title">
+            Model
+          </div>
+
+          <select
+            id="fModel"
+            multiple
+            size="4"
+            onchange="renderBrowse()"
+          >
+
+            <option value="">
+              Önce marka seçiniz
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- KASA -->
 
         <div class="browse-filter-section">
 
@@ -1053,22 +1125,33 @@
 
           <select
             id="fBody"
+            multiple
+            size="4"
             onchange="renderBrowse()"
           >
 
-            <option value="">
-              Tüm Kasa Tipleri
+            <option value="Sedan">
+              Sedan
             </option>
 
-            <option>Sedan</option>
-            <option>SUV</option>
-            <option>Hatchback</option>
-            <option>Coupe</option>
+            <option value="SUV">
+              SUV
+            </option>
+
+            <option value="Hatchback">
+              Hatchback
+            </option>
+
+            <option value="Coupe">
+              Coupe
+            </option>
 
           </select>
 
         </div>
 
+
+        <!-- FİYAT -->
 
         <div class="browse-filter-section">
 
@@ -1097,6 +1180,8 @@
         </div>
 
 
+        <!-- MODEL YILI -->
+
         <div class="browse-filter-section">
 
           <div class="browse-filter-section-title">
@@ -1124,6 +1209,8 @@
         </div>
 
 
+        <!-- KM -->
+
         <div class="browse-filter-section">
 
           <div class="browse-filter-section-title">
@@ -1140,6 +1227,8 @@
         </div>
 
 
+        <!-- YAKIT -->
+
         <div class="browse-filter-section">
 
           <div class="browse-filter-section-title">
@@ -1148,22 +1237,33 @@
 
           <select
             id="fFuel"
+            multiple
+            size="4"
             onchange="renderBrowse()"
           >
 
-            <option value="">
-              Tüm Yakıtlar
+            <option value="Benzin">
+              Benzin
             </option>
 
-            <option>Benzin</option>
-            <option>Dizel</option>
-            <option>Elektrik</option>
-            <option>Hibrit</option>
+            <option value="Dizel">
+              Dizel
+            </option>
+
+            <option value="Elektrik">
+              Elektrik
+            </option>
+
+            <option value="Hibrit">
+              Hibrit
+            </option>
 
           </select>
 
         </div>
 
+
+        <!-- VİTES -->
 
         <div class="browse-filter-section">
 
@@ -1173,15 +1273,18 @@
 
           <select
             id="fTrans"
+            multiple
+            size="2"
             onchange="renderBrowse()"
           >
 
-            <option value="">
-              Tüm Vitesler
+            <option value="Otomatik">
+              Otomatik
             </option>
 
-            <option>Otomatik</option>
-            <option>Manuel</option>
+            <option value="Manuel">
+              Manuel
+            </option>
 
           </select>
 
@@ -1189,6 +1292,10 @@
 
       </aside>
 
+
+      <!-- =================================================
+           ARAÇLAR
+           ================================================= -->
 
       <div class="browse-grid-wrap">
 
@@ -1233,6 +1340,10 @@
 
               <option value="yearDesc">
                 Model Yılı: En Yeni
+              </option>
+
+              <option value="kmAsc">
+                Kilometre: Düşükten Yükseğe
               </option>
 
             </select>
@@ -1288,7 +1399,6 @@
 
   <div class="listing-page">
 
-
     <div class="listing-head">
 
       <div>
@@ -1307,7 +1417,6 @@
         </p>
 
       </div>
-
 
       <div class="listing-save-note">
         💾 Bilgilerin otomatik korunur
@@ -1362,9 +1471,7 @@
     >
 
 
-      <!-- =================================================
-           ADIM 1 — ARAÇ
-           ================================================= -->
+      <!-- ADIM 1 -->
 
       <div
         class="listing-panel listing-panel-active"
@@ -1395,8 +1502,6 @@
         <div class="listing-grid">
 
 
-          <!-- MARKA -->
-
           <div class="listing-field">
 
             <label for="addBrand">
@@ -1412,89 +1517,27 @@
                 Marka Seçiniz
               </option>
 
-              <option value="BMW">
-                BMW
-              </option>
-
-              <option value="Mercedes-Benz">
-                Mercedes-Benz
-              </option>
-
-              <option value="Audi">
-                Audi
-              </option>
-
-              <option value="Volkswagen">
-                Volkswagen
-              </option>
-
-              <option value="Volvo">
-                Volvo
-              </option>
-
-              <option value="Porsche">
-                Porsche
-              </option>
-
-              <option value="Toyota">
-                Toyota
-              </option>
-
-              <option value="Honda">
-                Honda
-              </option>
-
-              <option value="Ford">
-                Ford
-              </option>
-
-              <option value="Renault">
-                Renault
-              </option>
-
-              <option value="Fiat">
-                Fiat
-              </option>
-
-              <option value="Opel">
-                Opel
-              </option>
-
-              <option value="Peugeot">
-                Peugeot
-              </option>
-
-              <option value="Hyundai">
-                Hyundai
-              </option>
-
-              <option value="Skoda">
-                Skoda
-              </option>
-
-              <option value="SEAT">
-                SEAT
-              </option>
-
-              <option value="Dacia">
-                Dacia
-              </option>
-
-              <option value="Nissan">
-                Nissan
-              </option>
-
-              <option value="Kia">
-                Kia
-              </option>
-
-              <option value="Cupra">
-                Cupra
-              </option>
-
-              <option value="Tesla">
-                Tesla
-              </option>
+              <option value="BMW">BMW</option>
+              <option value="Mercedes-Benz">Mercedes-Benz</option>
+              <option value="Audi">Audi</option>
+              <option value="Volkswagen">Volkswagen</option>
+              <option value="Volvo">Volvo</option>
+              <option value="Porsche">Porsche</option>
+              <option value="Toyota">Toyota</option>
+              <option value="Honda">Honda</option>
+              <option value="Ford">Ford</option>
+              <option value="Renault">Renault</option>
+              <option value="Fiat">Fiat</option>
+              <option value="Opel">Opel</option>
+              <option value="Peugeot">Peugeot</option>
+              <option value="Hyundai">Hyundai</option>
+              <option value="Skoda">Skoda</option>
+              <option value="SEAT">SEAT</option>
+              <option value="Dacia">Dacia</option>
+              <option value="Nissan">Nissan</option>
+              <option value="Kia">Kia</option>
+              <option value="Cupra">Cupra</option>
+              <option value="Tesla">Tesla</option>
 
             </select>
 
@@ -1504,8 +1547,6 @@
 
           </div>
 
-
-          <!-- MODEL -->
 
           <div class="listing-field">
 
@@ -1523,369 +1564,121 @@
               </option>
 
               <optgroup label="BMW">
-
-                <option value="1 Serisi">
-                  1 Serisi
-                </option>
-
-                <option value="2 Serisi">
-                  2 Serisi
-                </option>
-
-                <option value="3 Serisi">
-                  3 Serisi
-                </option>
-
-                <option value="5 Serisi">
-                  5 Serisi
-                </option>
-
-                <option value="7 Serisi">
-                  7 Serisi
-                </option>
-
-                <option value="X1">
-                  X1
-                </option>
-
-                <option value="X3">
-                  X3
-                </option>
-
-                <option value="X5">
-                  X5
-                </option>
-
+                <option value="1 Serisi">1 Serisi</option>
+                <option value="2 Serisi">2 Serisi</option>
+                <option value="3 Serisi">3 Serisi</option>
+                <option value="5 Serisi">5 Serisi</option>
+                <option value="7 Serisi">7 Serisi</option>
+                <option value="X1">X1</option>
+                <option value="X3">X3</option>
+                <option value="X5">X5</option>
               </optgroup>
-
 
               <optgroup label="Mercedes-Benz">
-
-                <option value="A Serisi">
-                  A Serisi
-                </option>
-
-                <option value="C Serisi">
-                  C Serisi
-                </option>
-
-                <option value="E Serisi">
-                  E Serisi
-                </option>
-
-                <option value="S Serisi">
-                  S Serisi
-                </option>
-
-                <option value="GLA">
-                  GLA
-                </option>
-
-                <option value="GLC">
-                  GLC
-                </option>
-
+                <option value="A Serisi">A Serisi</option>
+                <option value="C Serisi">C Serisi</option>
+                <option value="E Serisi">E Serisi</option>
+                <option value="S Serisi">S Serisi</option>
+                <option value="GLA">GLA</option>
+                <option value="GLC">GLC</option>
               </optgroup>
-
 
               <optgroup label="Audi">
-
-                <option value="A1">
-                  A1
-                </option>
-
-                <option value="A3">
-                  A3
-                </option>
-
-                <option value="A4">
-                  A4
-                </option>
-
-                <option value="A5">
-                  A5
-                </option>
-
-                <option value="A6">
-                  A6
-                </option>
-
-                <option value="Q3">
-                  Q3
-                </option>
-
-                <option value="Q5">
-                  Q5
-                </option>
-
-                <option value="Q7">
-                  Q7
-                </option>
-
+                <option value="A1">A1</option>
+                <option value="A3">A3</option>
+                <option value="A4">A4</option>
+                <option value="A5">A5</option>
+                <option value="A6">A6</option>
+                <option value="Q3">Q3</option>
+                <option value="Q5">Q5</option>
+                <option value="Q7">Q7</option>
               </optgroup>
-
 
               <optgroup label="Volkswagen">
-
-                <option value="Golf">
-                  Golf
-                </option>
-
-                <option value="Passat">
-                  Passat
-                </option>
-
-                <option value="Polo">
-                  Polo
-                </option>
-
-                <option value="T-Roc">
-                  T-Roc
-                </option>
-
-                <option value="Tiguan">
-                  Tiguan
-                </option>
-
+                <option value="Golf">Golf</option>
+                <option value="Passat">Passat</option>
+                <option value="Polo">Polo</option>
+                <option value="T-Roc">T-Roc</option>
+                <option value="Tiguan">Tiguan</option>
               </optgroup>
-
 
               <optgroup label="Renault">
-
-                <option value="Clio">
-                  Clio
-                </option>
-
-                <option value="Megane">
-                  Megane
-                </option>
-
-                <option value="Captur">
-                  Captur
-                </option>
-
-                <option value="Austral">
-                  Austral
-                </option>
-
+                <option value="Clio">Clio</option>
+                <option value="Megane">Megane</option>
+                <option value="Captur">Captur</option>
+                <option value="Austral">Austral</option>
               </optgroup>
-
 
               <optgroup label="Opel">
-
-                <option value="Corsa">
-                  Corsa
-                </option>
-
-                <option value="Astra">
-                  Astra
-                </option>
-
-                <option value="Mokka">
-                  Mokka
-                </option>
-
-                <option value="Grandland">
-                  Grandland
-                </option>
-
+                <option value="Corsa">Corsa</option>
+                <option value="Astra">Astra</option>
+                <option value="Mokka">Mokka</option>
+                <option value="Grandland">Grandland</option>
               </optgroup>
-
 
               <optgroup label="Toyota">
-
-                <option value="Corolla">
-                  Corolla
-                </option>
-
-                <option value="Yaris">
-                  Yaris
-                </option>
-
-                <option value="C-HR">
-                  C-HR
-                </option>
-
-                <option value="RAV4">
-                  RAV4
-                </option>
-
+                <option value="Corolla">Corolla</option>
+                <option value="Yaris">Yaris</option>
+                <option value="C-HR">C-HR</option>
+                <option value="RAV4">RAV4</option>
               </optgroup>
-
 
               <optgroup label="Honda">
-
-                <option value="Civic">
-                  Civic
-                </option>
-
-                <option value="Jazz">
-                  Jazz
-                </option>
-
-                <option value="HR-V">
-                  HR-V
-                </option>
-
-                <option value="CR-V">
-                  CR-V
-                </option>
-
+                <option value="Civic">Civic</option>
+                <option value="Jazz">Jazz</option>
+                <option value="HR-V">HR-V</option>
+                <option value="CR-V">CR-V</option>
               </optgroup>
-
 
               <optgroup label="Ford">
-
-                <option value="Focus">
-                  Focus
-                </option>
-
-                <option value="Fiesta">
-                  Fiesta
-                </option>
-
-                <option value="Puma">
-                  Puma
-                </option>
-
-                <option value="Kuga">
-                  Kuga
-                </option>
-
+                <option value="Focus">Focus</option>
+                <option value="Fiesta">Fiesta</option>
+                <option value="Puma">Puma</option>
+                <option value="Kuga">Kuga</option>
               </optgroup>
-
 
               <optgroup label="Peugeot">
-
-                <option value="208">
-                  208
-                </option>
-
-                <option value="308">
-                  308
-                </option>
-
-                <option value="408">
-                  408
-                </option>
-
-                <option value="2008">
-                  2008
-                </option>
-
-                <option value="3008">
-                  3008
-                </option>
-
+                <option value="208">208</option>
+                <option value="308">308</option>
+                <option value="408">408</option>
+                <option value="2008">2008</option>
+                <option value="3008">3008</option>
               </optgroup>
-
 
               <optgroup label="Hyundai">
-
-                <option value="i10">
-                  i10
-                </option>
-
-                <option value="i20">
-                  i20
-                </option>
-
-                <option value="Elantra">
-                  Elantra
-                </option>
-
-                <option value="Bayon">
-                  Bayon
-                </option>
-
-                <option value="Tucson">
-                  Tucson
-                </option>
-
+                <option value="i10">i10</option>
+                <option value="i20">i20</option>
+                <option value="Elantra">Elantra</option>
+                <option value="Bayon">Bayon</option>
+                <option value="Tucson">Tucson</option>
               </optgroup>
-
 
               <optgroup label="Fiat">
-
-                <option value="Egea">
-                  Egea
-                </option>
-
-                <option value="500">
-                  500
-                </option>
-
-                <option value="Panda">
-                  Panda
-                </option>
-
+                <option value="Egea">Egea</option>
+                <option value="500">500</option>
+                <option value="Panda">Panda</option>
               </optgroup>
-
 
               <optgroup label="Tesla">
-
-                <option value="Model 3">
-                  Model 3
-                </option>
-
-                <option value="Model Y">
-                  Model Y
-                </option>
-
-                <option value="Model S">
-                  Model S
-                </option>
-
-                <option value="Model X">
-                  Model X
-                </option>
-
+                <option value="Model 3">Model 3</option>
+                <option value="Model Y">Model Y</option>
+                <option value="Model S">Model S</option>
+                <option value="Model X">Model X</option>
               </optgroup>
-
 
               <optgroup label="Volvo">
-
-                <option value="S60">
-                  S60
-                </option>
-
-                <option value="S90">
-                  S90
-                </option>
-
-                <option value="XC40">
-                  XC40
-                </option>
-
-                <option value="XC60">
-                  XC60
-                </option>
-
-                <option value="XC90">
-                  XC90
-                </option>
-
+                <option value="S60">S60</option>
+                <option value="S90">S90</option>
+                <option value="XC40">XC40</option>
+                <option value="XC60">XC60</option>
+                <option value="XC90">XC90</option>
               </optgroup>
 
-
               <optgroup label="Porsche">
-
-                <option value="911">
-                  911
-                </option>
-
-                <option value="Cayenne">
-                  Cayenne
-                </option>
-
-                <option value="Macan">
-                  Macan
-                </option>
-
-                <option value="Panamera">
-                  Panamera
-                </option>
-
+                <option value="911">911</option>
+                <option value="Cayenne">Cayenne</option>
+                <option value="Macan">Macan</option>
+                <option value="Panamera">Panamera</option>
               </optgroup>
 
             </select>
@@ -1896,8 +1689,6 @@
 
           </div>
 
-
-          <!-- VERSİYON -->
 
           <div class="listing-field">
 
@@ -1913,8 +1704,6 @@
 
           </div>
 
-
-          <!-- YIL -->
 
           <div class="listing-field">
 
@@ -1968,53 +1757,29 @@
           </div>
 
 
-          <!-- KASA -->
-
           <div class="listing-field">
 
             <label for="addBody">
               Kasa Tipi <em>*</em>
             </label>
 
-            <select
-              id="addBody"
-              required
-            >
+            <select id="addBody" required>
 
               <option value="">
                 Seçiniz
               </option>
 
-              <option value="Sedan">
-                Sedan
-              </option>
-
-              <option value="SUV">
-                SUV
-              </option>
-
-              <option value="Hatchback">
-                Hatchback
-              </option>
-
-              <option value="Coupe">
-                Coupe
-              </option>
-
-              <option value="Cabrio">
-                Cabrio
-              </option>
-
-              <option value="Station Wagon">
-                Station Wagon
-              </option>
+              <option value="Sedan">Sedan</option>
+              <option value="SUV">SUV</option>
+              <option value="Hatchback">Hatchback</option>
+              <option value="Coupe">Coupe</option>
+              <option value="Cabrio">Cabrio</option>
+              <option value="Station Wagon">Station Wagon</option>
 
             </select>
 
           </div>
 
-
-          <!-- YAKIT -->
 
           <div class="listing-field">
 
@@ -2022,41 +1787,22 @@
               Yakıt Tipi <em>*</em>
             </label>
 
-            <select
-              id="addFuel"
-              required
-            >
+            <select id="addFuel" required>
 
               <option value="">
                 Seçiniz
               </option>
 
-              <option value="Benzin">
-                Benzin
-              </option>
-
-              <option value="Dizel">
-                Dizel
-              </option>
-
-              <option value="Hibrit">
-                Hibrit
-              </option>
-
-              <option value="Elektrik">
-                Elektrik
-              </option>
-
-              <option value="LPG">
-                LPG
-              </option>
+              <option value="Benzin">Benzin</option>
+              <option value="Dizel">Dizel</option>
+              <option value="Hibrit">Hibrit</option>
+              <option value="Elektrik">Elektrik</option>
+              <option value="LPG">LPG</option>
 
             </select>
 
           </div>
 
-
-          <!-- VİTES -->
 
           <div class="listing-field">
 
@@ -2064,29 +1810,19 @@
               Vites Tipi <em>*</em>
             </label>
 
-            <select
-              id="addTrans"
-              required
-            >
+            <select id="addTrans" required>
 
               <option value="">
                 Seçiniz
               </option>
 
-              <option value="Otomatik">
-                Otomatik
-              </option>
-
-              <option value="Manuel">
-                Manuel
-              </option>
+              <option value="Otomatik">Otomatik</option>
+              <option value="Manuel">Manuel</option>
 
             </select>
 
           </div>
 
-
-          <!-- RENK -->
 
           <div class="listing-field">
 
@@ -2094,77 +1830,31 @@
               Renk <em>*</em>
             </label>
 
-            <select
-              id="addColor"
-              required
-            >
+            <select id="addColor" required>
 
               <option value="">
                 Renk Seçiniz
               </option>
 
-              <option value="Beyaz">
-                Beyaz
-              </option>
-
-              <option value="Siyah">
-                Siyah
-              </option>
-
-              <option value="Gri">
-                Gri
-              </option>
-
-              <option value="Gümüş">
-                Gümüş
-              </option>
-
-              <option value="Kırmızı">
-                Kırmızı
-              </option>
-
-              <option value="Mavi">
-                Mavi
-              </option>
-
-              <option value="Lacivert">
-                Lacivert
-              </option>
-
-              <option value="Yeşil">
-                Yeşil
-              </option>
-
-              <option value="Kahverengi">
-                Kahverengi
-              </option>
-
-              <option value="Bej">
-                Bej
-              </option>
-
-              <option value="Turuncu">
-                Turuncu
-              </option>
-
-              <option value="Sarı">
-                Sarı
-              </option>
-
-              <option value="Mor">
-                Mor
-              </option>
-
-              <option value="Diğer">
-                Diğer
-              </option>
+              <option value="Beyaz">Beyaz</option>
+              <option value="Siyah">Siyah</option>
+              <option value="Gri">Gri</option>
+              <option value="Gümüş">Gümüş</option>
+              <option value="Kırmızı">Kırmızı</option>
+              <option value="Mavi">Mavi</option>
+              <option value="Lacivert">Lacivert</option>
+              <option value="Yeşil">Yeşil</option>
+              <option value="Kahverengi">Kahverengi</option>
+              <option value="Bej">Bej</option>
+              <option value="Turuncu">Turuncu</option>
+              <option value="Sarı">Sarı</option>
+              <option value="Mor">Mor</option>
+              <option value="Diğer">Diğer</option>
 
             </select>
 
           </div>
 
-
-          <!-- KM -->
 
           <div class="listing-field">
 
@@ -2182,8 +1872,6 @@
 
           </div>
 
-
-          <!-- FİYAT -->
 
           <div class="listing-field listing-field-full">
 
@@ -2214,15 +1902,11 @@
 
         <div class="listing-tip">
 
-          <span>
-            💡
-          </span>
+          <span>💡</span>
 
           <div>
 
-            <strong>
-              İpucu:
-            </strong>
+            <strong>İpucu:</strong>
 
             Doğru araç bilgileri, ilanının daha doğru alıcılara
             ulaşmasını sağlar.
@@ -2633,54 +2317,23 @@
             <div class="listing-preview-specs">
 
               <div>
-
-                <span>
-                  Yıl
-                </span>
-
-                <strong id="previewYear">
-                  -
-                </strong>
-
+                <span>Yıl</span>
+                <strong id="previewYear">-</strong>
               </div>
 
-
               <div>
-
-                <span>
-                  KM
-                </span>
-
-                <strong id="previewKm">
-                  -
-                </strong>
-
+                <span>KM</span>
+                <strong id="previewKm">-</strong>
               </div>
 
-
               <div>
-
-                <span>
-                  Yakıt
-                </span>
-
-                <strong id="previewFuel">
-                  -
-                </strong>
-
+                <span>Yakıt</span>
+                <strong id="previewFuel">-</strong>
               </div>
 
-
               <div>
-
-                <span>
-                  Vites
-                </span>
-
-                <strong id="previewTrans">
-                  -
-                </strong>
-
+                <span>Vites</span>
+                <strong id="previewTrans">-</strong>
               </div>
 
             </div>
@@ -2700,9 +2353,7 @@
 
         <div class="listing-publish-note">
 
-          <span>
-            ✓
-          </span>
+          <span>✓</span>
 
           İlanını yayınladığında araç listesinde görünür hale gelecek.
 
@@ -2782,7 +2433,6 @@
     <h2 style="font-weight:900;margin-top:0;">
       Kullanıcı Girişi
     </h2>
-
 
     <div class="form-group">
 
@@ -2934,7 +2584,6 @@
 
   <div class="footer-container">
 
-
     <div class="footer-brand">
 
       <h3>
@@ -3047,14 +2696,26 @@
      ===================================================== -->
 
 <script src="js/core.js"></script>
+
 <script src="js/app.js"></script>
+
+<!-- YENİ ARAÇ İNCELE FİLTRE MOTORU -->
+<script src="js/browse-filters.js"></script>
+
 <script src="js/filters.js"></script>
+
 <script src="js/favorites.js"></script>
+
 <script src="js/search.js"></script>
+
 <script src="js/wizard.js"></script>
+
 <script src="js/detail.js"></script>
+
 <script src="js/listing.js"></script>
+
 <script src="js/chat.js"></script>
+
 
 </body>
 </html>
