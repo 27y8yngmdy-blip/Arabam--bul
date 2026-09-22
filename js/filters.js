@@ -1,14 +1,109 @@
 /* ============================================================
    ARABAMI BUL V2 — filters.js
-   ARAÇ İNCELE V2 FİLTRE SİSTEMİ
+   ARAÇ İNCELE V2 GELİŞMİŞ FİLTRE SİSTEMİ
    ============================================================
 
-   NOT:
-   - app.js'ye dokunmaz.
-   - createCarCard() değiştirilmez.
-   - Mevcut renderBrowse() sistemiyle birlikte çalışır.
-   - Araç İncele V2 hızlı filtrelerini yönetir.
+   ÖZELLİKLER
+   ------------------------------------------------------------
+   - Arama
+   - Marka
+   - Kasa tipi
+   - Fiyat min / max
+   - Yıl min / max
+   - Maksimum KM
+   - Yakıt
+   - Vites
+   - Sıralama
+   - Hızlı filtreler
+   - Aktif filtre çipleri
+   - Aktif filtre sayısı
+   - Tek tek filtre kaldırma
+   - Tüm filtreleri temizleme
+   - Otomatik render
+   - Mobil filtre paneli
+   - Mevcut renderBrowse() ile uyumlu
+   - app.js'e dokunmaz
+   - createCarCard() değiştirilmez
    ============================================================ */
+
+
+/* ============================================================
+   GLOBAL DURUM
+   ============================================================ */
+
+let browseFilterInitialized = false;
+let browseSearchTimer = null;
+
+
+/* ============================================================
+   YARDIMCI FONKSİYONLAR
+   ============================================================ */
+
+function getBrowseValue(id) {
+
+  const el = document.getElementById(id);
+
+  if (!el) return "";
+
+  return String(el.value || "").trim();
+
+}
+
+
+function setBrowseValue(id, value) {
+
+  const el = document.getElementById(id);
+
+  if (!el) return;
+
+  el.value = value ?? "";
+
+}
+
+
+function renderBrowseSafe() {
+
+  if (typeof renderBrowse === "function") {
+
+    renderBrowse();
+
+  }
+
+}
+
+
+function updateBrowseUI() {
+
+  updateBrowseV2UI();
+
+}
+
+
+function formatNumber(value) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+
+    return "";
+
+  }
+
+  const number = Number(
+    String(value).replace(/[^\d.-]/g, "")
+  );
+
+  if (Number.isNaN(number)) {
+
+    return String(value);
+
+  }
+
+  return number.toLocaleString("tr-TR");
+
+}
 
 
 /* ============================================================
@@ -18,6 +113,7 @@
 function resetFilters() {
 
   const fields = [
+
     "fQuery",
     "fBrand",
     "fBody",
@@ -28,11 +124,14 @@ function resetFilters() {
     "fKmMax",
     "fFuel",
     "fTrans"
+
   ];
+
 
   fields.forEach(function(id) {
 
-    const el = document.getElementById(id);
+    const el =
+      document.getElementById(id);
 
     if (!el) return;
 
@@ -41,57 +140,59 @@ function resetFilters() {
   });
 
 
-  const sort = document.getElementById("fSort");
+  /* Sıralama */
+
+  const sort =
+    document.getElementById("fSort");
 
   if (sort) {
+
     sort.value = "default";
+
   }
 
 
-  /*
-     Hızlı kategori butonlarında
-     "Tüm Araçlar" aktif olsun.
-  */
+  /* Hızlı butonlar */
 
   syncBrowseQuickButtons();
 
 
-  /*
-     Mobil filtre paneli açıksa kapat.
-  */
+  /* Mobil paneli kapat */
 
-  const panel = document.getElementById("filterPanel");
+  const panel =
+    document.getElementById("filterPanel");
 
-  const state = document.getElementById("filterState");
+  const state =
+    document.getElementById("filterState");
 
-  if (panel && panel.classList.contains("open")) {
+
+  if (
+    panel &&
+    panel.classList.contains("open")
+  ) {
 
     panel.classList.remove("open");
 
-    if (state) {
-      state.textContent = "+";
-    }
+  }
+
+
+  if (state) {
+
+    state.textContent = "+";
 
   }
 
 
-  /*
-     Ana filtreleme fonksiyonu.
-  */
+  /* Araçları yeniden getir */
 
-  if (typeof renderBrowse === "function") {
-    renderBrowse();
-  }
+  renderBrowseSafe();
 
 
-  /*
-     V2 sayaçlarını güncelle.
-  */
+  /* Arayüzü yenile */
 
   updateBrowseV2UI();
 
 }
-
 
 
 /* ============================================================
@@ -100,9 +201,12 @@ function resetFilters() {
 
 function toggleFilters() {
 
-  const panel = document.getElementById("filterPanel");
+  const panel =
+    document.getElementById("filterPanel");
 
-  const state = document.getElementById("filterState");
+  const state =
+    document.getElementById("filterState");
+
 
   if (!panel) return;
 
@@ -122,6 +226,33 @@ function toggleFilters() {
 }
 
 
+/* ============================================================
+   MOBİL FİLTRE PANELİNİ KAPAT
+   ============================================================ */
+
+function closeFilters() {
+
+  const panel =
+    document.getElementById("filterPanel");
+
+  const state =
+    document.getElementById("filterState");
+
+
+  if (!panel) return;
+
+
+  panel.classList.remove("open");
+
+
+  if (state) {
+
+    state.textContent = "+";
+
+  }
+
+}
+
 
 /* ============================================================
    HIZLI KASA FİLTRESİ
@@ -129,49 +260,41 @@ function toggleFilters() {
 
 function browseQuickFilter(body, button) {
 
-  const bodySelect = document.getElementById("fBody");
+  const bodySelect =
+    document.getElementById("fBody");
 
-  const fuelSelect = document.getElementById("fFuel");
+  const fuelSelect =
+    document.getElementById("fFuel");
+
 
   if (!bodySelect) return;
 
 
-  /*
-     Kasa tipi seç.
-  */
-
-  bodySelect.value = body || "";
+  bodySelect.value =
+    body || "";
 
 
   /*
-     Kasa seçildiğinde yakıt filtresini temizle.
+     Kasa seçildiğinde
+     yakıt hızlı filtresini temizle.
   */
 
   if (fuelSelect) {
+
     fuelSelect.value = "";
+
   }
 
-
-  /*
-     Aktif butonu değiştir.
-  */
 
   setActiveBrowseQuickButton(button);
 
 
-  /*
-     Araçları yeniden getir.
-  */
-
-  if (typeof renderBrowse === "function") {
-    renderBrowse();
-  }
+  renderBrowseSafe();
 
 
   updateBrowseV2UI();
 
 }
-
 
 
 /* ============================================================
@@ -180,49 +303,41 @@ function browseQuickFilter(body, button) {
 
 function browseQuickFuel(fuel, button) {
 
-  const bodySelect = document.getElementById("fBody");
+  const bodySelect =
+    document.getElementById("fBody");
 
-  const fuelSelect = document.getElementById("fFuel");
+  const fuelSelect =
+    document.getElementById("fFuel");
+
 
   if (!fuelSelect) return;
 
 
-  /*
-     Yakıt seç.
-  */
-
-  fuelSelect.value = fuel || "";
+  fuelSelect.value =
+    fuel || "";
 
 
   /*
-     Yakıt seçildiğinde kasa filtresini temizle.
+     Yakıt seçildiğinde
+     kasa hızlı filtresini temizle.
   */
 
   if (bodySelect) {
+
     bodySelect.value = "";
+
   }
 
-
-  /*
-     Aktif butonu değiştir.
-  */
 
   setActiveBrowseQuickButton(button);
 
 
-  /*
-     Araçları yeniden getir.
-  */
-
-  if (typeof renderBrowse === "function") {
-    renderBrowse();
-  }
+  renderBrowseSafe();
 
 
   updateBrowseV2UI();
 
 }
-
 
 
 /* ============================================================
@@ -232,7 +347,9 @@ function browseQuickFuel(fuel, button) {
 function setActiveBrowseQuickButton(button) {
 
   const buttons =
-    document.querySelectorAll(".browse-quick button");
+    document.querySelectorAll(
+      ".browse-quick button"
+    );
 
 
   buttons.forEach(function(btn) {
@@ -243,11 +360,12 @@ function setActiveBrowseQuickButton(button) {
 
 
   if (button) {
+
     button.classList.add("active");
+
   }
 
 }
-
 
 
 /* ============================================================
@@ -257,7 +375,10 @@ function setActiveBrowseQuickButton(button) {
 function syncBrowseQuickButtons() {
 
   const buttons =
-    document.querySelectorAll(".browse-quick button");
+    document.querySelectorAll(
+      ".browse-quick button"
+    );
+
 
   if (!buttons.length) return;
 
@@ -270,13 +391,15 @@ function syncBrowseQuickButtons() {
 
 
   const body =
-    document.getElementById("fBody")?.value || "";
+    getBrowseValue("fBody");
 
   const fuel =
-    document.getElementById("fFuel")?.value || "";
+    getBrowseValue("fFuel");
 
 
   /*
+     Beklenen sıra:
+
      0 = Tüm Araçlar
      1 = Sedan
      2 = SUV
@@ -290,36 +413,188 @@ function syncBrowseQuickButtons() {
 
 
   if (body === "Sedan") {
+
     activeIndex = 1;
+
   }
 
   else if (body === "SUV") {
+
     activeIndex = 2;
+
   }
 
   else if (body === "Hatchback") {
+
     activeIndex = 3;
+
   }
 
   else if (body === "Coupe") {
+
     activeIndex = 4;
+
   }
 
-  else if (fuel === "Elektrik") {
+  else if (
+    fuel === "Elektrik" ||
+    fuel === "Elektrikli"
+  ) {
+
     activeIndex = 5;
+
   }
 
   else if (fuel === "Hibrit") {
+
     activeIndex = 6;
+
   }
 
 
   if (buttons[activeIndex]) {
-    buttons[activeIndex].classList.add("active");
+
+    buttons[activeIndex]
+      .classList.add("active");
+
   }
 
 }
 
+
+/* ============================================================
+   AKTİF FİLTRE SAYISI
+   ============================================================ */
+
+function getBrowseActiveFilterCount() {
+
+  let count = 0;
+
+
+  const simpleFields = [
+
+    "fQuery",
+    "fBrand",
+    "fBody",
+    "fPriceMin",
+    "fPriceMax",
+    "fYearMin",
+    "fYearMax",
+    "fKmMax",
+    "fFuel",
+    "fTrans"
+
+  ];
+
+
+  simpleFields.forEach(function(id) {
+
+    const value =
+      getBrowseValue(id);
+
+    if (value) {
+
+      count++;
+
+    }
+
+  });
+
+
+  return count;
+
+}
+
+
+/* ============================================================
+   AKTİF FİLTRE SAYISINI GÖSTER
+   ============================================================ */
+
+function updateBrowseFilterCount() {
+
+  const count =
+    getBrowseActiveFilterCount();
+
+
+  const elements =
+    document.querySelectorAll(
+      "[data-filter-count], #filterCount, #activeFilterCount"
+    );
+
+
+  elements.forEach(function(el) {
+
+    if (count > 0) {
+
+      el.textContent =
+        count.toString();
+
+      el.classList.add("has-filters");
+
+      el.style.display = "";
+
+    }
+
+    else {
+
+      el.textContent = "0";
+
+      el.classList.remove("has-filters");
+
+      /*
+         Elementin kendi CSS'i görünürlüğünü
+         yönetiyorsa zorlamıyoruz.
+      */
+
+    }
+
+  });
+
+
+  /*
+     Filtre butonunda sayı göstermek için
+     destek.
+  */
+
+  const filterButton =
+    document.querySelector(
+      "[data-filter-button]"
+    );
+
+
+  if (
+    filterButton &&
+    !filterButton.querySelector(".filter-count")
+  ) {
+
+    const badge =
+      document.createElement("span");
+
+    badge.className =
+      "filter-count";
+
+    filterButton.appendChild(badge);
+
+  }
+
+
+  const badge =
+    filterButton?.querySelector(
+      ".filter-count"
+    );
+
+
+  if (badge) {
+
+    badge.textContent =
+      count > 0 ? count : "";
+
+    badge.style.display =
+      count > 0 ? "inline-flex" : "none";
+
+  }
+
+}
 
 
 /* ============================================================
@@ -329,7 +604,10 @@ function syncBrowseQuickButtons() {
 function renderBrowseActiveFilters() {
 
   const container =
-    document.getElementById("browseActiveFilters");
+    document.getElementById(
+      "browseActiveFilters"
+    );
+
 
   if (!container) return;
 
@@ -341,160 +619,232 @@ function renderBrowseActiveFilters() {
 
 
   const query =
-    document.getElementById("fQuery")?.value.trim();
+    getBrowseValue("fQuery");
 
   const brand =
-    document.getElementById("fBrand")?.value;
+    getBrowseValue("fBrand");
 
   const body =
-    document.getElementById("fBody")?.value;
+    getBrowseValue("fBody");
 
   const priceMin =
-    document.getElementById("fPriceMin")?.value;
+    getBrowseValue("fPriceMin");
 
   const priceMax =
-    document.getElementById("fPriceMax")?.value;
+    getBrowseValue("fPriceMax");
 
   const yearMin =
-    document.getElementById("fYearMin")?.value;
+    getBrowseValue("fYearMin");
 
   const yearMax =
-    document.getElementById("fYearMax")?.value;
+    getBrowseValue("fYearMax");
 
   const kmMax =
-    document.getElementById("fKmMax")?.value;
+    getBrowseValue("fKmMax");
 
   const fuel =
-    document.getElementById("fFuel")?.value;
+    getBrowseValue("fFuel");
 
   const trans =
-    document.getElementById("fTrans")?.value;
+    getBrowseValue("fTrans");
 
+
+  /* Arama */
 
   if (query) {
 
     filters.push({
+
       label: `"${query}"`,
+
       type: "fQuery"
+
     });
 
   }
 
+
+  /* Marka */
 
   if (brand) {
 
     filters.push({
+
       label: brand,
+
       type: "fBrand"
+
     });
 
   }
 
+
+  /* Kasa */
 
   if (body) {
 
     filters.push({
+
       label: body,
+
       type: "fBody"
+
     });
 
   }
 
+
+  /* Fiyat */
 
   if (priceMin || priceMax) {
 
-    let label = "Fiyat";
+    let label =
+      "Fiyat";
 
-    if (priceMin && priceMax) {
+
+    if (
+      priceMin &&
+      priceMax
+    ) {
+
       label =
-        Number(priceMin).toLocaleString("tr-TR") +
+        formatNumber(priceMin) +
         " - " +
-        Number(priceMax).toLocaleString("tr-TR") +
+        formatNumber(priceMax) +
         " TL";
+
     }
 
     else if (priceMin) {
+
       label =
-        Number(priceMin).toLocaleString("tr-TR") +
+        formatNumber(priceMin) +
         " TL+";
+
     }
 
     else if (priceMax) {
+
       label =
-        Number(priceMax).toLocaleString("tr-TR") +
+        formatNumber(priceMax) +
         " TL altı";
+
     }
 
 
     filters.push({
+
       label: label,
+
       type: "price"
+
     });
 
   }
 
+
+  /* Yıl */
 
   if (yearMin || yearMax) {
 
-    let label = "Model Yılı";
+    let label =
+      "Model Yılı";
 
-    if (yearMin && yearMax) {
-      label = yearMin + " - " + yearMax;
+
+    if (
+      yearMin &&
+      yearMax
+    ) {
+
+      label =
+        yearMin +
+        " - " +
+        yearMax;
+
     }
 
     else if (yearMin) {
-      label = yearMin + "+";
+
+      label =
+        yearMin +
+        "+";
+
     }
 
     else if (yearMax) {
-      label = yearMax + " ve altı";
+
+      label =
+        yearMax +
+        " ve altı";
+
     }
 
 
     filters.push({
+
       label: label,
+
       type: "year"
+
     });
 
   }
 
+
+  /* KM */
 
   if (kmMax) {
 
     filters.push({
+
       label:
-        Number(kmMax).toLocaleString("tr-TR") +
+        formatNumber(kmMax) +
         " KM altı",
+
       type: "km"
+
     });
 
   }
 
+
+  /* Yakıt */
 
   if (fuel) {
 
     filters.push({
+
       label: fuel,
+
       type: "fFuel"
+
     });
 
   }
 
+
+  /* Vites */
 
   if (trans) {
 
     filters.push({
+
       label: trans,
+
       type: "fTrans"
+
     });
 
   }
 
+
+  /* Çipleri oluştur */
 
   filters.forEach(function(filter) {
 
     const chip =
       document.createElement("span");
+
 
     chip.className =
       "browse-filter-chip";
@@ -503,6 +853,11 @@ function renderBrowseActiveFilters() {
     const text =
       document.createElement("span");
 
+
+    text.className =
+      "browse-filter-chip-text";
+
+
     text.textContent =
       filter.label;
 
@@ -510,9 +865,14 @@ function renderBrowseActiveFilters() {
     const close =
       document.createElement("button");
 
-    close.type = "button";
 
-    close.innerHTML = "×";
+    close.type =
+      "button";
+
+
+    close.innerHTML =
+      "×";
+
 
     close.setAttribute(
       "aria-label",
@@ -520,11 +880,20 @@ function renderBrowseActiveFilters() {
     );
 
 
-    close.onclick = function() {
+    close.addEventListener(
+      "click",
+      function(event) {
 
-      removeBrowseFilter(filter.type);
+        event.preventDefault();
 
-    };
+        event.stopPropagation();
+
+        removeBrowseFilter(
+          filter.type
+        );
+
+      }
+    );
 
 
     chip.appendChild(text);
@@ -535,8 +904,12 @@ function renderBrowseActiveFilters() {
 
   });
 
-}
 
+  /*
+     Hiç filtre yoksa container boş kalır.
+  */
+
+}
 
 
 /* ============================================================
@@ -548,63 +921,113 @@ function removeBrowseFilter(type) {
   const ids = {
 
     fQuery: "fQuery",
+
     fBrand: "fBrand",
+
     fBody: "fBody",
+
     fFuel: "fFuel",
+
     fTrans: "fTrans"
 
   };
 
 
+  /* Tekli filtre */
+
   if (ids[type]) {
 
     const el =
-      document.getElementById(ids[type]);
+      document.getElementById(
+        ids[type]
+      );
+
 
     if (el) {
+
       el.value = "";
+
     }
 
   }
 
 
+  /* Fiyat */
+
   if (type === "price") {
 
     const min =
-      document.getElementById("fPriceMin");
+      document.getElementById(
+        "fPriceMin"
+      );
 
     const max =
-      document.getElementById("fPriceMax");
+      document.getElementById(
+        "fPriceMax"
+      );
 
-    if (min) min.value = "";
 
-    if (max) max.value = "";
+    if (min) {
+
+      min.value = "";
+
+    }
+
+
+    if (max) {
+
+      max.value = "";
+
+    }
 
   }
 
+
+  /* Yıl */
 
   if (type === "year") {
 
     const min =
-      document.getElementById("fYearMin");
+      document.getElementById(
+        "fYearMin"
+      );
 
     const max =
-      document.getElementById("fYearMax");
+      document.getElementById(
+        "fYearMax"
+      );
 
-    if (min) min.value = "";
 
-    if (max) max.value = "";
+    if (min) {
+
+      min.value = "";
+
+    }
+
+
+    if (max) {
+
+      max.value = "";
+
+    }
 
   }
 
 
+  /* KM */
+
   if (type === "km") {
 
     const km =
-      document.getElementById("fKmMax");
+      document.getElementById(
+        "fKmMax"
+      );
+
 
     if (km) {
+
       km.value = "";
+
     }
 
   }
@@ -613,15 +1036,252 @@ function removeBrowseFilter(type) {
   syncBrowseQuickButtons();
 
 
-  if (typeof renderBrowse === "function") {
-    renderBrowse();
-  }
+  renderBrowseSafe();
 
 
   updateBrowseV2UI();
 
 }
 
+
+/* ============================================================
+   FİLTRE DEĞİŞTİĞİNDE ARAÇLARI GÜNCELLE
+   ============================================================ */
+
+function applyBrowseFilters() {
+
+  syncBrowseQuickButtons();
+
+
+  renderBrowseSafe();
+
+
+  updateBrowseV2UI();
+
+}
+
+
+/* ============================================================
+   ARAMA KUTUSU
+   ============================================================ */
+
+function handleBrowseSearch() {
+
+  clearTimeout(
+    browseSearchTimer
+  );
+
+
+  browseSearchTimer =
+    setTimeout(function() {
+
+      renderBrowseSafe();
+
+      updateBrowseV2UI();
+
+    }, 250);
+
+}
+
+
+/* ============================================================
+   FİLTRE DEĞİŞİKLİKLERİNİ DİNLE
+   ============================================================ */
+
+function bindBrowseFilterEvents() {
+
+  const ids = [
+
+    "fBrand",
+    "fBody",
+    "fPriceMin",
+    "fPriceMax",
+    "fYearMin",
+    "fYearMax",
+    "fKmMax",
+    "fFuel",
+    "fTrans",
+    "fSort"
+
+  ];
+
+
+  ids.forEach(function(id) {
+
+    const el =
+      document.getElementById(id);
+
+
+    if (!el) return;
+
+
+    /*
+       Daha önce bağlanmışsa
+       tekrar bağlamıyoruz.
+    */
+
+    if (
+      el.dataset.browseFilterBound === "true"
+    ) {
+
+      return;
+
+    }
+
+
+    el.dataset.browseFilterBound =
+      "true";
+
+
+    el.addEventListener(
+      "change",
+      function() {
+
+        applyBrowseFilters();
+
+      }
+    );
+
+
+    /*
+       Sayısal alanlarda Enter
+       ile de filtre uygula.
+    */
+
+    if (
+      id === "fPriceMin" ||
+      id === "fPriceMax" ||
+      id === "fYearMin" ||
+      id === "fYearMax" ||
+      id === "fKmMax"
+    ) {
+
+      el.addEventListener(
+        "keydown",
+        function(event) {
+
+          if (
+            event.key === "Enter"
+          ) {
+
+            event.preventDefault();
+
+            applyBrowseFilters();
+
+          }
+
+        }
+      );
+
+    }
+
+  });
+
+
+  /* Arama */
+
+  const query =
+    document.getElementById(
+      "fQuery"
+    );
+
+
+  if (
+    query &&
+    query.dataset.browseSearchBound !== "true"
+  ) {
+
+    query.dataset.browseSearchBound =
+      "true";
+
+
+    query.addEventListener(
+      "input",
+      function() {
+
+        updateBrowseV2UI();
+
+        handleBrowseSearch();
+
+      }
+    );
+
+
+    query.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (
+          event.key === "Enter"
+        ) {
+
+          event.preventDefault();
+
+          clearTimeout(
+            browseSearchTimer
+          );
+
+          applyBrowseFilters();
+
+        }
+
+      }
+    );
+
+  }
+
+}
+
+
+/* ============================================================
+   TOPLAM ARAÇ SAYISI
+   ============================================================ */
+
+function updateBrowseTotalCount() {
+
+  const total =
+    document.getElementById(
+      "browseTotalCount"
+    );
+
+
+  if (!total) return;
+
+
+  /*
+     renderBrowse() filtrelenmiş sonuç
+     sayısını farklı bir elementte
+     yönetiyorsa ona müdahale etmiyoruz.
+
+     Burada yalnızca mevcut veri sayısını
+     güvenli şekilde kullanıyoruz.
+  */
+
+  if (
+    Array.isArray(
+      window.dummyCars
+    )
+  ) {
+
+    /*
+       Eğer renderBrowse tarafından
+       özel bir değer atanmışsa
+       üzerine yazma.
+    */
+
+    if (
+      !total.dataset.renderControlled
+    ) {
+
+      total.textContent =
+        window.dummyCars.length
+          .toLocaleString("tr-TR");
+
+    }
+
+  }
+
+}
 
 
 /* ============================================================
@@ -638,106 +1298,274 @@ function updateBrowseV2UI() {
 
 
   /*
-     Hızlı filtre butonlarını senkronize et.
+     Hızlı filtreleri senkronize et.
   */
 
   syncBrowseQuickButtons();
 
 
   /*
-     Toplam araç sayısını mümkün olduğunca
-     mevcut data üzerinden göster.
+     Aktif filtre sayısı.
   */
 
-  const total =
-    document.getElementById("browseTotalCount");
+  updateBrowseFilterCount();
 
-  if (total && Array.isArray(window.dummyCars)) {
 
-    total.textContent =
-      window.dummyCars.length.toLocaleString("tr-TR");
+  /*
+     Toplam araç sayısı.
+  */
 
-  }
+  updateBrowseTotalCount();
 
 }
 
 
+/* ============================================================
+   DIŞARIDAN FİLTRE UYGULAMA
+   ============================================================ */
+
+function applyFilterAndRender() {
+
+  applyBrowseFilters();
+
+}
+
 
 /* ============================================================
-   RENDER BROWSE SONRASI V2 ARAYÜZÜNÜ GÜNCELLE
+   DIŞARIDAN TEK FİLTRE AYARLAMA
+   ============================================================ */
+
+function setBrowseFilter(id, value) {
+
+  const el =
+    document.getElementById(id);
+
+
+  if (!el) return;
+
+
+  el.value =
+    value ?? "";
+
+
+  applyBrowseFilters();
+
+}
+
+
+/* ============================================================
+   MARKA FİLTRESİ
+   ============================================================ */
+
+function setBrowseBrand(brand) {
+
+  setBrowseFilter(
+    "fBrand",
+    brand
+  );
+
+}
+
+
+/* ============================================================
+   KASA FİLTRESİ
+   ============================================================ */
+
+function setBrowseBody(body) {
+
+  setBrowseFilter(
+    "fBody",
+    body
+  );
+
+}
+
+
+/* ============================================================
+   YAKIT FİLTRESİ
+   ============================================================ */
+
+function setBrowseFuel(fuel) {
+
+  setBrowseFilter(
+    "fFuel",
+    fuel
+  );
+
+}
+
+
+/* ============================================================
+   VİTES FİLTRESİ
+   ============================================================ */
+
+function setBrowseTransmission(trans) {
+
+  setBrowseFilter(
+    "fTrans",
+    trans
+  );
+
+}
+
+
+/* ============================================================
+   FİLTRE DURUMU
+   ============================================================ */
+
+function hasActiveBrowseFilters() {
+
+  return (
+    getBrowseActiveFilterCount() > 0
+  );
+
+}
+
+
+/* ============================================================
+   SAYFA AÇILDIĞINDA BAŞLAT
    ============================================================ */
 
 (function initBrowseFilterEnhancements() {
 
-  /*
-     DOM henüz hazır değilse bekle.
-  */
-
   function init() {
 
-    updateBrowseV2UI();
+    if (browseFilterInitialized) {
+
+      return;
+
+    }
+
+
+    browseFilterInitialized =
+      true;
 
 
     /*
-       Kullanıcı filtre alanlarını elle değiştirdiğinde
-       aktif filtre çiplerini güncelle.
+       Eventleri bağla.
     */
 
-    const ids = [
-
-      "fQuery",
-      "fBrand",
-      "fBody",
-      "fPriceMin",
-      "fPriceMax",
-      "fYearMin",
-      "fYearMax",
-      "fKmMax",
-      "fFuel",
-      "fTrans"
-
-    ];
+    bindBrowseFilterEvents();
 
 
-    ids.forEach(function(id) {
+    /*
+       İlk UI.
+    */
 
-      const el =
-        document.getElementById(id);
-
-      if (!el) return;
-
-
-      el.addEventListener(
-        "input",
-        function() {
-          updateBrowseV2UI();
-        }
-      );
-
-
-      el.addEventListener(
-        "change",
-        function() {
-          updateBrowseV2UI();
-        }
-      );
-
-    });
+    updateBrowseV2UI();
 
   }
 
 
-  if (document.readyState === "loading") {
+  if (
+    document.readyState === "loading"
+  ) {
 
     document.addEventListener(
       "DOMContentLoaded",
       init
     );
 
-  } else {
+  }
+
+  else {
 
     init();
 
   }
 
 })();
+
+
+/* ============================================================
+   SAYFA SONRADAN DEĞİŞTİĞİNDE
+   FİLTRE ALANLARINI TEKRAR BUL
+   ============================================================ */
+
+document.addEventListener(
+  "click",
+  function(event) {
+
+    /*
+       SPA yapısında Araç İncele
+       sayfasına sonradan geçildiğinde
+       filtre elementleri DOM'a gelmiş
+       olabilir.
+
+       Bu yüzden bir sonraki event
+       döngüsünde tekrar kontrol ediyoruz.
+    */
+
+    const target =
+      event.target;
+
+
+    if (
+      target &&
+      (
+        target.closest?.(
+          '[data-page="browse"]'
+        ) ||
+        target.closest?.(
+          '[data-page="browse"]'
+        )
+      )
+    ) {
+
+      setTimeout(function() {
+
+        bindBrowseFilterEvents();
+
+        updateBrowseV2UI();
+
+      }, 50);
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   GLOBAL YARDIMCI
+   ============================================================ */
+
+window.AB_BrowseFilters = {
+
+  reset:
+    resetFilters,
+
+  apply:
+    applyBrowseFilters,
+
+  toggle:
+    toggleFilters,
+
+  close:
+    closeFilters,
+
+  set:
+    setBrowseFilter,
+
+  setBrand:
+    setBrowseBrand,
+
+  setBody:
+    setBrowseBody,
+
+  setFuel:
+    setBrowseFuel,
+
+  setTransmission:
+    setBrowseTransmission,
+
+  remove:
+    removeBrowseFilter,
+
+  count:
+    getBrowseActiveFilterCount,
+
+  hasFilters:
+    hasActiveBrowseFilters
+
+};
