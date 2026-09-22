@@ -1,33 +1,89 @@
 <!doctype html>
 <html lang="tr">
+
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
 <title>ARABAMI BUL — Akıllı Otomobil Platformu</title>
+
 <link rel="stylesheet" href="css/style.css">
 </head>
 
+
 <body>
 
-<!-- HEADER -->
+
+<!-- =========================================================
+     HEADER
+     ========================================================= -->
+
 <header>
+
   <div class="nav">
 
-    <div class="logo" onclick="go('home')">
+
+    <!-- LOGO -->
+
+    <div
+      class="logo"
+      onclick="go('home')"
+    >
+
       <div class="logo-icon">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+
           <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C1.4 11.2 1 12 1 13v3c0 .6.4 1 1 1h2"/>
-          <circle cx="7" cy="17" r="2"/>
-          <circle cx="17" cy="17" r="2"/>
+
+          <circle
+            cx="7"
+            cy="17"
+            r="2"
+          />
+
+          <circle
+            cx="17"
+            cy="17"
+            r="2"
+          />
+
         </svg>
+
       </div>
+
       ARABAMI <span>BUL</span>
+
     </div>
 
+
+
     <!-- AKILLI ARAMA -->
+
     <div class="search-container">
+
       <div class="search-bar">
-        <span style="margin-right:6px;font-size:14px;opacity:.6;">🔍</span>
+
+        <span
+          style="
+            margin-right:6px;
+            font-size:14px;
+            opacity:.6;
+          "
+        >
+          🔍
+        </span>
 
         <input
           type="text"
@@ -37,772 +93,2186 @@
           onkeydown="handleSearchKeyDown(event)"
         >
 
-        <span class="kbd">Ctrl K</span>
+        <span class="kbd">
+          Ctrl K
+        </span>
+
       </div>
 
-      <div class="search-dropdown" id="searchDropdown"></div>
+
+      <div
+        class="search-dropdown"
+        id="searchDropdown"
+      ></div>
+
     </div>
+
+
+
+    <!-- NAVIGATION -->
 
     <div class="navlinks">
-      <button data-page="home" class="active" onclick="go('home')">Ana Sayfa</button>
-      <button data-page="find" onclick="go('find')">Bana Araba Bul</button>
-      <button data-page="browse" onclick="go('browse')">Araç İncele</button>
-      <button data-page="favorites" onclick="go('favorites')">Favorilerim</button>
-      <button data-page="sell" onclick="go('sell')">İlan Ver</button>
+
+      <button
+        data-page="home"
+        class="active"
+        onclick="go('home')"
+      >
+        Ana Sayfa
+      </button>
+
+      <button
+        data-page="find"
+        onclick="go('find')"
+      >
+        Bana Araba Bul
+      </button>
+
+      <button
+        data-page="browse"
+        onclick="go('browse')"
+      >
+        Araç İncele
+      </button>
+
+      <button
+        data-page="favorites"
+        onclick="go('favorites')"
+      >
+        Favorilerim
+      </button>
+
+      <button
+        data-page="sell"
+        onclick="go('sell')"
+      >
+        İlan Ver
+      </button>
+
     </div>
 
-    <button class="account-btn" onclick="go('account')">Giriş Yap</button>
+
+
+    <!-- ACCOUNT -->
+
+    <button
+      class="account-btn"
+      onclick="go('account')"
+    >
+      Giriş Yap
+    </button>
 
   </div>
+
 </header>
 
 
-<!-- MOBİL BOTTOM NAV -->
+
+<!-- =========================================================
+     MOBILE BOTTOM NAV
+     ========================================================= -->
+
 <nav class="mobile-bottom-nav">
 
-  <button data-page="home" class="active" onclick="go('home')">
+
+  <button
+    data-page="home"
+    class="active"
+    onclick="go('home')"
+  >
+
     <svg viewBox="0 0 24 24">
+
       <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+
     </svg>
+
     Ana Sayfa
+
   </button>
 
-  <button data-page="find" onclick="go('find')">
+
+
+  <button
+    data-page="find"
+    onclick="go('find')"
+  >
+
     <svg viewBox="0 0 24 24">
+
       <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+
     </svg>
+
     Sihirbaz
+
   </button>
 
-  <button data-page="browse" onclick="go('browse')">
+
+
+  <button
+    data-page="browse"
+    onclick="go('browse')"
+  >
+
     <svg viewBox="0 0 24 24">
+
       <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5S16.67 13 17.5 13s1.5.67 1.5 1.5S18.33 16 18.33 16zM5 11l1.5-4.5h11L19 11H5z"/>
+
     </svg>
+
     Araçlar
+
   </button>
 
-  <button data-page="favorites" onclick="go('favorites')">
+
+
+  <button
+    data-page="favorites"
+    onclick="go('favorites')"
+  >
+
     <svg viewBox="0 0 24 24">
+
       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+
     </svg>
+
     Favoriler
+
   </button>
+
+
 
   <button onclick="toggleChat()">
+
     <svg viewBox="0 0 24 24">
+
       <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+
     </svg>
+
     AI Destek
+
   </button>
 
 </nav>
 
 
+
 <main>
 
-  <!-- ANA SAYFA -->
-  <section id="home" class="page active">
 
-    <div class="hero">
+<!-- =========================================================
+     ANA SAYFA
+     ========================================================= -->
 
-      <div>
-        <h1>Hayalindeki Araba, Şeffaf Sahiplik Maliyetiyle Kapında.</h1>
-
-        <p>
-          Bütçeni ve yaşam tarzını anlat; sana en uygun aracı sadece satış
-          fiyatıyla değil, aylık gerçek sahiplik maliyetiyle hesaplayıp sunalım.
-        </p>
-
-        <div class="hero-actions">
-          <button class="btn-primary" onclick="go('find')">
-            Bana Araba Bul (2 Dk)
-          </button>
-
-          <button class="btn-secondary" onclick="go('browse')">
-            Tüm Araçları İncele
-          </button>
-        </div>
-      </div>
-
-      <div class="hero-box">
-
-        <div class="stat">
-          <span>Aktif İlan Sayısı</span>
-          <b>70 Veri</b>
-        </div>
-
-        <div class="stat">
-          <span>Kasa Tipi Çeşitliliği</span>
-          <b>Sedan / SUV / Hatchback / Coupe</b>
-        </div>
-
-        <div class="stat">
-          <span>Ekspertiz Şeffaflığı</span>
-          <b>%100 Doğrulanmış</b>
-        </div>
-
-        <div class="stat">
-          <span>Canlı Yürütme Hesaplama</span>
-          <b>Aktif</b>
-        </div>
-
-      </div>
-    </div>
+<section
+  id="home"
+  class="page active"
+>
 
 
-    <!-- KATEGORİ SEÇİMİ -->
-    <div class="category-pills">
-
-      <div class="pill active" onclick="filterByCategory('')">
-        Tüm Kasa Tipleri
-      </div>
-
-      <div class="pill" onclick="filterByCategory('Sedan')">
-        Sedan
-      </div>
-
-      <div class="pill" onclick="filterByCategory('SUV')">
-        SUV
-      </div>
-
-      <div class="pill" onclick="filterByCategory('Hatchback')">
-        Hatchback
-      </div>
-
-      <div class="pill" onclick="filterByCategory('Coupe')">
-        Coupe
-      </div>
-
-      <div class="pill" onclick="filterByCategory('Elektrik')">
-        Elektrikli Araçlar
-      </div>
-
-    </div>
+  <div class="hero">
 
 
-    <h2 style="font-weight:900;margin-bottom:16px;">
-      Öne Çıkan Araçlar
-    </h2>
+    <div>
 
-    <div class="vehicle-grid" id="homeGrid"></div>
+      <h1>
+        Hayalindeki Araba, Şeffaf Sahiplik Maliyetiyle Kapında.
+      </h1>
 
-
-    <!-- CTA -->
-    <div class="cta-banner">
-
-      <h2>Aracınızı Doğru Fiyata Hızlıca Satın</h2>
 
       <p>
-        İlanınızı hemen ekleyin, detaylı ekspertiz ve şeffaf yürütme
-        giderleriyle binlerce potansiyel alıcıya anında ulaşın.
+        Bütçeni ve yaşam tarzını anlat; sana en uygun aracı sadece satış
+        fiyatıyla değil, aylık gerçek sahiplik maliyetiyle hesaplayıp sunalım.
       </p>
+
+
+      <div class="hero-actions">
+
+        <button
+          class="btn-primary"
+          onclick="go('find')"
+        >
+          Bana Araba Bul (2 Dk)
+        </button>
+
+
+        <button
+          class="btn-secondary"
+          onclick="go('browse')"
+        >
+          Tüm Araçları İncele
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="hero-box">
+
+
+      <div class="stat">
+
+        <span>
+          Aktif İlan Sayısı
+        </span>
+
+        <b>
+          70 Veri
+        </b>
+
+      </div>
+
+
+      <div class="stat">
+
+        <span>
+          Kasa Tipi Çeşitliliği
+        </span>
+
+        <b>
+          Sedan / SUV / Hatchback / Coupe
+        </b>
+
+      </div>
+
+
+      <div class="stat">
+
+        <span>
+          Ekspertiz Şeffaflığı
+        </span>
+
+        <b>
+          %100 Doğrulanmış
+        </b>
+
+      </div>
+
+
+      <div class="stat">
+
+        <span>
+          Canlı Yürütme Hesaplama
+        </span>
+
+        <b>
+          Aktif
+        </b>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- KATEGORİLER -->
+
+  <div class="category-pills">
+
+
+    <div
+      class="pill active"
+      onclick="filterByCategory('')"
+    >
+      Tüm Kasa Tipleri
+    </div>
+
+
+    <div
+      class="pill"
+      onclick="filterByCategory('Sedan')"
+    >
+      Sedan
+    </div>
+
+
+    <div
+      class="pill"
+      onclick="filterByCategory('SUV')"
+    >
+      SUV
+    </div>
+
+
+    <div
+      class="pill"
+      onclick="filterByCategory('Hatchback')"
+    >
+      Hatchback
+    </div>
+
+
+    <div
+      class="pill"
+      onclick="filterByCategory('Coupe')"
+    >
+      Coupe
+    </div>
+
+
+    <div
+      class="pill"
+      onclick="filterByCategory('Elektrik')"
+    >
+      Elektrikli Araçlar
+    </div>
+
+  </div>
+
+
+
+  <h2
+    style="
+      font-weight:900;
+      margin-bottom:16px;
+    "
+  >
+    Öne Çıkan Araçlar
+  </h2>
+
+
+  <div
+    class="vehicle-grid"
+    id="homeGrid"
+  ></div>
+
+
+
+  <!-- CTA -->
+
+  <div class="cta-banner">
+
+    <h2>
+      Aracınızı Doğru Fiyata Hızlıca Satın
+    </h2>
+
+
+    <p>
+      İlanınızı hemen ekleyin, detaylı ekspertiz ve şeffaf yürütme
+      giderleriyle binlerce potansiyel alıcıya anında ulaşın.
+    </p>
+
+
+    <button
+      class="btn-primary"
+      onclick="go('sell')"
+      style="
+        background:#fff;
+        color:var(--text);
+      "
+    >
+      Ücretsiz İlan Oluştur
+    </button>
+
+  </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     BANA ARABA BUL
+     ========================================================= -->
+
+<section
+  id="find"
+  class="page"
+>
+
+
+  <div
+    class="wizard-card"
+    id="wizardCard"
+  >
+
+
+    <div
+      class="q-badge"
+      id="qBadge"
+    >
+      Soru 1 / 6
+    </div>
+
+
+    <h2 id="qTitle">
+      Bütçeniz nedir?
+    </h2>
+
+
+    <p id="qSub">
+      Satın almayı düşündüğünüz maksimum araç fiyatı.
+    </p>
+
+
+    <div class="progress-bar">
+
+      <div
+        class="progress-fill"
+        id="pFill"
+        style="width:16.6%;"
+      ></div>
+
+    </div>
+
+
+    <div
+      class="options-grid"
+      id="qOptions"
+    ></div>
+
+
+    <div
+      style="
+        display:flex;
+        justify-content:space-between;
+        margin-top:16px;
+      "
+    >
+
+      <button
+        class="btn-secondary"
+        id="prevBtn"
+        onclick="prevQ()"
+      >
+        Geri
+      </button>
+
 
       <button
         class="btn-primary"
-        onclick="go('sell')"
-        style="background:#fff;color:var(--text);"
+        onclick="nextQ()"
       >
-        Ücretsiz İlan Oluştur
+        İlerle
       </button>
 
     </div>
 
-  </section>
+  </div>
 
 
-  <!-- BANA ARABA BUL -->
-  <section id="find" class="page">
 
-    <div class="wizard-card" id="wizardCard">
+  <div
+    id="wizardResult"
+    style="display:none;"
+  >
 
-      <div class="q-badge" id="qBadge">
-        Soru 1 / 6
-      </div>
+    <div
+      style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:20px;
+      "
+    >
 
-      <h2 id="qTitle">
-        Bütçeniz nedir?
-      </h2>
+      <div>
 
-      <p id="qSub">
-        Satın almayı düşündüğünüz maksimum araç fiyatı.
-      </p>
-
-      <div class="progress-bar">
-        <div
-          class="progress-fill"
-          id="pFill"
-          style="width:16.6%;"
-        ></div>
-      </div>
-
-      <div class="options-grid" id="qOptions"></div>
-
-      <div style="display:flex;justify-content:space-between;margin-top:16px;">
-
-        <button
-          class="btn-secondary"
-          id="prevBtn"
-          onclick="prevQ()"
+        <h2
+          style="
+            font-weight:900;
+            margin:0;
+          "
         >
-          Geri
-        </button>
+          🎯 Size Özel Eşleşen Araçlar
+        </h2>
 
-        <button
-          class="btn-primary"
-          onclick="nextQ()"
+
+        <p
+          style="
+            color:var(--muted);
+            font-size:14px;
+            margin:4px 0 0;
+          "
         >
-          İlerle
-        </button>
+          Seçtiğiniz kriterler analiz edildi ve en yüksek uyum
+          sağlayan araçlar sıralandı.
+        </p>
 
       </div>
+
+
+      <button
+        class="btn-secondary"
+        onclick="resetWizard()"
+      >
+        Sihirbazı Yeniden Başlat
+      </button>
 
     </div>
 
 
-    <div id="wizardResult" style="display:none;">
+    <div
+      class="vehicle-grid"
+      id="wizardResultGrid"
+    ></div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     ARAÇ İNCELE
+     ========================================================= -->
+
+<section
+  id="browse"
+  class="page"
+>
+
+
+  <button
+    class="btn-secondary filter-toggle-btn"
+    onclick="toggleFilters()"
+  >
+
+    <span>
+      🎛️ Detaylı Filtreleri Göster / Gizle
+    </span>
+
+    <b id="filterState">
+      +
+    </b>
+
+  </button>
+
+
+
+  <div class="layout">
+
+
+    <aside
+      class="filters"
+      id="filterPanel"
+    >
+
+
+      <div class="filter-header">
+
+        <span
+          style="
+            font-weight:900;
+            font-size:15px;
+          "
+        >
+          Detaylı Filtrele
+        </span>
+
+
+        <button
+          class="btn-secondary"
+          onclick="resetFilters()"
+          style="
+            padding:4px 10px;
+            font-size:11px;
+          "
+        >
+          Sıfırla
+        </button>
+
+      </div>
+
+
+
+      <div class="filter-group">
+
+        <label>
+          Kelime Arama
+        </label>
+
+        <input
+          type="text"
+          id="fQuery"
+          placeholder="Marka veya model yazın..."
+          oninput="renderBrowse()"
+        >
+
+      </div>
+
+
+
+      <div class="filter-group">
+
+        <label>
+          Marka
+        </label>
+
+        <select
+          id="fBrand"
+          onchange="renderBrowse()"
+        >
+
+          <option value="">
+            Tüm Markalar
+          </option>
+
+          <option>
+            BMW
+          </option>
+
+          <option>
+            Mercedes-Benz
+          </option>
+
+          <option>
+            Audi
+          </option>
+
+          <option>
+            Tesla
+          </option>
+
+          <option>
+            Volkswagen
+          </option>
+
+          <option>
+            Volvo
+          </option>
+
+          <option>
+            Porsche
+          </option>
+
+          <option>
+            Toyota
+          </option>
+
+          <option>
+            Honda
+          </option>
+
+          <option>
+            Ford
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <div class="filter-group">
+
+        <label>
+          Kasa Tipi
+        </label>
+
+        <select
+          id="fBody"
+          onchange="renderBrowse()"
+        >
+
+          <option value="">
+            Tümü
+          </option>
+
+          <option>
+            Sedan
+          </option>
+
+          <option>
+            SUV
+          </option>
+
+          <option>
+            Hatchback
+          </option>
+
+          <option>
+            Coupe
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <div class="filter-group">
+
+        <label>
+          Fiyat Aralığı (TL)
+        </label>
+
+
+        <div class="filter-row">
+
+          <input
+            type="number"
+            id="fPriceMin"
+            placeholder="Min"
+            oninput="renderBrowse()"
+          >
+
+
+          <input
+            type="number"
+            id="fPriceMax"
+            placeholder="Maks"
+            oninput="renderBrowse()"
+          >
+
+        </div>
+
+      </div>
+
+
+
+      <div class="filter-group">
+
+        <label>
+          Model Yılı Aralığı
+        </label>
+
+
+        <div class="filter-row">
+
+          <input
+            type="number"
+            id="fYearMin"
+            placeholder="Min Yıl"
+            oninput="renderBrowse()"
+          >
+
+
+          <input
+            type="number"
+            id="fYearMax"
+            placeholder="Maks Yıl"
+            oninput="renderBrowse()"
+          >
+
+        </div>
+
+      </div>
+
+
+
+      <div class="filter-group">
+
+        <label>
+          Kilometre (KM)
+        </label>
+
+
+        <input
+          type="number"
+          id="fKmMax"
+          placeholder="Maksimum KM"
+          oninput="renderBrowse()"
+        >
+
+      </div>
+
+
+
+      <div class="filter-group">
+
+        <label>
+          Yakıt Tipi
+        </label>
+
+
+        <select
+          id="fFuel"
+          onchange="renderBrowse()"
+        >
+
+          <option value="">
+            Tümü
+          </option>
+
+          <option>
+            Benzin
+          </option>
+
+          <option>
+            Dizel
+          </option>
+
+          <option>
+            Elektrik
+          </option>
+
+          <option>
+            Hibrit
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <div class="filter-group">
+
+        <label>
+          Vites Tipi
+        </label>
+
+
+        <select
+          id="fTrans"
+          onchange="renderBrowse()"
+        >
+
+          <option value="">
+            Tümü
+          </option>
+
+          <option>
+            Otomatik
+          </option>
+
+          <option>
+            Manuel
+          </option>
+
+        </select>
+
+      </div>
+
+    </aside>
+
+
+
+    <div>
+
 
       <div
         style="
           display:flex;
           justify-content:space-between;
           align-items:center;
-          margin-bottom:20px;
+          margin-bottom:16px;
         "
       >
 
-        <div>
-
-          <h2 style="font-weight:900;margin:0;">
-            🎯 Size Özel Eşleşen Araçlar
-          </h2>
-
-          <p
-            style="
-              color:var(--muted);
-              font-size:14px;
-              margin:4px 0 0;
-            "
-          >
-            Seçtiğiniz kriterler analiz edildi ve en yüksek uyum
-            sağlayan araçlar sıralandı.
-          </p>
-
-        </div>
-
-        <button
-          class="btn-secondary"
-          onclick="resetWizard()"
+        <span
+          style="
+            font-size:13.5px;
+            font-weight:700;
+            color:var(--muted);
+          "
+          id="resultCount"
         >
-          Sihirbazı Yeniden Başlat
-        </button>
+          Bulunan Araç: 0
+        </span>
+
+
+        <select
+          id="fSort"
+          onchange="renderBrowse()"
+          style="
+            padding:6px 12px;
+            border:1px solid var(--line);
+            border-radius:8px;
+            font-size:13px;
+          "
+        >
+
+          <option value="default">
+            Varsayılan Sıralama
+          </option>
+
+          <option value="priceAsc">
+            Fiyat: Düşükten Yükseğe
+          </option>
+
+          <option value="priceDesc">
+            Fiyat: Yüksekten Düşüğe
+          </option>
+
+          <option value="yearDesc">
+            Model Yılı: En Yeni
+          </option>
+
+        </select>
 
       </div>
 
+
       <div
         class="vehicle-grid"
-        id="wizardResultGrid"
+        id="browseGrid"
       ></div>
 
     </div>
 
-  </section>
+  </div>
+
+</section>
 
 
-  <!-- ARAÇ İNCELE -->
-  <section id="browse" class="page">
 
-    <button
-      class="btn-secondary filter-toggle-btn"
-      onclick="toggleFilters()"
-    >
-      <span>🎛️ Detaylı Filtreleri Göster / Gizle</span>
-      <b id="filterState">+</b>
-    </button>
+<!-- =========================================================
+     FAVORİLER
+     ========================================================= -->
+
+<section
+  id="favorites"
+  class="page"
+>
+
+  <h2
+    style="
+      font-weight:900;
+      margin-bottom:16px;
+    "
+  >
+    Favori Araçlarınız
+  </h2>
 
 
-    <div class="layout">
+  <div
+    class="vehicle-grid"
+    id="favGrid"
+  ></div>
 
-      <aside class="filters" id="filterPanel">
+</section>
 
-        <div class="filter-header">
 
-          <span style="font-weight:900;font-size:15px;">
-            Detaylı Filtrele
+
+<!-- =========================================================
+     İLAN VER
+     ========================================================= -->
+
+<section
+  id="sell"
+  class="page"
+>
+
+
+  <div class="sell-page">
+
+
+    <!-- BAŞLIK -->
+
+    <div class="sell-header">
+
+      <div>
+
+        <span class="sell-kicker">
+          ARABAMI BUL
+        </span>
+
+
+        <h2>
+          Aracınızı Satışa Çıkarın
+        </h2>
+
+
+        <p>
+          Aracınızın bilgilerini girin, fotoğraflarını yükleyin
+          ve ilanınızı birkaç adımda yayınlayın.
+        </p>
+
+      </div>
+
+
+      <div class="sell-header-badge">
+
+        <span>
+          ✓
+        </span>
+
+        Ücretsiz İlan
+
+      </div>
+
+    </div>
+
+
+
+    <!-- İLERLEME -->
+
+    <div class="sell-progress">
+
+
+      <div class="sell-progress-line">
+
+        <div
+          class="sell-progress-fill"
+          id="sellStepFill"
+        ></div>
+
+      </div>
+
+
+      <div class="sell-steps">
+
+
+        <button
+          type="button"
+          class="sell-step-node active"
+          id="stepNode1"
+          onclick="goToSellStep(1)"
+        >
+
+          <span>
+            1
           </span>
 
+          <strong>
+            Araç
+          </strong>
+
+        </button>
+
+
+
+        <button
+          type="button"
+          class="sell-step-node"
+          id="stepNode2"
+          onclick="goToSellStep(2)"
+        >
+
+          <span>
+            2
+          </span>
+
+          <strong>
+            Teknik
+          </strong>
+
+        </button>
+
+
+
+        <button
+          type="button"
+          class="sell-step-node"
+          id="stepNode3"
+          onclick="goToSellStep(3)"
+        >
+
+          <span>
+            3
+          </span>
+
+          <strong>
+            Fotoğraflar
+          </strong>
+
+        </button>
+
+
+
+        <button
+          type="button"
+          class="sell-step-node"
+          id="stepNode4"
+          onclick="goToSellStep(4)"
+        >
+
+          <span>
+            4
+          </span>
+
+          <strong>
+            Yayınla
+          </strong>
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- FORM -->
+
+    <form
+      id="listingForm"
+      onsubmit="submitNewCar(event)"
+    >
+
+
+      <!-- ===================================================
+           ADIM 1
+           =================================================== -->
+
+      <div
+        class="sell-step active"
+        id="sellStep1"
+      >
+
+
+        <div class="sell-step-heading">
+
+
+          <div class="sell-step-icon">
+            🚗
+          </div>
+
+
+          <div>
+
+            <span>
+              ADIM 1 / 4
+            </span>
+
+
+            <h3>
+              Aracınızı Tanımlayın
+            </h3>
+
+
+            <p>
+              Satmak istediğiniz aracın temel bilgilerini girin.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="sell-form-card">
+
+
+          <div class="sell-form-grid">
+
+
+            <!-- MARKA -->
+
+            <div class="form-group">
+
+              <label for="addBrand">
+                Marka
+              </label>
+
+              <input
+                type="text"
+                id="addBrand"
+                placeholder="Örn. BMW"
+                autocomplete="off"
+                required
+              >
+
+              <small>
+                Aracınızın markasını yazın.
+              </small>
+
+            </div>
+
+
+
+            <!-- MODEL -->
+
+            <div class="form-group">
+
+              <label for="addModel">
+                Model
+              </label>
+
+              <input
+                type="text"
+                id="addModel"
+                placeholder="Örn. 320i"
+                autocomplete="off"
+                required
+              >
+
+              <small>
+                Model veya versiyon bilgisini yazın.
+              </small>
+
+            </div>
+
+
+
+            <!-- FİYAT -->
+
+            <div class="form-group">
+
+              <label for="addPrice">
+                Satış Fiyatı
+              </label>
+
+
+              <div class="input-with-suffix">
+
+                <input
+                  type="number"
+                  id="addPrice"
+                  placeholder="1500000"
+                  min="1"
+                  required
+                >
+
+                <span>
+                  TL
+                </span>
+
+              </div>
+
+            </div>
+
+
+
+            <!-- YIL -->
+
+            <div class="form-group">
+
+              <label for="addYear">
+                Model Yılı
+              </label>
+
+              <input
+                type="number"
+                id="addYear"
+                placeholder="2023"
+                min="1950"
+                max="2027"
+                required
+              >
+
+            </div>
+
+
+
+            <!-- KASA -->
+
+            <div class="form-group">
+
+              <label for="addBody">
+                Kasa Tipi
+              </label>
+
+
+              <select
+                id="addBody"
+                required
+              >
+
+                <option value="Sedan">
+                  Sedan
+                </option>
+
+                <option value="SUV">
+                  SUV
+                </option>
+
+                <option value="Hatchback">
+                  Hatchback
+                </option>
+
+                <option value="Coupe">
+                  Coupe
+                </option>
+
+              </select>
+
+            </div>
+
+
+
+            <!-- RENK -->
+
+            <div class="form-group">
+
+              <label for="addColor">
+                Renk
+              </label>
+
+              <input
+                type="text"
+                id="addColor"
+                placeholder="Örn. Beyaz"
+              >
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="sell-step-actions">
+
+
           <button
+            type="button"
             class="btn-secondary"
-            onclick="resetFilters()"
-            style="padding:4px 10px;font-size:11px;"
+            onclick="saveListingDraft()"
           >
-            Sıfırla
+            💾 Taslağı Kaydet
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-primary"
+            onclick="nextSellStep()"
+          >
+            Devam Et →
           </button>
 
         </div>
 
-
-        <div class="filter-group">
-
-          <label>Kelime Arama</label>
-
-          <input
-            type="text"
-            id="fQuery"
-            placeholder="Marka veya model yazın..."
-            oninput="renderBrowse()"
-          >
-
-        </div>
+      </div>
 
 
-        <div class="filter-group">
 
-          <label>Marka</label>
+      <!-- ===================================================
+           ADIM 2
+           =================================================== -->
 
-          <select id="fBrand" onchange="renderBrowse()">
-            <option value="">Tüm Markalar</option>
-            <option>BMW</option>
-            <option>Mercedes-Benz</option>
-            <option>Audi</option>
-            <option>Tesla</option>
-            <option>Volkswagen</option>
-            <option>Volvo</option>
-            <option>Porsche</option>
-            <option>Toyota</option>
-            <option>Honda</option>
-            <option>Ford</option>
-          </select>
-
-        </div>
+      <div
+        class="sell-step"
+        id="sellStep2"
+      >
 
 
-        <div class="filter-group">
-
-          <label>Kasa Tipi</label>
-
-          <select id="fBody" onchange="renderBrowse()">
-            <option value="">Tümü</option>
-            <option>Sedan</option>
-            <option>SUV</option>
-            <option>Hatchback</option>
-            <option>Coupe</option>
-          </select>
-
-        </div>
+        <div class="sell-step-heading">
 
 
-        <div class="filter-group">
+          <div class="sell-step-icon">
+            ⚙️
+          </div>
 
-          <label>Fiyat Aralığı (TL)</label>
 
-          <div class="filter-row">
+          <div>
 
-            <input
-              type="number"
-              id="fPriceMin"
-              placeholder="Min"
-              oninput="renderBrowse()"
-            >
+            <span>
+              ADIM 2 / 4
+            </span>
 
-            <input
-              type="number"
-              id="fPriceMax"
-              placeholder="Maks"
-              oninput="renderBrowse()"
-            >
+
+            <h3>
+              Teknik Bilgiler
+            </h3>
+
+
+            <p>
+              Aracınızın mekanik ve ekspertiz bilgilerini belirtin.
+            </p>
 
           </div>
 
         </div>
 
 
-        <div class="filter-group">
 
-          <label>Model Yılı Aralığı</label>
+        <div class="sell-form-card">
 
-          <div class="filter-row">
 
-            <input
-              type="number"
-              id="fYearMin"
-              placeholder="Min Yıl"
-              oninput="renderBrowse()"
-            >
+          <div class="sell-form-grid">
 
-            <input
-              type="number"
-              id="fYearMax"
-              placeholder="Maks Yıl"
-              oninput="renderBrowse()"
-            >
+
+            <!-- KM -->
+
+            <div class="form-group">
+
+              <label for="addKm">
+                Kilometre
+              </label>
+
+
+              <div class="input-with-suffix">
+
+                <input
+                  type="number"
+                  id="addKm"
+                  placeholder="45000"
+                  min="0"
+                  required
+                >
+
+                <span>
+                  KM
+                </span>
+
+              </div>
+
+            </div>
+
+
+
+            <!-- YAKIT -->
+
+            <div class="form-group">
+
+              <label for="addFuel">
+                Yakıt Tipi
+              </label>
+
+
+              <select
+                id="addFuel"
+                required
+              >
+
+                <option value="Benzin">
+                  Benzin
+                </option>
+
+                <option value="Dizel">
+                  Dizel
+                </option>
+
+                <option value="Hibrit">
+                  Hibrit
+                </option>
+
+                <option value="Elektrik">
+                  Elektrik
+                </option>
+
+              </select>
+
+            </div>
+
+
+
+            <!-- VİTES -->
+
+            <div class="form-group">
+
+              <label for="addTrans">
+                Vites
+              </label>
+
+
+              <select
+                id="addTrans"
+                required
+              >
+
+                <option value="Otomatik">
+                  Otomatik
+                </option>
+
+                <option value="Manuel">
+                  Manuel
+                </option>
+
+              </select>
+
+            </div>
+
+
+
+            <!-- HASAR -->
+
+            <div class="form-group">
+
+              <label for="addDamage">
+                Hasar Durumu
+              </label>
+
+
+              <select
+                id="addDamage"
+              >
+
+                <option value="Hatasız">
+                  Hatasız
+                </option>
+
+                <option value="Boyasız">
+                  Boyasız
+                </option>
+
+                <option value="Lokal Boyalı">
+                  Lokal Boyalı
+                </option>
+
+                <option value="Boyalı">
+                  Boyalı
+                </option>
+
+                <option value="Değişenli">
+                  Değişenli
+                </option>
+
+                <option value="Hasar Kayıtlı">
+                  Hasar Kayıtlı
+                </option>
+
+              </select>
+
+            </div>
+
+
+
+            <!-- TRAMER -->
+
+            <div class="form-group">
+
+              <label for="addTramer">
+                Tramer / Hasar Kaydı
+              </label>
+
+
+              <div class="input-with-suffix">
+
+                <input
+                  type="number"
+                  id="addTramer"
+                  placeholder="0"
+                  min="0"
+                >
+
+                <span>
+                  TL
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- DONANIMLAR -->
+
+          <div class="sell-feature-section">
+
+
+            <div class="sell-section-title">
+
+              <h4>
+                Donanım ve Özellikler
+              </h4>
+
+              <span>
+                Birden fazla özellik seçebilirsiniz.
+              </span>
+
+            </div>
+
+
+
+            <div class="feature-grid">
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Panoramik Cam Tavan"
+                >
+
+                <span>
+                  🌤️ Panoramik Cam Tavan
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Sunroof"
+                >
+
+                <span>
+                  ☀️ Sunroof
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Adaptif Hız Sabitleyici"
+                >
+
+                <span>
+                  🛣️ Adaptif Hız Sabitleyici
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Geri Görüş Kamerası"
+                >
+
+                <span>
+                  📷 Geri Görüş Kamerası
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Park Sensörü"
+                >
+
+                <span>
+                  📡 Park Sensörü
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Apple CarPlay"
+                >
+
+                <span>
+                  📱 Apple CarPlay
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Android Auto"
+                >
+
+                <span>
+                  📲 Android Auto
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Isıtmalı Koltuk"
+                >
+
+                <span>
+                  🔥 Isıtmalı Koltuk
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="Deri Koltuk"
+                >
+
+                <span>
+                  💺 Deri Koltuk
+                </span>
+
+              </label>
+
+
+
+              <label class="feature-option">
+
+                <input
+                  type="checkbox"
+                  name="feature"
+                  value="LED Far"
+                >
+
+                <span>
+                  💡 LED Far
+                </span>
+
+              </label>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- AÇIKLAMA -->
+
+          <div class="form-group sell-description">
+
+            <label for="addDesc">
+              İlan Açıklaması
+            </label>
+
+
+            <textarea
+              id="addDesc"
+              rows="6"
+              placeholder="Aracınızın bakımları, ekspertiz durumu, değişen/boya bilgileri ve diğer önemli detayları yazın..."
+            ></textarea>
 
           </div>
 
         </div>
 
 
-        <div class="filter-group">
 
-          <label>Kilometre (KM)</label>
+        <div class="sell-step-actions">
 
-          <input
-            type="number"
-            id="fKmMax"
-            placeholder="Maksimum KM"
-            oninput="renderBrowse()"
+
+          <button
+            type="button"
+            class="btn-secondary"
+            onclick="previousSellStep()"
           >
-
-        </div>
-
-
-        <div class="filter-group">
-
-          <label>Yakıt Tipi</label>
-
-          <select id="fFuel" onchange="renderBrowse()">
-            <option value="">Tümü</option>
-            <option>Benzin</option>
-            <option>Dizel</option>
-            <option>Elektrik</option>
-            <option>Hibrit</option>
-          </select>
-
-        </div>
+            ← Geri
+          </button>
 
 
-        <div class="filter-group">
-
-          <label>Vites Tipi</label>
-
-          <select id="fTrans" onchange="renderBrowse()">
-            <option value="">Tümü</option>
-            <option>Otomatik</option>
-            <option>Manuel</option>
-          </select>
-
-        </div>
-
-      </aside>
-
-
-      <div>
-
-        <div
-          style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:16px;
-          "
-        >
-
-          <span
-            style="
-              font-size:13.5px;
-              font-weight:700;
-              color:var(--muted);
-            "
-            id="resultCount"
+          <button
+            type="button"
+            class="btn-primary"
+            onclick="nextSellStep()"
           >
-            Bulunan Araç: 0
-          </span>
-
-          <select
-            id="fSort"
-            onchange="renderBrowse()"
-            style="
-              padding:6px 12px;
-              border:1px solid var(--line);
-              border-radius:8px;
-              font-size:13px;
-            "
-          >
-            <option value="default">Varsayılan Sıralama</option>
-            <option value="priceAsc">Fiyat: Düşükten Yükseğe</option>
-            <option value="priceDesc">Fiyat: Yüksekten Düşüğe</option>
-            <option value="yearDesc">Model Yılı: En Yeni</option>
-          </select>
+            Devam Et →
+          </button>
 
         </div>
-
-        <div class="vehicle-grid" id="browseGrid"></div>
 
       </div>
 
-    </div>
-
-  </section>
 
 
-  <!-- FAVORİLER -->
-  <section id="favorites" class="page">
+      <!-- ===================================================
+           ADIM 3
+           =================================================== -->
 
-    <h2 style="font-weight:900;margin-bottom:16px;">
-      Favori Araçlarınız
-    </h2>
-
-    <div class="vehicle-grid" id="favGrid"></div>
-
-  </section>
-
-
-  <!-- İLAN VER -->
-  <section id="sell" class="page">
-
-    <div class="form-card">
-
-      <h2 style="font-weight:900;margin-top:0;">
-        Ücretsiz İlan Ver
-      </h2>
-
-      <p
-        style="
-          color:var(--muted);
-          font-size:14px;
-          margin-bottom:24px;
-        "
+      <div
+        class="sell-step"
+        id="sellStep3"
       >
-        Aracınızın bilgilerini ve fotoğraflarını yükleyerek
-        hızlıca satışa çıkarın.
-      </p>
 
 
-      <form onsubmit="submitNewCar(event)">
+        <div class="sell-step-heading">
 
-        <div class="form-group">
 
-          <label>Araba Fotoğrafları Yükle</label>
+          <div class="sell-step-icon">
+            📸
+          </div>
+
+
+          <div>
+
+            <span>
+              ADIM 3 / 4
+            </span>
+
+
+            <h3>
+              Aracınızın Fotoğrafları
+            </h3>
+
+
+            <p>
+              İlanınızın daha dikkat çekici olması için kaliteli
+              fotoğraflar ekleyin.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="sell-form-card">
+
+
+          <div class="form-group">
+
+
+            <label>
+              Fotoğraf Yükle
+            </label>
+
+
+            <div
+              class="image-upload-box sell-upload-box"
+              onclick="document.getElementById('carImgInput').click()"
+            >
+
+
+              <div class="sell-upload-icon">
+                📷
+              </div>
+
+
+              <strong>
+                Fotoğrafları Seçin
+              </strong>
+
+
+              <span>
+                JPG, PNG veya WEBP
+              </span>
+
+
+              <small>
+                En fazla 15 fotoğraf · Maksimum 8 MB / fotoğraf
+              </small>
+
+            </div>
+
+
+
+            <input
+              type="file"
+              id="carImgInput"
+              multiple
+              accept="image/jpeg,image/png,image/webp"
+              style="display:none;"
+              onchange="handleImageUpload(event)"
+            >
+
+
+
+            <div
+              class="image-counter"
+              id="imageCounter"
+            >
+              0/15 fotoğraf
+            </div>
+
+
+
+            <div
+              class="preview-grid"
+              id="imgPreviewGrid"
+            ></div>
+
+          </div>
+
+
+
+          <!-- FOTOĞRAF İPUÇLARI -->
+
+          <div class="photo-tips">
+
+
+            <h4>
+              📌 Fotoğraf İpuçları
+            </h4>
+
+
+            <div class="photo-tip-grid">
+
+
+              <div>
+
+                <strong>
+                  01
+                </strong>
+
+                <span>
+                  Önden ve arkadan fotoğraf
+                </span>
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  02
+                </strong>
+
+                <span>
+                  İç mekan ve kokpit
+                </span>
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  03
+                </strong>
+
+                <span>
+                  Jant ve lastikler
+                </span>
+
+              </div>
+
+
+              <div>
+
+                <strong>
+                  04
+                </strong>
+
+                <span>
+                  Varsa hasar bölgeleri
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="sell-step-actions">
+
+
+          <button
+            type="button"
+            class="btn-secondary"
+            onclick="previousSellStep()"
+          >
+            ← Geri
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-primary"
+            onclick="nextSellStep()"
+          >
+            İlanı Kontrol Et →
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- ===================================================
+           ADIM 4
+           =================================================== -->
+
+      <div
+        class="sell-step"
+        id="sellStep4"
+      >
+
+
+        <div class="sell-step-heading">
+
+
+          <div class="sell-step-icon">
+            ✅
+          </div>
+
+
+          <div>
+
+            <span>
+              ADIM 4 / 4
+            </span>
+
+
+            <h3>
+              İlanınızı Kontrol Edin
+            </h3>
+
+
+            <p>
+              Yayınlamadan önce girdiğiniz bilgileri kontrol edin.
+            </p>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="sell-form-card">
+
+
+          <!-- ÖZET -->
 
           <div
-            class="image-upload-box"
-            onclick="document.getElementById('carImgInput').click()"
+            id="listingSummary"
+            class="listing-summary"
+          ></div>
+
+
+
+          <!-- GÜVENLİK -->
+
+          <div class="publish-info">
+
+
+            <div class="publish-info-icon">
+              🛡️
+            </div>
+
+
+            <div>
+
+              <strong>
+                İlanınız güvenli şekilde kaydedilecek
+              </strong>
+
+
+              <p>
+                İlan bilgileriniz tarayıcınızda saklanır ve
+                Araçları İncele bölümünde listelenir.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <div class="sell-step-actions">
+
+
+          <button
+            type="button"
+            class="btn-secondary"
+            onclick="previousSellStep()"
           >
+            ← Düzenle
+          </button>
 
-            <div style="font-size:24px;margin-bottom:4px;">
-              📷
-            </div>
 
-            <div style="font-size:13px;font-weight:700;">
-              Fotoğraf Seçin veya Sürükleyin
-            </div>
-
-            <div style="font-size:11px;color:var(--muted);">
-              PNG, JPG, WEBP kabul edilir.
-            </div>
-
-          </div>
-
-          <input
-            type="file"
-            id="carImgInput"
-            multiple
-            accept="image/*"
-            style="display:none;"
-            onchange="handleImageUpload(event)"
+          <button
+            type="button"
+            class="btn-secondary"
+            onclick="saveListingDraft()"
           >
-
-          <div class="preview-grid" id="imgPreviewGrid"></div>
-
-        </div>
+            💾 Taslak Kaydet
+          </button>
 
 
-        <div class="form-row">
-
-          <div class="form-group">
-
-            <label>Marka</label>
-
-            <input
-              type="text"
-              id="addBrand"
-              placeholder="Örn: BMW"
-              required
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label>Model</label>
-
-            <input
-              type="text"
-              id="addModel"
-              placeholder="Örn: 320i Sedan"
-              required
-            >
-
-          </div>
+          <button
+            type="submit"
+            class="btn-primary sell-publish-btn"
+          >
+            🚀 İlanı Yayınla
+          </button>
 
         </div>
-
-
-        <div class="form-row">
-
-          <div class="form-group">
-
-            <label>Satış Fiyatı (TL)</label>
-
-            <input
-              type="number"
-              id="addPrice"
-              placeholder="Örn: 2850000"
-              required
-            >
-
-          </div>
-
-          <div class="form-group">
-
-            <label>Model Yılı</label>
-
-            <input
-              type="number"
-              id="addYear"
-              placeholder="Örn: 2023"
-              required
-            >
-
-          </div>
-
-        </div>
-
-
-        <div class="form-row">
-
-          <div class="form-group">
-
-            <label>Kasa Tipi</label>
-
-            <select id="addBody" required>
-              <option value="Sedan">Sedan</option>
-              <option value="SUV">SUV</option>
-              <option value="Hatchback">Hatchback</option>
-              <option value="Coupe">Coupe</option>
-            </select>
-
-          </div>
-
-          <div class="form-group">
-
-            <label>Yakıt Tipi</label>
-
-            <select id="addFuel" required>
-              <option value="Benzin">Benzin</option>
-              <option value="Dizel">Dizel</option>
-              <option value="Elektrik">Elektrik</option>
-              <option value="Hibrit">Hibrit</option>
-            </select>
-
-          </div>
-
-        </div>
-
-
-        <div class="form-row">
-
-          <div class="form-group">
-
-            <label>Vites Tipi</label>
-
-            <select id="addTrans" required>
-              <option value="Otomatik">Otomatik</option>
-              <option value="Manuel">Manuel</option>
-            </select>
-
-          </div>
-
-          <div class="form-group">
-
-            <label>Kilometre (KM)</label>
-
-            <input
-              type="number"
-              id="addKm"
-              placeholder="Örn: 45000"
-              required
-            >
-
-          </div>
-
-        </div>
-
-
-        <div class="form-group">
-
-          <label>Açıklama & Ekstra Özellikler</label>
-
-          <textarea
-            id="addDesc"
-            rows="3"
-            placeholder="Aracın bakımları, ekspertiz durumu ve extrası..."
-          ></textarea>
-
-        </div>
-
-
-        <button
-          type="submit"
-          class="btn-primary"
-          style="width:100%;"
-        >
-          İlanı Yayınla
-        </button>
-
-      </form>
-
-    </div>
-
-  </section>
-
-
-  <!-- HESAP -->
-  <section id="account" class="page">
-
-    <div class="form-card">
-
-      <h2 style="font-weight:900;margin-top:0;">
-        Kullanıcı Girişi
-      </h2>
-
-      <div class="form-group">
-
-        <label>E-Posta Adresi</label>
-
-        <input
-          type="email"
-          placeholder="ornek@email.com"
-        >
 
       </div>
 
-      <div class="form-group">
+    </form>
 
-        <label>Parola</label>
+  </div>
 
-        <input
-          type="password"
-          placeholder="••••••••"
-        >
+</section>
 
-      </div>
 
-      <button
-        class="btn-primary"
-        style="width:100%;"
-        onclick="alert('Giriş yapıldı!')"
+
+<!-- =========================================================
+     HESAP
+     ========================================================= -->
+
+<section
+  id="account"
+  class="page"
+>
+
+
+  <div class="form-card">
+
+
+    <h2
+      style="
+        font-weight:900;
+        margin-top:0;
+      "
+    >
+      Kullanıcı Girişi
+    </h2>
+
+
+    <div class="form-group">
+
+      <label>
+        E-Posta Adresi
+      </label>
+
+      <input
+        type="email"
+        placeholder="ornek@email.com"
       >
-        Giriş Yap
-      </button>
 
     </div>
 
-  </section>
+
+    <div class="form-group">
+
+      <label>
+        Parola
+      </label>
+
+      <input
+        type="password"
+        placeholder="••••••••"
+      >
+
+    </div>
+
+
+    <button
+      class="btn-primary"
+      style="width:100%;"
+      onclick="alert('Giriş yapıldı!')"
+    >
+      Giriş Yap
+    </button>
+
+  </div>
+
+</section>
 
 </main>
 
 
-<!-- YAPAY ZEKA CANLI DESTEK -->
+
+<!-- =========================================================
+     AI CANLI DESTEK
+     ========================================================= -->
+
 <button
   class="chat-float-btn"
   onclick="toggleChat()"
@@ -811,17 +2281,34 @@
 </button>
 
 
-<div class="chat-window" id="chatWindow">
+
+<div
+  class="chat-window"
+  id="chatWindow"
+>
+
 
   <div class="chat-header">
 
-    <div style="display:flex;align-items:center;">
-      <span>ARABAMI BUL Asistan</span>
+
+    <div
+      style="
+        display:flex;
+        align-items:center;
+      "
+    >
+
+      <span>
+        ARABAMI BUL Asistan
+      </span>
+
 
       <span class="ai-badge">
         Yapay Zeka
       </span>
+
     </div>
+
 
     <button
       onclick="toggleChat()"
@@ -839,19 +2326,27 @@
   </div>
 
 
-  <div class="chat-body" id="chatBody">
+
+  <div
+    class="chat-body"
+    id="chatBody"
+  >
 
     <div class="chat-msg bot">
+
       Merhaba! Ben ARABAMI BUL yapay zeka asistanıyım.
       Size bütçenize uygun aracı bulmada, ilan oluşturmada
       veya ekspertiz raporlarında yardımcı olabilirim.
       Ne arıyorsunuz?
+
     </div>
 
   </div>
 
 
+
   <div class="chat-input-area">
+
 
     <input
       type="text"
@@ -860,10 +2355,13 @@
       onkeypress="if(event.key==='Enter') sendAIChat()"
     >
 
+
     <button
       class="btn-primary"
       onclick="sendAIChat()"
-      style="padding:8px 12px;"
+      style="
+        padding:8px 12px;
+      "
     >
       Gönder
     </button>
@@ -873,18 +2371,34 @@
 </div>
 
 
-<!-- YENİ ARAÇ DETAY SİSTEMİ -->
-<div id="car-detail-container"></div>
+
+<!-- =========================================================
+     ARAÇ DETAY
+     ========================================================= -->
+
+<div
+  id="car-detail-container"
+></div>
 
 
-<!-- FOOTER -->
+
+<!-- =========================================================
+     FOOTER
+     ========================================================= -->
+
 <footer>
+
 
   <div class="footer-container">
 
+
     <div class="footer-brand">
 
-      <h3>ARABAMI BUL</h3>
+
+      <h3>
+        ARABAMI BUL
+      </h3>
+
 
       <p>
         Doğru araç, doğru karar. Bütçenize ve tarzınıza en uygun
@@ -895,36 +2409,106 @@
     </div>
 
 
+
     <div class="footer-col">
 
-      <h4>Platform</h4>
 
-      <a href="#" onclick="go('home');return false;">Ana Sayfa</a>
-      <a href="#" onclick="go('find');return false;">Bana Araba Bul</a>
-      <a href="#" onclick="go('browse');return false;">Araç Listesi</a>
-      <a href="#" onclick="go('favorites');return false;">Favorilerim</a>
+      <h4>
+        Platform
+      </h4>
+
+
+      <a
+        href="#"
+        onclick="go('home');return false;"
+      >
+        Ana Sayfa
+      </a>
+
+
+      <a
+        href="#"
+        onclick="go('find');return false;"
+      >
+        Bana Araba Bul
+      </a>
+
+
+      <a
+        href="#"
+        onclick="go('browse');return false;"
+      >
+        Araç Listesi
+      </a>
+
+
+      <a
+        href="#"
+        onclick="go('favorites');return false;"
+      >
+        Favorilerim
+      </a>
 
     </div>
 
 
+
     <div class="footer-col">
 
-      <h4>Hızlı Erişim</h4>
 
-      <a href="#" onclick="go('sell');return false;">İlan Ver</a>
-      <a href="#" onclick="toggleChat();return false;">Canlı Destek</a>
-      <a href="#" onclick="go('account');return false;">Giriş Yap</a>
+      <h4>
+        Hızlı Erişim
+      </h4>
+
+
+      <a
+        href="#"
+        onclick="go('sell');return false;"
+      >
+        İlan Ver
+      </a>
+
+
+      <a
+        href="#"
+        onclick="toggleChat();return false;"
+      >
+        Canlı Destek
+      </a>
+
+
+      <a
+        href="#"
+        onclick="go('account');return false;"
+      >
+        Giriş Yap
+      </a>
 
     </div>
 
 
+
     <div class="footer-col">
 
-      <h4>Kurumsal</h4>
 
-      <a href="#">Hakkımızda</a>
-      <a href="#">Gizlilik Politikası</a>
-      <a href="#">İletişim</a>
+      <h4>
+        Kurumsal
+      </h4>
+
+
+      <a href="#">
+        Hakkımızda
+      </a>
+
+
+      <a href="#">
+        Gizlilik Politikası
+      </a>
+
+
+      <a href="#">
+        İletişim
+      </a>
 
     </div>
 
@@ -933,16 +2517,30 @@
 </footer>
 
 
-<!-- MODÜLER JAVASCRIPT DOSYALARI -->
+
+<!-- =========================================================
+     JAVASCRIPT
+     ========================================================= -->
+
 <script src="js/core.js"></script>
+
 <script src="js/app.js"></script>
+
 <script src="js/filters.js"></script>
+
 <script src="js/favorites.js"></script>
+
 <script src="js/search.js"></script>
+
 <script src="js/wizard.js"></script>
+
 <script src="js/detail.js"></script>
+
 <script src="js/listing.js"></script>
+
 <script src="js/chat.js"></script>
 
+
 </body>
+
 </html>
