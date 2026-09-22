@@ -2,6 +2,15 @@
    ARABAMI BUL V2 — listing.js
    İLAN VER SİSTEMİ
    HTML yapısıyla birebir uyumlu sürüm
+
+   V2.2
+   - Marka seçmeli
+   - Model markaya göre seçmeli
+   - Versiyon modele göre seçmeli
+   - Yıl seçmeli
+   - Kasa / Yakıt / Vites mevcut select yapısıyla uyumlu
+   - KM ve Fiyat manuel giriş
+   - Mevcut ilan, fotoğraf ve adım sistemi korunmuştur
    ============================================================ */
 
 (function () {
@@ -24,6 +33,170 @@
     window.ArabamiBul.listing;
 
   const MAX_IMAGES = 20;
+
+
+  /* ============================================================
+     MARKA / MODEL / VERSİYON VERİLERİ
+     ============================================================ */
+
+  const vehicleData = {
+
+    "Audi": {
+      "A3": ["Sportback", "Sedan"],
+      "A4": ["Advanced", "S Line"],
+      "A5": ["Advanced", "S Line"],
+      "Q3": ["Advanced", "S Line"],
+      "Q5": ["Advanced", "S Line"]
+    },
+
+    "BMW": {
+      "1 Serisi": ["120", "120d"],
+      "2 Serisi": ["220i", "M240i"],
+      "3 Serisi": ["320i", "330i", "M340i"],
+      "5 Serisi": ["520i", "530i"],
+      "X1": ["sDrive18i", "xDrive20i"],
+      "X3": ["xDrive20i", "xDrive30i"]
+    },
+
+    "Citroen": {
+      "C3": ["Feel", "Shine"],
+      "C4": ["Feel", "Shine"],
+      "C5 Aircross": ["Feel", "Shine"]
+    },
+
+    "Ford": {
+      "Fiesta": ["Titanium", "ST-Line"],
+      "Focus": ["Titanium", "ST-Line"],
+      "Puma": ["Titanium", "ST-Line"],
+      "Kuga": ["Titanium", "ST-Line"]
+    },
+
+    "Honda": {
+      "Civic": ["Elegance", "Executive+"],
+      "HR-V": ["Elegance", "Advance"],
+      "CR-V": ["Elegance", "Executive+"]
+    },
+
+    "Hyundai": {
+      "i10": ["Jump", "Style"],
+      "i20": ["Jump", "Style", "Elite"],
+      "Bayon": ["Jump", "Style", "Elite"],
+      "Tucson": ["Prime", "Elite"]
+    },
+
+    "Kia": {
+      "Picanto": ["Feel", "Live"],
+      "Rio": ["Cool", "Elegance"],
+      "Stonic": ["Cool", "Elegance"],
+      "Sportage": ["Cool", "Elegance"]
+    },
+
+    "Mercedes-Benz": {
+      "A Serisi": ["A180", "A200"],
+      "C Serisi": ["C180", "C200"],
+      "E Serisi": ["E200", "E220d"],
+      "GLA": ["180", "200"],
+      "GLC": ["200", "220d"]
+    },
+
+    "Nissan": {
+      "Micra": ["Tekna", "Platinum"],
+      "Juke": ["Tekna", "Platinum"],
+      "Qashqai": ["Tekna", "Platinum"],
+      "X-Trail": ["Tekna", "Platinum"]
+    },
+
+    "Opel": {
+      "Corsa": ["Edition", "GS"],
+      "Astra": ["Edition", "GS"],
+      "Mokka": ["Edition", "GS"],
+      "Grandland": ["Edition", "GS"]
+    },
+
+    "Peugeot": {
+      "208": ["Active", "Allure", "GT"],
+      "308": ["Active", "Allure", "GT"],
+      "2008": ["Active", "Allure", "GT"],
+      "3008": ["Active", "Allure", "GT"]
+    },
+
+    "Renault": {
+      "Clio": ["Evolution", "Techno"],
+      "Megane": ["Joy", "Touch", "Icon"],
+      "Captur": ["Evolution", "Techno"],
+      "Austral": ["Techno", "Esprit Alpine"]
+    },
+
+    "Seat": {
+      "Ibiza": ["Style", "FR"],
+      "Leon": ["Style", "FR"],
+      "Arona": ["Style", "FR"],
+      "Ateca": ["Style", "FR"]
+    },
+
+    "Skoda": {
+      "Fabia": ["Elite", "Premium"],
+      "Scala": ["Elite", "Premium"],
+      "Octavia": ["Elite", "Premium"],
+      "Karoq": ["Elite", "Premium"],
+      "Kodiaq": ["Elite", "Premium"]
+    },
+
+    "Tesla": {
+      "Model 3": [
+        "Standard Range",
+        "Long Range",
+        "Performance"
+      ],
+      "Model Y": [
+        "Standard Range",
+        "Long Range",
+        "Performance"
+      ]
+    },
+
+    "Toyota": {
+      "Yaris": ["Vision", "Passion"],
+      "Corolla": ["Dream", "Flame", "Passion"],
+      "C-HR": ["Flame", "Passion"],
+      "RAV4": ["Passion", "Adventure"]
+    },
+
+    "Volkswagen": {
+      "Polo": ["Life", "Style"],
+      "Golf": ["Life", "Style", "R-Line"],
+      "Passat": ["Business", "Elegance"],
+      "T-Roc": ["Life", "Style"],
+      "Tiguan": ["Life", "Elegance"]
+    },
+
+    "Volvo": {
+      "XC40": ["Core", "Plus"],
+      "XC60": ["Core", "Plus", "Ultimate"],
+      "XC90": ["Plus", "Ultimate"]
+    }
+
+  };
+
+
+  /* ============================================================
+     YIL VERİLERİ
+     ============================================================ */
+
+  const currentYear =
+    new Date().getFullYear();
+
+  const vehicleYears = [];
+
+  for (
+    let year = currentYear;
+    year >= 1990;
+    year--
+  ) {
+
+    vehicleYears.push(String(year));
+
+  }
 
 
   /* ============================================================
@@ -105,6 +278,524 @@
 
 
   /* ============================================================
+     SELECT YARDIMCILARI
+     ============================================================ */
+
+  function clearSelect(select, placeholder) {
+
+    if (!select) return;
+
+    select.innerHTML = '';
+
+    const option =
+      document.createElement('option');
+
+    option.value = '';
+    option.textContent =
+      placeholder || 'Seçiniz';
+
+    select.appendChild(option);
+
+  }
+
+
+  function addSelectOption(select, value, text) {
+
+    if (!select) return;
+
+    const option =
+      document.createElement('option');
+
+    option.value = value;
+    option.textContent =
+      text || value;
+
+    select.appendChild(option);
+
+  }
+
+
+  function fillSelect(select, values, placeholder) {
+
+    if (!select) return;
+
+    clearSelect(
+      select,
+      placeholder
+    );
+
+    values.forEach(function (value) {
+
+      addSelectOption(
+        select,
+        value,
+        value
+      );
+
+    });
+
+  }
+
+
+  /* ============================================================
+     MARKA SELECT
+     ============================================================ */
+
+  function initializeBrandSelector() {
+
+    const brand =
+      getEl('addBrand');
+
+    if (!brand) {
+      return;
+    }
+
+    /*
+      Eğer HTML'de input olarak kalmışsa
+      otomatik olarak select'e çevir.
+    */
+
+    if (
+      brand.tagName.toLowerCase() !== 'select'
+    ) {
+
+      const select =
+        document.createElement('select');
+
+      select.id =
+        brand.id;
+
+      select.name =
+        brand.name || brand.id;
+
+      select.className =
+        brand.className;
+
+      select.required =
+        brand.required;
+
+      select.setAttribute(
+        'aria-label',
+        'Marka'
+      );
+
+      brand.parentNode.replaceChild(
+        select,
+        brand
+      );
+
+    }
+
+    const brandSelect =
+      getEl('addBrand');
+
+    fillSelect(
+      brandSelect,
+      Object.keys(vehicleData),
+      'Marka seçiniz'
+    );
+
+  }
+
+
+  /* ============================================================
+     MODEL SELECT
+     ============================================================ */
+
+  function initializeModelSelector(
+    selectedModel
+  ) {
+
+    const model =
+      getEl('addModel');
+
+    if (!model) {
+      return;
+    }
+
+    if (
+      model.tagName.toLowerCase() !== 'select'
+    ) {
+
+      const select =
+        document.createElement('select');
+
+      select.id =
+        model.id;
+
+      select.name =
+        model.name || model.id;
+
+      select.className =
+        model.className;
+
+      select.required =
+        model.required;
+
+      select.setAttribute(
+        'aria-label',
+        'Model'
+      );
+
+      model.parentNode.replaceChild(
+        select,
+        model
+      );
+
+    }
+
+    const modelSelect =
+      getEl('addModel');
+
+    const brand =
+      getValue('addBrand');
+
+    const models =
+      brand &&
+      vehicleData[brand]
+        ? Object.keys(
+            vehicleData[brand]
+          )
+        : [];
+
+    fillSelect(
+      modelSelect,
+      models,
+      brand
+        ? 'Model seçiniz'
+        : 'Önce marka seçiniz'
+    );
+
+    if (
+      selectedModel &&
+      models.includes(selectedModel)
+    ) {
+
+      modelSelect.value =
+        selectedModel;
+
+    }
+
+  }
+
+
+  /* ============================================================
+     VERSİYON SELECT
+     ============================================================ */
+
+  function initializeVersionSelector(
+    selectedVersion
+  ) {
+
+    const version =
+      getEl('addVersion');
+
+    if (!version) {
+      return;
+    }
+
+    if (
+      version.tagName.toLowerCase() !== 'select'
+    ) {
+
+      const select =
+        document.createElement('select');
+
+      select.id =
+        version.id;
+
+      select.name =
+        version.name || version.id;
+
+      select.className =
+        version.className;
+
+      select.required =
+        false;
+
+      select.setAttribute(
+        'aria-label',
+        'Versiyon'
+      );
+
+      version.parentNode.replaceChild(
+        select,
+        version
+      );
+
+    }
+
+    const versionSelect =
+      getEl('addVersion');
+
+    const brand =
+      getValue('addBrand');
+
+    const model =
+      getValue('addModel');
+
+    const versions =
+      brand &&
+      model &&
+      vehicleData[brand] &&
+      vehicleData[brand][model]
+        ? vehicleData[brand][model]
+        : [];
+
+    fillSelect(
+      versionSelect,
+      versions,
+      model
+        ? 'Versiyon seçiniz'
+        : 'Önce model seçiniz'
+    );
+
+    if (
+      selectedVersion &&
+      versions.includes(selectedVersion)
+    ) {
+
+      versionSelect.value =
+        selectedVersion;
+
+    }
+
+  }
+
+
+  /* ============================================================
+     YIL SELECT
+     ============================================================ */
+
+  function initializeYearSelector(
+    selectedYear
+  ) {
+
+    const year =
+      getEl('addYear');
+
+    if (!year) {
+      return;
+    }
+
+    if (
+      year.tagName.toLowerCase() !== 'select'
+    ) {
+
+      const select =
+        document.createElement('select');
+
+      select.id =
+        year.id;
+
+      select.name =
+        year.name || year.id;
+
+      select.className =
+        year.className;
+
+      select.required =
+        year.required;
+
+      select.setAttribute(
+        'aria-label',
+        'Model yılı'
+      );
+
+      year.parentNode.replaceChild(
+        select,
+        year
+      );
+
+    }
+
+    const yearSelect =
+      getEl('addYear');
+
+    fillSelect(
+      yearSelect,
+      vehicleYears,
+      'Model yılı seçiniz'
+    );
+
+    if (
+      selectedYear &&
+      vehicleYears.includes(
+        String(selectedYear)
+      )
+    ) {
+
+      yearSelect.value =
+        String(selectedYear);
+
+    }
+
+  }
+
+
+  /* ============================================================
+     SELECT EVENTLERİ
+     ============================================================ */
+
+  function setupVehicleSelectorEvents() {
+
+    const brand =
+      getEl('addBrand');
+
+    const model =
+      getEl('addModel');
+
+    const version =
+      getEl('addVersion');
+
+
+    if (brand) {
+
+      if (
+        brand.dataset.selectorReady !== 'true'
+      ) {
+
+        brand.dataset.selectorReady =
+          'true';
+
+        brand.addEventListener(
+          'change',
+          function () {
+
+            initializeModelSelector();
+
+            initializeVersionSelector();
+
+            saveListingDraft();
+
+          }
+        );
+
+      }
+
+    }
+
+
+    if (model) {
+
+      if (
+        model.dataset.selectorReady !== 'true'
+      ) {
+
+        model.dataset.selectorReady =
+          'true';
+
+        model.addEventListener(
+          'change',
+          function () {
+
+            initializeVersionSelector();
+
+            saveListingDraft();
+
+          }
+        );
+
+      }
+
+    }
+
+
+    if (version) {
+
+      if (
+        version.dataset.selectorReady !== 'true'
+      ) {
+
+        version.dataset.selectorReady =
+          'true';
+
+        version.addEventListener(
+          'change',
+          function () {
+
+            saveListingDraft();
+
+          }
+        );
+
+      }
+
+    }
+
+  }
+
+
+  /* ============================================================
+     TÜM ARAÇ SELECTORLARINI BAŞLAT
+     ============================================================ */
+
+  function initializeListingSelectors(
+    savedValues
+  ) {
+
+    savedValues =
+      savedValues || {};
+
+
+    /*
+      1. Marka
+    */
+
+    initializeBrandSelector();
+
+
+    const brand =
+      getEl('addBrand');
+
+
+    if (
+      savedValues.brand
+    ) {
+
+      brand.value =
+        savedValues.brand;
+
+    }
+
+
+    /*
+      2. Model
+    */
+
+    initializeModelSelector(
+      savedValues.model
+    );
+
+
+    /*
+      3. Versiyon
+    */
+
+    initializeVersionSelector(
+      savedValues.version
+    );
+
+
+    /*
+      4. Yıl
+    */
+
+    initializeYearSelector(
+      savedValues.year
+    );
+
+
+    /*
+      Eventleri en son bağla.
+    */
+
+    setupVehicleSelectorEvents();
+
+  }
+
+
+  /* ============================================================
      ADIM ELEMENTLERİNİ BUL
      ============================================================ */
 
@@ -147,10 +838,6 @@
     }
 
 
-    /* ----------------------------------------------------------
-       BÜTÜN PANELLERİ KAPAT
-       ---------------------------------------------------------- */
-
     document.querySelectorAll(
       '[data-listing-step]'
     ).forEach(function (panel) {
@@ -163,26 +850,20 @@
     });
 
 
-    /* ----------------------------------------------------------
-       İSTENEN PANELİ AÇ
-       ---------------------------------------------------------- */
-
     const targetPanel =
       getSellPanel(stepNumber);
 
     if (targetPanel) {
 
       targetPanel.classList.add('active');
-      targetPanel.classList.add('listing-panel-active');
+      targetPanel.classList.add(
+        'listing-panel-active'
+      );
 
       panelDisplay(targetPanel);
 
     }
 
-
-    /* ----------------------------------------------------------
-       STEP GÖSTERGELERİNİ TEMİZLE
-       ---------------------------------------------------------- */
 
     document.querySelectorAll(
       '.listing-step'
@@ -194,10 +875,6 @@
     });
 
 
-    /* ----------------------------------------------------------
-       AKTİF STEP
-       ---------------------------------------------------------- */
-
     const activeNode =
       getSellStepNode(stepNumber);
 
@@ -207,10 +884,6 @@
 
     }
 
-
-    /* ----------------------------------------------------------
-       ÖNCEKİ ADIMLARI TAMAMLANDI YAP
-       ---------------------------------------------------------- */
 
     document.querySelectorAll(
       '.listing-step'
@@ -233,17 +906,9 @@
     });
 
 
-    /* ----------------------------------------------------------
-       GLOBAL STATE
-       ---------------------------------------------------------- */
-
     listingState.currentSellStep =
       stepNumber;
 
-
-    /* ----------------------------------------------------------
-       PROGRESS BAR VARSA
-       ---------------------------------------------------------- */
 
     const progressFill =
       getEl('sellStepFill');
@@ -261,10 +926,6 @@
 
     }
 
-
-    /* ----------------------------------------------------------
-       ALT BUTONLAR
-       ---------------------------------------------------------- */
 
     const backButton =
       getEl('listingBackBtn');
@@ -306,20 +967,12 @@
     }
 
 
-    /* ----------------------------------------------------------
-       4. ADIM ÖNİZLEME
-       ---------------------------------------------------------- */
-
     if (stepNumber === 4) {
 
       buildListingSummary();
 
     }
 
-
-    /* ----------------------------------------------------------
-       FOTOĞRAF SAYACI
-       ---------------------------------------------------------- */
 
     updateImageCounter();
 
@@ -343,10 +996,6 @@
 
     stepNumber = Number(stepNumber);
 
-
-    /* ----------------------------------------------------------
-       ADIM 1 — ARAÇ BİLGİLERİ
-       ---------------------------------------------------------- */
 
     if (stepNumber === 1) {
 
@@ -437,10 +1086,6 @@
     }
 
 
-    /* ----------------------------------------------------------
-       ADIM 2 — FOTOĞRAFLAR
-       ---------------------------------------------------------- */
-
     if (stepNumber === 2) {
 
       if (
@@ -466,10 +1111,6 @@
 
     }
 
-
-    /* ----------------------------------------------------------
-       ADIM 3 — İLAN DETAYLARI
-       ---------------------------------------------------------- */
 
     if (stepNumber === 3) {
 
@@ -500,10 +1141,6 @@
 
     }
 
-
-    /* ----------------------------------------------------------
-       ADIM 4
-       ---------------------------------------------------------- */
 
     if (stepNumber === 4) {
 
@@ -763,11 +1400,6 @@
       Array.from(input.files)
     );
 
-
-    /*
-      Aynı fotoğrafı tekrar seçebilmek
-      için input'u temizle
-    */
 
     setTimeout(
       function () {
@@ -1164,10 +1796,6 @@
       getValue('addDistrict');
 
 
-    /* ----------------------------------------------------------
-       BAŞLIK
-       ---------------------------------------------------------- */
-
     const previewTitle =
       getEl('listingPreviewTitle');
 
@@ -1193,10 +1821,6 @@
     }
 
 
-    /* ----------------------------------------------------------
-       FİYAT
-       ---------------------------------------------------------- */
-
     const previewPrice =
       getEl('listingPreviewPrice');
 
@@ -1211,10 +1835,6 @@
     }
 
 
-    /* ----------------------------------------------------------
-       YIL
-       ---------------------------------------------------------- */
-
     const previewYear =
       getEl('previewYear');
 
@@ -1226,10 +1846,6 @@
 
     }
 
-
-    /* ----------------------------------------------------------
-       KM
-       ---------------------------------------------------------- */
 
     const previewKm =
       getEl('previewKm');
@@ -1245,10 +1861,6 @@
     }
 
 
-    /* ----------------------------------------------------------
-       YAKIT
-       ---------------------------------------------------------- */
-
     const previewFuel =
       getEl('previewFuel');
 
@@ -1261,10 +1873,6 @@
     }
 
 
-    /* ----------------------------------------------------------
-       VİTES
-       ---------------------------------------------------------- */
-
     const previewTrans =
       getEl('previewTrans');
 
@@ -1276,10 +1884,6 @@
 
     }
 
-
-    /* ----------------------------------------------------------
-       KONUM
-       ---------------------------------------------------------- */
 
     const previewLocation =
       getEl(
@@ -1326,10 +1930,6 @@
     }
 
 
-    /* ----------------------------------------------------------
-       AÇIKLAMA
-       ---------------------------------------------------------- */
-
     const previewDesc =
       getEl(
         'listingPreviewDesc'
@@ -1344,10 +1944,6 @@
 
     }
 
-
-    /* ----------------------------------------------------------
-       KAPAK FOTOĞRAFI
-       ---------------------------------------------------------- */
 
     const previewImage =
       getEl(
@@ -1541,25 +2137,18 @@
       }
 
 
-      setValue(
-        'addBrand',
-        draft.brand
-      );
+      /*
+        Selectorları draft değerleriyle
+        birlikte kur.
+      */
 
-      setValue(
-        'addModel',
-        draft.model
-      );
+      initializeListingSelectors({
+        brand: draft.brand,
+        model: draft.model,
+        version: draft.version,
+        year: draft.year
+      });
 
-      setValue(
-        'addVersion',
-        draft.version
-      );
-
-      setValue(
-        'addYear',
-        draft.year
-      );
 
       setValue(
         'addBody',
@@ -1622,12 +2211,6 @@
         draft.district
       );
 
-      /*
-        BURADAKİ HATA DÜZELTİLDİ:
-        draft.desc'
-        yerine
-        draft.desc
-      */
 
       setValue(
         'addDesc',
@@ -1673,14 +2256,6 @@
 
       }
 
-
-      /*
-        Taslak yüklenirken
-        eski adım numarasını zorla açmıyoruz.
-
-        Böylece kullanıcı sayfayı açtığında
-        her zaman Adım 1'den başlar.
-      */
 
       renderImagePreviews();
 
@@ -2049,6 +2624,14 @@
       1;
 
 
+    /*
+      Form reset sonrası selectorları
+      tekrar başlangıç durumuna getir.
+    */
+
+    initializeListingSelectors();
+
+
     renderImagePreviews();
 
     updateImageCounter();
@@ -2057,10 +2640,6 @@
 
     clearListingDraft();
 
-
-    /* ----------------------------------------------------------
-       ÖNİZLEMEYİ TEMİZLE
-       ---------------------------------------------------------- */
 
     const previewTitle =
       getEl(
@@ -2154,10 +2733,6 @@
     }
 
 
-    /*
-      1-2-3 adımlarını kontrol et
-    */
-
     for (
       let step = 1;
       step <= 3;
@@ -2177,10 +2752,6 @@
     }
 
 
-    /* ----------------------------------------------------------
-       YENİ ARAÇ OLUŞTUR
-       ---------------------------------------------------------- */
-
     const car =
       createNewCarObject();
 
@@ -2196,50 +2767,26 @@
     }
 
 
-    /* ----------------------------------------------------------
-       GLOBAL LİSTEYE EKLE
-       ---------------------------------------------------------- */
-
     addListingToGlobalData(
       car
     );
 
-
-    /* ----------------------------------------------------------
-       KALICI KAYDET
-       ---------------------------------------------------------- */
 
     persistNewListing(
       car
     );
 
 
-    /* ----------------------------------------------------------
-       TASLAĞI TEMİZLE
-       ---------------------------------------------------------- */
-
     clearListingDraft();
 
-
-    /* ----------------------------------------------------------
-       BİLGİ
-       ---------------------------------------------------------- */
 
     alert(
       '🎉 İlanın başarıyla oluşturuldu!'
     );
 
 
-    /* ----------------------------------------------------------
-       FORMU TEMİZLE
-       ---------------------------------------------------------- */
-
     resetListingForm();
 
-
-    /* ----------------------------------------------------------
-       ARAÇLAR SAYFASINA GEÇ
-       ---------------------------------------------------------- */
 
     if (
       typeof window.go === 'function'
@@ -2249,10 +2796,6 @@
 
     }
 
-
-    /* ----------------------------------------------------------
-       BROWSE YENİDEN ÇİZ
-       ---------------------------------------------------------- */
 
     if (
       typeof window.renderBrowse === 'function'
@@ -2314,46 +2857,6 @@
 
       }
     );
-
-  }
-
-
-  /* ============================================================
-     MARKA / MODEL UYUMLULUK
-     ============================================================ */
-
-  function initializeListingSelectors() {
-
-    /*
-      Marka ve model input olarak kalıyor.
-    */
-
-    const brand =
-      getEl('addBrand');
-
-
-    if (brand) {
-
-      brand.setAttribute(
-        'autocomplete',
-        'off'
-      );
-
-    }
-
-
-    const model =
-      getEl('addModel');
-
-
-    if (model) {
-
-      model.setAttribute(
-        'autocomplete',
-        'off'
-      );
-
-    }
 
   }
 
@@ -2462,11 +2965,6 @@
             ) || 1;
 
 
-          /*
-            Geriye istenilen adıma
-            dönülebilir.
-          */
-
           if (step <= current) {
 
             goToSellStep(step);
@@ -2475,11 +2973,6 @@
 
           }
 
-
-          /*
-            İleri giderken sadece
-            mevcut adımı kontrol et.
-          */
 
           if (
             !validateSellStep(current)
@@ -2506,74 +2999,76 @@
 
   function initializeListing() {
 
-    /* ----------------------------------------------------------
-       KAYITLI İLANLAR
-       ---------------------------------------------------------- */
+    /*
+      Kayıtlı ilanlar
+    */
 
     loadSavedListingsIntoCatalog();
 
 
-    /* ----------------------------------------------------------
-       FORM
-       ---------------------------------------------------------- */
+    /*
+      Önce selector sistemini oluştur.
+    */
 
     initializeListingSelectors();
 
 
-    /* ----------------------------------------------------------
-       DRAG & DROP
-       ---------------------------------------------------------- */
+    /*
+      Drag & Drop
+    */
 
     setupImageDropzone();
 
 
-    /* ----------------------------------------------------------
-       OTOMATİK KAYIT
-       ---------------------------------------------------------- */
+    /*
+      Auto Save
+    */
 
     setupAutoSave();
 
 
-    /* ----------------------------------------------------------
-       AÇIKLAMA SAYACI
-       ---------------------------------------------------------- */
+    /*
+      Açıklama sayacı
+    */
 
     setupDescriptionCounter();
 
 
-    /* ----------------------------------------------------------
-       STEP TIKLAMALARI
-       ---------------------------------------------------------- */
+    /*
+      Step tıklamaları
+    */
 
     setupStepNavigation();
 
 
-    /* ----------------------------------------------------------
-       FOTOĞRAFLAR
-       ---------------------------------------------------------- */
+    /*
+      Fotoğraflar
+    */
 
     renderImagePreviews();
 
     updateImageCounter();
 
 
-    /* ----------------------------------------------------------
-       İLK ADIM
-       ---------------------------------------------------------- */
+    /*
+      İlk adım
+    */
 
     goToSellStep(1);
 
 
-    /* ----------------------------------------------------------
-       DRAFT YÜKLE
-       ---------------------------------------------------------- */
+    /*
+      Draft yükle.
+      Draft içindeki marka/model/versiyon/yıl
+      selectorlara otomatik yerleştirilecek.
+    */
 
     loadListingDraft();
 
 
-    /* ----------------------------------------------------------
-       DRAFT SONRASI GÜNCELLE
-       ---------------------------------------------------------- */
+    /*
+      Draft sonrası güncelle
+    */
 
     renderImagePreviews();
 
