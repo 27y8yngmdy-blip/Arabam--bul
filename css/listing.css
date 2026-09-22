@@ -1,46 +1,50 @@
+```css
 /* =========================================================
    ARABAMI BUL — İLAN VER
-   Listing UI Polish V3
+   LISTING V2
+   Sadece İlan Ver sayfası
    ========================================================= */
 
 
 /* =========================================================
-   1. GENEL
+   1. ANA ALAN
    ========================================================= */
 
-.sell-page{
+#sell .listing-page{
   width:100%;
   max-width:1180px;
   margin:0 auto;
-  padding:34px 20px 70px;
+  padding:34px 20px 80px;
+  box-sizing:border-box;
 }
 
-.sell-header{
+#sell .listing-head{
   display:flex;
   align-items:flex-end;
   justify-content:space-between;
-  gap:24px;
-  margin-bottom:28px;
+  gap:25px;
+  margin-bottom:25px;
 }
 
-.sell-header-main{
+#sell .listing-head > div:first-child{
   min-width:0;
 }
 
-.sell-kicker{
+#sell .listing-eyebrow{
   display:inline-flex;
   align-items:center;
   gap:7px;
-  margin-bottom:8px;
+  margin-bottom:9px;
   padding:6px 11px;
   border-radius:999px;
   background:#fff1f1;
   color:#e30613;
-  font-size:12px;
-  font-weight:800;
+  font-size:11px;
+  font-weight:850;
+  letter-spacing:.04em;
 }
 
-.sell-kicker::before{
+#sell .listing-eyebrow::before{
   content:"";
   width:6px;
   height:6px;
@@ -48,7 +52,7 @@
   background:#e30613;
 }
 
-.sell-header h1{
+#sell .listing-head h2{
   margin:0;
   color:#17191c;
   font-size:32px;
@@ -57,7 +61,7 @@
   letter-spacing:-.03em;
 }
 
-.sell-header p{
+#sell .listing-head p{
   margin:9px 0 0;
   max-width:650px;
   color:#707780;
@@ -65,96 +69,69 @@
   line-height:1.6;
 }
 
-.sell-header-badge{
+#sell .listing-save-note{
   flex-shrink:0;
   display:flex;
   align-items:center;
-  gap:9px;
-  padding:11px 15px;
-  border:1px solid #e8eaed;
+  gap:8px;
+  padding:11px 14px;
+  border:1px solid #e7e9ec;
   border-radius:12px;
   background:#fff;
-  color:#454a50;
+  color:#555b62;
   font-size:12px;
-  font-weight:700;
+  font-weight:750;
   box-shadow:0 5px 20px rgba(20,25,30,.04);
-}
-
-.sell-header-badge::before{
-  content:"✓";
-  display:grid;
-  place-items:center;
-  width:20px;
-  height:20px;
-  border-radius:50%;
-  background:#e30613;
-  color:#fff;
-  font-size:11px;
-  font-weight:900;
 }
 
 
 /* =========================================================
-   2. PROGRESS
+   2. ADIMLAR
    ========================================================= */
 
-.sell-progress{
+#sell .listing-steps{
   position:relative;
-  margin:0 0 22px;
-  padding:18px 22px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:22px;
+  padding:18px 25px;
   border:1px solid #e8eaed;
   border-radius:18px;
   background:#fff;
   box-shadow:0 8px 30px rgba(20,25,30,.05);
 }
 
-.sell-progress-line{
+#sell .listing-steps::before{
+  content:"";
   position:absolute;
   top:35px;
-  left:76px;
-  right:76px;
+  left:95px;
+  right:95px;
   height:3px;
-  overflow:hidden;
   border-radius:99px;
   background:#eceef1;
   z-index:0;
 }
 
-.sell-progress-fill{
-  width:25%;
-  height:100%;
-  border-radius:inherit;
-  background:#e30613;
-  transition:width .3s ease;
-}
-
-.sell-steps{
+#sell .listing-step{
   position:relative;
   z-index:1;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-}
-
-.sell-step-node{
   min-width:0;
-  border:0;
-  background:transparent;
-  padding:0;
   display:flex;
   flex-direction:column;
   align-items:center;
   gap:8px;
-  cursor:pointer;
   color:#92979e;
 }
 
-.sell-step-node span{
-  display:grid;
-  place-items:center;
+#sell .listing-step span{
   width:36px;
   height:36px;
-  border:2px solid #e4e6e9;
+  display:grid;
+  place-items:center;
+  box-sizing:border-box;
+  border:2px solid #e1e4e8;
   border-radius:50%;
   background:#fff;
   color:#858b92;
@@ -163,60 +140,57 @@
   transition:.25s ease;
 }
 
-.sell-step-node strong{
+#sell .listing-step b{
   max-width:100%;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  color:inherit;
   font-size:11px;
-  font-weight:750;
+  font-weight:800;
 }
 
-.sell-step-node:hover span{
-  border-color:#e30613;
-  color:#e30613;
-}
-
-.sell-step-node.active{
+#sell .listing-step.active{
   color:#17191c;
 }
 
-.sell-step-node.active span,
-.sell-step-node.completed span{
+#sell .listing-step.active span,
+#sell .listing-step.completed span{
   border-color:#e30613;
   background:#e30613;
   color:#fff;
   box-shadow:0 0 0 5px rgba(227,6,19,.08);
 }
 
-.sell-step-node.completed{
+#sell .listing-step.completed{
   color:#4d535a;
 }
 
 
 /* =========================================================
-   3. FORM KARTI
+   3. FORM / PANELLER
    ========================================================= */
 
-.sell-form-card{
+#sell #listingForm{
+  width:100%;
+}
+
+#sell .listing-panel{
+  display:none;
+  padding:30px;
   border:1px solid #e8eaed;
   border-radius:22px;
   background:#fff;
   box-shadow:0 12px 38px rgba(20,25,30,.06);
-  overflow:hidden;
+  box-sizing:border-box;
 }
 
-.sell-step{
-  display:none;
-  padding:30px;
-}
-
-.sell-step.active{
+#sell .listing-panel.listing-panel-active{
   display:block;
-  animation:sellStepIn .28s ease;
+  animation:listingPanelIn .25s ease;
 }
 
-@keyframes sellStepIn{
+@keyframes listingPanelIn{
   from{
     opacity:0;
     transform:translateY(7px);
@@ -229,19 +203,19 @@
 
 
 /* =========================================================
-   4. STEP BAŞLIĞI
+   4. PANEL BAŞLIĞI
    ========================================================= */
 
-.sell-step-heading{
+#sell .listing-panel-title{
   display:flex;
   align-items:flex-start;
   gap:14px;
-  margin-bottom:26px;
+  margin-bottom:25px;
   padding-bottom:20px;
   border-bottom:1px solid #eef0f2;
 }
 
-.sell-step-icon{
+#sell .listing-panel-icon{
   flex:0 0 44px;
   width:44px;
   height:44px;
@@ -251,19 +225,17 @@
   background:#fff1f1;
   color:#e30613;
   font-size:19px;
-  font-weight:900;
 }
 
-.sell-step-heading h2{
+#sell .listing-panel-title h3{
   margin:0;
   color:#17191c;
   font-size:21px;
   line-height:1.25;
   font-weight:850;
-  letter-spacing:-.02em;
 }
 
-.sell-step-heading p{
+#sell .listing-panel-title p{
   margin:5px 0 0;
   color:#7a8087;
   font-size:13px;
@@ -272,40 +244,41 @@
 
 
 /* =========================================================
-   5. FORM ALANLARI
+   5. FORM GRID
    ========================================================= */
 
-.sell-form-grid{
+#sell .listing-grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
   gap:18px;
 }
 
-.sell-form-grid .form-group.full{
-  grid-column:1 / -1;
-}
-
-.form-group{
+#sell .listing-field{
   min-width:0;
 }
 
-.form-group label{
+#sell .listing-field-full{
+  grid-column:1 / -1;
+}
+
+#sell .listing-field label{
   display:flex;
   align-items:center;
-  gap:5px;
+  gap:4px;
   margin-bottom:8px;
   color:#30353a;
   font-size:12px;
   font-weight:800;
 }
 
-.form-group label .required{
+#sell .listing-field label em{
   color:#e30613;
+  font-style:normal;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea{
+#sell .listing-field input,
+#sell .listing-field select,
+#sell .listing-field textarea{
   width:100%;
   min-width:0;
   box-sizing:border-box;
@@ -322,644 +295,483 @@
     background .2s ease;
 }
 
-.form-group input,
-.form-group select{
+#sell .listing-field input,
+#sell .listing-field select{
   min-height:48px;
   padding:0 14px;
 }
 
-.form-group textarea{
-  min-height:135px;
+#sell .listing-field textarea{
+  min-height:145px;
   padding:13px 14px;
   resize:vertical;
   line-height:1.55;
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder{
+#sell .listing-field input::placeholder,
+#sell .listing-field textarea::placeholder{
   color:#a2a7ad;
 }
 
-.form-group input:hover,
-.form-group select:hover,
-.form-group textarea:hover{
+#sell .listing-field input:hover,
+#sell .listing-field select:hover,
+#sell .listing-field textarea:hover{
   border-color:#c8cdd2;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus{
+#sell .listing-field input:focus,
+#sell .listing-field select:focus,
+#sell .listing-field textarea:focus{
   border-color:#e30613;
   box-shadow:0 0 0 4px rgba(227,6,19,.08);
-  background:#fff;
 }
 
-.form-group select{
+#sell .listing-field select{
   cursor:pointer;
-  padding-right:42px;
-  background-image:
-    linear-gradient(45deg,transparent 50%,#777 50%),
-    linear-gradient(135deg,#777 50%,transparent 50%);
-  background-position:
-    calc(100% - 18px) 21px,
-    calc(100% - 13px) 21px;
-  background-size:5px 5px,5px 5px;
-  background-repeat:no-repeat;
 }
 
-.form-group select:disabled{
-  cursor:not-allowed;
-  color:#a5aab0;
-  background-color:#f7f8f9;
-}
-
-.input-with-suffix{
+#sell .price-input-wrap{
   position:relative;
 }
 
-.input-with-suffix input{
+#sell .price-input-wrap input{
   padding-right:55px;
 }
 
-.input-with-suffix span{
+#sell .price-input-wrap span{
   position:absolute;
   right:14px;
   top:50%;
   transform:translateY(-50%);
-  color:#8b9198;
-  font-size:12px;
-  font-weight:700;
-  pointer-events:none;
-}
-
-
-/* =========================================================
-   6. DONANIM BÖLÜMÜ
-   ========================================================= */
-
-.sell-feature-section{
-  margin-top:30px;
-  padding-top:26px;
-  border-top:1px solid #eef0f2;
-}
-
-.sell-section-title{
-  margin-bottom:18px;
-}
-
-.sell-section-title h3{
-  margin:0;
-  color:#24282d;
-  font-size:15px;
-  font-weight:850;
-}
-
-.sell-section-title p{
-  margin:5px 0 0;
   color:#858b92;
   font-size:12px;
-}
-
-
-/* =========================================================
-   7. YENİ DONANIM KARTLARI
-   ========================================================= */
-
-.listing-feature-groups{
-  display:flex;
-  flex-direction:column;
-  gap:18px;
-}
-
-.listing-feature-group{
-  padding:17px;
-  border:1px solid #e8eaed;
-  border-radius:16px;
-  background:#fafbfc;
-}
-
-.listing-feature-group-title{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  margin-bottom:13px;
-}
-
-.listing-feature-group-title strong{
-  color:#252a2f;
-  font-size:13px;
-  font-weight:850;
-}
-
-.listing-feature-group-title span{
-  color:#92979d;
-  font-size:11px;
-}
-
-.listing-feature-options{
-  display:grid;
-  grid-template-columns:
-    repeat(3,minmax(0,1fr));
-  gap:9px;
-}
-
-.listing-feature-option{
-  position:relative;
-  min-width:0;
-}
-
-.listing-feature-option input{
-  position:absolute;
-  opacity:0;
-  pointer-events:none;
-}
-
-.listing-feature-option label{
-  width:100%;
-  min-height:54px;
-  box-sizing:border-box;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  border:1px solid #e0e3e6;
-  border-radius:12px;
-  background:#fff;
-  color:#555b62;
-  cursor:pointer;
-  transition:
-    border-color .2s ease,
-    background .2s ease,
-    box-shadow .2s ease,
-    transform .15s ease;
-}
-
-.listing-feature-option label:hover{
-  border-color:#efa0a4;
-  background:#fffafa;
-  transform:translateY(-1px);
-}
-
-.feature-check-icon{
-  flex:0 0 20px;
-  width:20px;
-  height:20px;
-  display:grid;
-  place-items:center;
-  box-sizing:border-box;
-  border:1.5px solid #cbd0d5;
-  border-radius:6px;
-  background:#fff;
-  color:transparent;
-  font-size:11px;
-  font-weight:900;
-  transition:.2s ease;
-}
-
-.feature-label-text{
-  min-width:0;
-  flex:1;
-  color:inherit;
-  font-size:11px;
-  line-height:1.3;
   font-weight:750;
-  overflow-wrap:anywhere;
-}
-
-.listing-feature-option input:checked + label{
-  border-color:#e30613;
-  background:#fff5f5;
-  color:#b9000b;
-  box-shadow:
-    0 4px 14px rgba(227,6,19,.08);
-}
-
-.listing-feature-option input:checked + label .feature-check-icon{
-  border-color:#e30613;
-  background:#e30613;
-  color:#fff;
-}
-
-
-/* =========================================================
-   8. ESKİ FEATURE GRID FALLBACK
-   ========================================================= */
-
-.feature-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(3,minmax(0,1fr));
-  gap:10px;
-}
-
-.feature-option{
-  position:relative;
-  min-width:0;
-}
-
-.feature-option input{
-  position:absolute;
-  opacity:0;
   pointer-events:none;
 }
 
-.feature-option label{
-  min-height:50px;
-  box-sizing:border-box;
-  display:flex;
-  align-items:center;
-  gap:9px;
-  padding:9px 11px;
-  border:1px solid #e1e4e7;
-  border-radius:11px;
-  background:#fff;
-  color:#555b62;
-  cursor:pointer;
-  font-size:11px;
-  line-height:1.3;
-  font-weight:700;
-}
-
-.feature-option label::before{
-  content:"";
-  flex:0 0 18px;
-  width:18px;
-  height:18px;
-  box-sizing:border-box;
-  border:1.5px solid #cbd0d5;
-  border-radius:5px;
-}
-
-.feature-option input:checked + label{
-  border-color:#e30613;
-  background:#fff5f5;
-  color:#b9000b;
-}
-
-.feature-option input:checked + label::before{
-  content:"✓";
-  display:grid;
-  place-items:center;
-  border-color:#e30613;
-  background:#e30613;
-  color:#fff;
-  font-size:11px;
-}
-
-
-/* =========================================================
-   9. AÇIKLAMA
-   ========================================================= */
-
-.sell-description{
-  margin-top:22px;
-}
-
-.sell-description textarea{
-  min-height:145px;
-}
-
-.description-counter{
-  display:flex;
-  justify-content:flex-end;
-  margin-top:5px;
+#sell .listing-character-count{
+  margin-top:6px;
   color:#969ba1;
-  font-size:11px;
+  text-align:right;
+  font-size:10px;
 }
 
 
 /* =========================================================
-   10. FOTOĞRAF ALANI
+   6. FOTOĞRAF YÜKLEME ALANI
    ========================================================= */
 
-.sell-upload-box{
+#sell .listing-upload{
   position:relative;
-  min-height:205px;
+  min-height:215px;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:28px;
-  border:2px dashed #d9dde1;
-  border-radius:17px;
+  padding:30px;
+  box-sizing:border-box;
+  border:2px dashed #d7dce1;
+  border-radius:18px;
   background:#fafbfc;
   text-align:center;
   cursor:pointer;
-  transition:.25s ease;
+  transition:
+    border-color .2s ease,
+    background .2s ease,
+    transform .2s ease;
 }
 
-.sell-upload-box:hover{
+#sell .listing-upload:hover{
   border-color:#e30613;
   background:#fff8f8;
 }
 
-.sell-upload-box input[type="file"]{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  opacity:0;
-  cursor:pointer;
+#sell .listing-upload.dragover{
+  border-color:#e30613;
+  background:#fff3f3;
+  transform:scale(1.005);
 }
 
-.sell-upload-icon{
-  width:55px;
-  height:55px;
+#sell .listing-upload.upload-disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+#sell .listing-upload-icon{
+  width:58px;
+  height:58px;
   display:grid;
   place-items:center;
   margin-bottom:12px;
-  border-radius:16px;
+  border-radius:17px;
   background:#fff1f1;
   color:#e30613;
-  font-size:23px;
-  font-weight:900;
+  font-size:25px;
+  font-weight:800;
 }
 
-.sell-upload-box h3{
+#sell .listing-upload h4{
   margin:0;
   color:#252a2f;
-  font-size:15px;
+  font-size:16px;
   font-weight:850;
 }
 
-.sell-upload-box p{
-  margin:6px 0 0;
-  color:#8a9097;
+#sell .listing-upload p{
+  margin:7px 0 0;
+  max-width:520px;
+  color:#858b92;
   font-size:12px;
+  line-height:1.5;
 }
 
-.image-counter{
-  display:inline-flex;
-  align-items:center;
-  margin-top:12px;
-  padding:6px 10px;
-  border-radius:999px;
-  background:#f0f1f3;
-  color:#656b72;
-  font-size:11px;
-  font-weight:800;
+#sell .listing-upload > span{
+  margin-top:9px;
+  color:#a0a5ab;
+  font-size:10px;
+  font-weight:700;
 }
 
 
 /* =========================================================
-   11. FOTOĞRAF ÖNİZLEME
+   7. FOTOĞRAF TOOLBAR
    ========================================================= */
 
-.preview-grid,
-.img-preview-grid{
+#sell .listing-photo-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  margin-top:18px;
+  padding:11px 13px;
+  border:1px solid #eceef0;
+  border-radius:11px;
+  background:#fafbfc;
+}
+
+#sell .listing-photo-toolbar strong{
+  color:#30353a;
+  font-size:12px;
+  font-weight:850;
+}
+
+#sell .listing-photo-toolbar span{
+  color:#858b92;
+  font-size:11px;
+}
+
+
+/* =========================================================
+   8. FOTOĞRAF GRID
+   ========================================================= */
+
+#sell .listing-preview-grid{
   display:grid;
-  grid-template-columns:
-    repeat(4,minmax(0,1fr));
-  gap:12px;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:13px;
   margin-top:18px;
 }
 
-.image-preview-card{
-  position:relative;
-  width:100%;
-  aspect-ratio:4 / 3;
-  overflow:hidden;
-  border:1px solid #e2e5e8;
-  border-radius:13px;
-  background:#f4f5f6;
+#sell .listing-preview-grid:empty{
+  display:none;
 }
 
-.image-preview-card img{
+#sell .image-preview-card,
+#sell .image-preview-card.preview-card{
+  position:relative;
+  width:100%;
+  min-width:0;
+  aspect-ratio:4 / 3;
+  overflow:hidden;
+  box-sizing:border-box;
+  border:1px solid #e1e4e8;
+  border-radius:14px;
+  background:#f2f4f6;
+  box-shadow:0 4px 15px rgba(20,25,30,.05);
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    border-color .2s ease;
+}
+
+#sell .image-preview-card:hover{
+  transform:translateY(-2px);
+  border-color:#d4d8dc;
+  box-shadow:0 8px 22px rgba(20,25,30,.09);
+}
+
+#sell .image-preview-image{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#eef0f2;
+}
+
+#sell .image-preview-image img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+}
+
+#sell .image-cover-badge{
+  position:absolute;
+  left:9px;
+  top:9px;
+  z-index:5;
+  display:inline-flex;
+  align-items:center;
+  padding:5px 8px;
+  border-radius:7px;
+  background:rgba(20,23,27,.78);
+  color:#fff;
+  font-size:9px;
+  line-height:1;
+  font-weight:850;
+  letter-spacing:.02em;
+  pointer-events:none;
+}
+
+#sell .image-remove-btn{
+  position:absolute;
+  top:8px;
+  right:8px;
+  z-index:6;
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:rgba(20,23,27,.80);
+  color:#fff;
+  cursor:pointer;
+  font-size:15px;
+  font-weight:700;
+  line-height:1;
+  box-shadow:0 3px 10px rgba(0,0,0,.18);
+  transition:
+    background .2s ease,
+    transform .2s ease;
+}
+
+#sell .image-remove-btn:hover{
+  background:#e30613;
+  transform:scale(1.08);
+}
+
+
+/* =========================================================
+   9. FOTOĞRAF BOŞ DURUMU
+   ========================================================= */
+
+#sell .listing-photo-empty{
+  margin-top:15px;
+  padding:18px;
+  border:1px dashed #e0e3e6;
+  border-radius:12px;
+  background:#fafbfc;
+  color:#969ba1;
+  text-align:center;
+  font-size:12px;
+}
+
+#sell .listing-photo-empty.hidden{
+  display:none;
+}
+
+
+/* =========================================================
+   10. KONTROLLER / CHECKBOX
+   ========================================================= */
+
+#sell .listing-checks{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:22px;
+}
+
+#sell .listing-check{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-height:42px;
+  padding:9px 12px;
+  box-sizing:border-box;
+  border:1px solid #e3e6e9;
+  border-radius:10px;
+  background:#fafbfc;
+  color:#555b62;
+  font-size:11px;
+  font-weight:700;
+}
+
+#sell .listing-check input{
+  accent-color:#e30613;
+}
+
+
+/* =========================================================
+   11. ÖNİZLEME
+   ========================================================= */
+
+#sell .listing-preview-card{
+  display:grid;
+  grid-template-columns:minmax(300px,42%) minmax(0,1fr);
+  min-height:330px;
+  overflow:hidden;
+  border:1px solid #e4e7ea;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 7px 25px rgba(20,25,30,.06);
+}
+
+#sell .listing-preview-image{
+  position:relative;
+  min-height:330px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:#f0f2f4;
+  color:#969ba1;
+  font-size:12px;
+  text-align:center;
+}
+
+#sell .listing-preview-image img{
+  position:absolute;
+  inset:0;
   width:100%;
   height:100%;
   display:block;
   object-fit:cover;
 }
 
-.image-preview-card button{
-  position:absolute;
-  top:8px;
-  right:8px;
-  z-index:3;
-  width:29px;
-  height:29px;
-  display:grid;
-  place-items:center;
-  padding:0;
-  border:0;
-  border-radius:50%;
-  background:rgba(20,23,27,.78);
-  color:#fff;
-  cursor:pointer;
-  font-size:16px;
+#sell .listing-preview-info{
+  min-width:0;
+  padding:27px;
 }
 
-.image-preview-card button:hover{
-  background:#e30613;
-}
-
-.listing-image-badge{
-  position:absolute;
-  left:8px;
-  top:8px;
-  z-index:2;
-  padding:5px 7px;
-  border-radius:6px;
-  background:rgba(20,23,27,.72);
-  color:#fff;
-  font-size:9px;
-  font-weight:900;
-  letter-spacing:.03em;
-}
-
-
-/* =========================================================
-   12. FOTOĞRAF İPUÇLARI
-   ========================================================= */
-
-.photo-tips{
-  margin-top:20px;
-  padding:17px;
-  border:1px solid #eceef0;
-  border-radius:13px;
-  background:#fafbfc;
-}
-
-.photo-tips h4{
-  margin:0 0 12px;
-  color:#34393f;
-  font-size:12px;
-  font-weight:850;
-}
-
-.photo-tip-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(3,minmax(0,1fr));
-  gap:9px;
-}
-
-.photo-tip{
-  display:flex;
-  align-items:flex-start;
-  gap:8px;
-  color:#777e85;
-  font-size:11px;
-  line-height:1.45;
-}
-
-.photo-tip::before{
-  content:"✓";
-  flex:0 0 18px;
-  width:18px;
-  height:18px;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  background:#eaf7ee;
-  color:#268449;
-  font-size:10px;
-  font-weight:900;
-}
-
-
-/* =========================================================
-   13. İLAN ÖZETİ
-   ========================================================= */
-
-.listing-summary{
-  border:1px solid #e5e8eb;
-  border-radius:16px;
-  overflow:hidden;
-  background:#fff;
-}
-
-.listing-summary-grid{
-  display:grid;
-  grid-template-columns:
-    repeat(2,minmax(0,1fr));
-}
-
-.listing-summary-item{
-  min-height:58px;
-  padding:13px 17px;
-  border-bottom:1px solid #f0f1f3;
-}
-
-.listing-summary-item:nth-child(odd){
-  border-right:1px solid #f0f1f3;
-}
-
-.listing-summary-item span{
-  display:block;
-  margin-bottom:4px;
-  color:#92979d;
-  font-size:10px;
-  font-weight:750;
-}
-
-.listing-summary-item strong{
-  color:#292e33;
-  font-size:13px;
-  font-weight:800;
-}
-
-.listing-summary-price{
-  color:#e30613 !important;
-  font-size:16px !important;
-}
-
-.listing-summary-section{
-  padding:18px;
-  border-top:1px solid #eef0f2;
-}
-
-.listing-summary-section-title{
-  margin-bottom:10px;
-  color:#34393f;
-  font-size:12px;
-  font-weight:850;
-}
-
-.listing-summary-features{
-  display:flex;
-  flex-wrap:wrap;
-  gap:5px;
-}
-
-.summary-feature{
-  display:inline-flex;
-  align-items:center;
-  padding:6px 10px;
-  border-radius:8px;
-  background:#fff1f1;
-  color:#c62828;
+#sell .listing-preview-location{
+  margin-bottom:9px;
+  color:#858b92;
   font-size:11px;
   font-weight:700;
 }
 
-.listing-summary-description{
+#sell .listing-preview-info h2{
   margin:0;
-  color:#555;
-  font-size:13px;
-  line-height:1.7;
+  color:#17191c;
+  font-size:24px;
+  line-height:1.25;
+  font-weight:850;
+  letter-spacing:-.02em;
+}
+
+#sell .listing-preview-price{
+  margin-top:13px;
+  color:#e30613;
+  font-size:24px;
+  font-weight:900;
+}
+
+#sell .listing-preview-specs{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin-top:22px;
+  padding:13px 0;
+  border-top:1px solid #eef0f2;
+  border-bottom:1px solid #eef0f2;
+}
+
+#sell .listing-preview-specs div{
+  min-width:0;
+}
+
+#sell .listing-preview-specs span{
+  display:block;
+  margin-bottom:4px;
+  color:#979ca2;
+  font-size:9px;
+  font-weight:700;
+}
+
+#sell .listing-preview-specs strong{
+  display:block;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color:#30353a;
+  font-size:11px;
+  font-weight:850;
+}
+
+#sell .listing-preview-description{
+  margin-top:18px;
+  color:#646b72;
+  font-size:12px;
+  line-height:1.65;
   white-space:pre-line;
 }
 
 
 /* =========================================================
-   14. YAYINLAMA BİLGİSİ
+   12. YAYINLAMA NOTU
    ========================================================= */
 
-.publish-info{
+#sell .listing-publish-note{
   display:flex;
-  align-items:flex-start;
-  gap:10px;
-  margin-top:18px;
-  padding:13px 15px;
-  border:1px solid #e9ebee;
+  align-items:center;
+  gap:9px;
+  margin-top:16px;
+  padding:12px 14px;
+  border:1px solid #e5eee8;
   border-radius:11px;
-  background:#fafbfc;
-  color:#747a81;
+  background:#f8fcf9;
+  color:#5f7265;
   font-size:11px;
   line-height:1.5;
 }
 
-.publish-info::before{
-  content:"i";
-  flex:0 0 20px;
-  width:20px;
-  height:20px;
+#sell .listing-publish-note span{
+  flex:0 0 21px;
+  width:21px;
+  height:21px;
   display:grid;
   place-items:center;
   border-radius:50%;
-  background:#eceef1;
-  color:#656b72;
+  background:#e5f5e9;
+  color:#258347;
   font-size:11px;
   font-weight:900;
 }
 
 
 /* =========================================================
-   15. BUTONLAR
+   13. NAVİGASYON
    ========================================================= */
 
-.sell-step-actions{
+#sell .listing-navigation{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  gap:12px;
-  margin-top:30px;
-  padding-top:22px;
-  border-top:1px solid #eef0f2;
+  gap:15px;
+  margin-top:18px;
 }
 
-.sell-step-actions-left,
-.sell-actions-left,
-.sell-step-actions-right,
-.sell-actions-right{
+#sell .listing-navigation-right{
   display:flex;
   align-items:center;
   gap:10px;
 }
 
-.sell-step-actions button,
-.sell-actions button{
+#sell .listing-navigation button{
   min-height:44px;
   padding:0 17px;
   border:1px solid #dfe2e5;
@@ -973,106 +785,44 @@
   transition:.2s ease;
 }
 
-.sell-step-actions button:hover,
-.sell-actions button:hover{
-  border-color:#c9cdd2;
+#sell .listing-navigation button:hover{
+  border-color:#c8cdd2;
   background:#f8f9fa;
 }
 
-.sell-step-actions .primary,
-.sell-step-actions .next-btn,
-.sell-actions .primary,
-.sell-actions .next-btn{
+#sell .listing-navigation .btn-primary{
   border-color:#e30613;
   background:#e30613;
   color:#fff;
 }
 
-.sell-step-actions .primary:hover,
-.sell-step-actions .next-btn:hover,
-.sell-actions .primary:hover,
-.sell-actions .next-btn:hover{
+#sell .listing-navigation .btn-primary:hover{
   border-color:#b9000b;
   background:#b9000b;
-}
-
-.sell-publish-btn{
-  min-width:150px;
-  min-height:46px !important;
-  border-color:#e30613 !important;
-  background:#e30613 !important;
-  color:#fff !important;
-  box-shadow:0 7px 18px rgba(227,6,19,.18);
-}
-
-.sell-publish-btn:hover{
-  border-color:#b9000b !important;
-  background:#b9000b !important;
   transform:translateY(-1px);
 }
 
-.save-draft-btn{
-  color:#686f76 !important;
-  background:#fff !important;
+#sell .listing-navigation .listing-cancel-btn{
+  color:#707780;
 }
 
-.save-draft-btn:hover{
-  color:#e30613 !important;
-  border-color:#e30613 !important;
-  background:#fff8f8 !important;
+#sell .listing-navigation #listingPublishBtn{
+  box-shadow:0 7px 18px rgba(227,6,19,.18);
 }
 
 
 /* =========================================================
-   16. BAŞARI EKRANI
+   14. HATA DURUMU
    ========================================================= */
 
-.listing-success{
-  padding:50px 25px;
-  text-align:center;
-}
-
-.listing-success-icon{
-  width:70px;
-  height:70px;
-  display:grid;
-  place-items:center;
-  margin:0 auto 18px;
-  border-radius:50%;
-  background:#eaf7ee;
-  color:#238145;
-  font-size:30px;
-  font-weight:900;
-}
-
-.listing-success h2{
-  margin:0;
-  color:#20252a;
-  font-size:25px;
-  font-weight:900;
-}
-
-.listing-success p{
-  max-width:520px;
-  margin:9px auto 0;
-  color:#777e85;
-  font-size:13px;
-  line-height:1.6;
-}
-
-
-/* =========================================================
-   17. VALIDASYON
-   ========================================================= */
-
-.form-group.has-error input,
-.form-group.has-error select,
-.form-group.has-error textarea{
+#sell .listing-field.has-error input,
+#sell .listing-field.has-error select,
+#sell .listing-field.has-error textarea{
   border-color:#e30613;
   background:#fff8f8;
 }
 
-.form-error{
+#sell .listing-field .form-error{
   margin-top:5px;
   color:#e30613;
   font-size:10px;
@@ -1081,248 +831,242 @@
 
 
 /* =========================================================
-   18. MOBİL
+   15. MOBİL
    ========================================================= */
 
 @media (max-width:900px){
 
-  .sell-page{
-    padding:25px 15px 55px;
+  #sell .listing-page{
+    padding:25px 15px 60px;
   }
 
-  .sell-header{
+  #sell .listing-head{
     align-items:flex-start;
     flex-direction:column;
     gap:15px;
   }
 
-  .sell-header h1{
-    font-size:27px;
+  #sell .listing-head h2{
+    font-size:28px;
   }
 
-  .sell-header-badge{
+  #sell .listing-save-note{
     align-self:flex-start;
   }
 
-  .sell-step{
+  #sell .listing-panel{
     padding:23px 20px;
   }
 
-  .listing-feature-options{
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
+  #sell .listing-preview-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
   }
 
-  .preview-grid,
-  .img-preview-grid{
-    grid-template-columns:
-      repeat(3,minmax(0,1fr));
-  }
-
-  .photo-tip-grid{
+  #sell .listing-preview-card{
     grid-template-columns:1fr;
+  }
+
+  #sell .listing-preview-image{
+    min-height:300px;
   }
 }
 
 
 @media (max-width:650px){
 
-  .sell-page{
-    padding:20px 11px 45px;
+  #sell .listing-page{
+    padding:20px 11px 50px;
   }
 
-  .sell-header{
-    margin-bottom:20px;
+  #sell .listing-head{
+    margin-bottom:19px;
   }
 
-  .sell-header h1{
+  #sell .listing-head h2{
     font-size:24px;
   }
 
-  .sell-header p{
+  #sell .listing-head p{
     font-size:13px;
   }
 
-  .sell-header-badge{
+  #sell .listing-save-note{
     width:100%;
     box-sizing:border-box;
   }
 
-  .sell-progress{
-    padding:15px 10px;
+  #sell .listing-steps{
+    padding:15px 9px;
     border-radius:15px;
   }
 
-  .sell-progress-line{
-    left:45px;
-    right:45px;
+  #sell .listing-steps::before{
+    left:48px;
+    right:48px;
     top:31px;
   }
 
-  .sell-step-node span{
+  #sell .listing-step span{
     width:30px;
     height:30px;
     font-size:11px;
   }
 
-  .sell-step-node strong{
+  #sell .listing-step b{
     font-size:9px;
   }
 
-  .sell-step{
+  #sell .listing-panel{
     padding:20px 15px;
+    border-radius:17px;
   }
 
-  .sell-step-heading{
+  #sell .listing-panel-title{
     gap:10px;
     margin-bottom:21px;
     padding-bottom:17px;
   }
 
-  .sell-step-icon{
+  #sell .listing-panel-icon{
     flex-basis:38px;
     width:38px;
     height:38px;
     border-radius:11px;
   }
 
-  .sell-step-heading h2{
+  #sell .listing-panel-title h3{
     font-size:18px;
   }
 
-  .sell-step-heading p{
+  #sell .listing-panel-title p{
     font-size:11px;
   }
 
-  .sell-form-grid{
+  #sell .listing-grid{
     grid-template-columns:1fr;
     gap:14px;
   }
 
-  .sell-form-grid .form-group.full{
+  #sell .listing-field-full{
     grid-column:auto;
   }
 
-  .listing-feature-options{
-    grid-template-columns:1fr;
-  }
-
-  .listing-feature-option label{
-    min-height:50px;
-  }
-
-  .preview-grid,
-  .img-preview-grid{
-    grid-template-columns:
-      repeat(2,minmax(0,1fr));
-    gap:9px;
-  }
-
-  .sell-upload-box{
-    min-height:175px;
+  #sell .listing-upload{
+    min-height:180px;
     padding:22px 15px;
   }
 
-  .sell-step-actions{
+  #sell .listing-photo-toolbar{
+    align-items:flex-start;
     flex-direction:column;
+    gap:5px;
+  }
+
+  #sell .listing-preview-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+  }
+
+  #sell .listing-preview-card{
+    border-radius:13px;
+  }
+
+  #sell .listing-preview-image{
+    min-height:230px;
+  }
+
+  #sell .listing-preview-info{
+    padding:20px;
+  }
+
+  #sell .listing-preview-info h2{
+    font-size:20px;
+  }
+
+  #sell .listing-preview-price{
+    font-size:21px;
+  }
+
+  #sell .listing-preview-specs{
+    grid-template-columns:repeat(2,1fr);
+    gap:13px;
+  }
+
+  #sell .listing-navigation{
     align-items:stretch;
+    flex-direction:column;
   }
 
-  .sell-step-actions-left,
-  .sell-step-actions-right,
-  .sell-actions-left,
-  .sell-actions-right{
+  #sell .listing-navigation-right{
     width:100%;
   }
 
-  .sell-step-actions button,
-  .sell-actions button{
+  #sell .listing-navigation button{
     flex:1;
-  }
-
-  .sell-publish-btn{
-    width:100%;
-  }
-
-  .listing-summary-grid{
-    grid-template-columns:1fr;
-  }
-
-  .listing-summary-item{
-    border-right:0 !important;
   }
 }
 
 
 @media (max-width:420px){
 
-  .sell-header h1{
+  #sell .listing-head h2{
     font-size:22px;
   }
 
-  .sell-progress{
-    margin-left:-2px;
-    margin-right:-2px;
-  }
-
-  .sell-step-node strong{
-    font-size:8px;
-  }
-
-  .sell-step{
+  #sell .listing-panel{
     padding:18px 12px;
   }
 
-  .form-group input,
-  .form-group select{
-    min-height:44px;
+  #sell .listing-upload{
+    min-height:165px;
   }
 
-  .sell-upload-icon{
-    width:48px;
-    height:48px;
-    font-size:20px;
+  #sell .listing-upload-icon{
+    width:50px;
+    height:50px;
+    border-radius:14px;
   }
 
-  .sell-upload-box h3{
+  #sell .listing-upload h4{
     font-size:14px;
   }
 
-  .sell-upload-box p{
+  #sell .listing-upload p{
     font-size:11px;
   }
 
-  .listing-feature-group{
-    padding:13px;
+  #sell .listing-preview-image{
+    min-height:200px;
   }
 
-  .listing-feature-option label{
-    padding:9px 10px;
+  #sell .listing-preview-info{
+    padding:17px;
   }
 }
 
 
 /* =========================================================
-   19. KÜÇÜK DOKUNUŞLAR
+   16. KÜÇÜK DOKUNUŞLAR
    ========================================================= */
 
-.sell-page button{
+#sell button{
   -webkit-tap-highlight-color:transparent;
 }
 
-.sell-page input,
-.sell-page select,
-.sell-page textarea{
+#sell input,
+#sell select,
+#sell textarea{
   -webkit-appearance:none;
   appearance:none;
 }
 
-.sell-page input[type="number"]::-webkit-inner-spin-button,
-.sell-page input[type="number"]::-webkit-outer-spin-button{
+#sell input[type="number"]::-webkit-inner-spin-button,
+#sell input[type="number"]::-webkit-outer-spin-button{
   opacity:.5;
 }
 
-.sell-page ::selection{
+#sell ::selection{
   background:#ffdfe1;
   color:#8d0008;
 }
+```
