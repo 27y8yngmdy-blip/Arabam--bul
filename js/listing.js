@@ -13,18 +13,23 @@
 
 window.ArabamiBul = window.ArabamiBul || {};
 
-window.ArabamiBul.listing = window.ArabamiBul.listing || {
-    uploadedImages: [],
-    currentSellStep: 1
-};
+window.ArabamiBul.listing =
+    window.ArabamiBul.listing || {
+        uploadedImages: [],
+        currentSellStep: 1
+    };
 
-const listingState = window.ArabamiBul.listing;
+const listingState =
+    window.ArabamiBul.listing;
 
 const MAX_IMAGES = 15;
 const MAX_FILE_SIZE = 8 * 1024 * 1024;
 
-const DRAFT_KEY = 'arabami_bul_listing_draft';
-const MY_LISTINGS_KEY = 'my_listings';
+const DRAFT_KEY =
+    'arabami_bul_listing_draft';
+
+const MY_LISTINGS_KEY =
+    'my_listings';
 
 
 /* ==========================================================================
@@ -314,7 +319,8 @@ const LISTING_FEATURE_GROUPS = {
 
 function getFieldValue(id) {
 
-    const el = document.getElementById(id);
+    const el =
+        document.getElementById(id);
 
     return el
         ? String(el.value || '').trim()
@@ -324,17 +330,19 @@ function getFieldValue(id) {
 
 function getNumberValue(id) {
 
-    const value = getFieldValue(id);
+    const value =
+        getFieldValue(id);
 
     if (value === '') {
         return 0;
     }
 
-    const number = Number(
-        String(value)
-            .replace(/\./g, '')
-            .replace(',', '.')
-    );
+    const number =
+        Number(
+            String(value)
+                .replace(/\./g, '')
+                .replace(',', '.')
+        );
 
     return Number.isFinite(number)
         ? number
@@ -345,8 +353,12 @@ function getNumberValue(id) {
 function getCheckedFeatures() {
 
     return Array.from(
-        document.querySelectorAll('input[name="feature"]:checked')
-    ).map(input => input.value);
+        document.querySelectorAll(
+            'input[name="feature"]:checked'
+        )
+    ).map(
+        input => input.value
+    );
 }
 
 
@@ -365,26 +377,38 @@ function escapeHtml(value) {
    SELECT OLUŞTURMA
    ========================================================================== */
 
-function replaceFieldWithSelect(id, options, placeholder) {
+function replaceFieldWithSelect(
+    id,
+    options,
+    placeholder
+) {
 
-    const oldElement = document.getElementById(id);
+    const oldElement =
+        document.getElementById(id);
 
     if (!oldElement) {
         return null;
     }
 
-    if (oldElement.tagName.toLowerCase() === 'select') {
+    if (
+        oldElement.tagName.toLowerCase() ===
+        'select'
+    ) {
         return oldElement;
     }
 
-    const select = document.createElement('select');
+    const select =
+        document.createElement('select');
 
-    Array.from(oldElement.attributes).forEach(attribute => {
+    Array.from(
+        oldElement.attributes
+    ).forEach(attribute => {
 
         if (
             attribute.name !== 'type' &&
             attribute.name !== 'value'
         ) {
+
             select.setAttribute(
                 attribute.name,
                 attribute.value
@@ -393,7 +417,8 @@ function replaceFieldWithSelect(id, options, placeholder) {
     });
 
     select.id = id;
-    select.name = oldElement.name || id;
+    select.name =
+        oldElement.name || id;
 
     select.innerHTML = '';
 
@@ -401,20 +426,30 @@ function replaceFieldWithSelect(id, options, placeholder) {
         document.createElement('option');
 
     placeholderOption.value = '';
-    placeholderOption.textContent = placeholder;
+    placeholderOption.textContent =
+        placeholder;
 
-    select.appendChild(placeholderOption);
+    select.appendChild(
+        placeholderOption
+    );
 
-    options.forEach(optionValue => {
+    options.forEach(
+        optionValue => {
 
-        const option =
-            document.createElement('option');
+            const option =
+                document.createElement(
+                    'option'
+                );
 
-        option.value = optionValue;
-        option.textContent = optionValue;
+            option.value =
+                optionValue;
 
-        select.appendChild(option);
-    });
+            option.textContent =
+                optionValue;
+
+            select.appendChild(option);
+        }
+    );
 
     oldElement.replaceWith(select);
 
@@ -459,10 +494,15 @@ function setupBrandSelect() {
    MODEL SELECT
    ========================================================================== */
 
-function updateModelSelect(brand, selectedModel = '') {
+function updateModelSelect(
+    brand,
+    selectedModel = ''
+) {
 
     const modelElement =
-        document.getElementById('addModel');
+        document.getElementById(
+            'addModel'
+        );
 
     if (!modelElement) {
         return;
@@ -476,8 +516,10 @@ function updateModelSelect(brand, selectedModel = '') {
     const models =
         LISTING_BRANDS[brand] || [];
 
+
     if (
-        modelElement.tagName.toLowerCase() !== 'select'
+        modelElement.tagName.toLowerCase() !==
+        'select'
     ) {
 
         replaceFieldWithSelect(
@@ -493,7 +535,9 @@ function updateModelSelect(brand, selectedModel = '') {
         modelElement.innerHTML = '';
 
         const placeholder =
-            document.createElement('option');
+            document.createElement(
+                'option'
+            );
 
         placeholder.value = '';
 
@@ -506,27 +550,36 @@ function updateModelSelect(brand, selectedModel = '') {
             placeholder
         );
 
-        models.forEach(model => {
+        models.forEach(
+            model => {
 
-            const option =
-                document.createElement('option');
+                const option =
+                    document.createElement(
+                        'option'
+                    );
 
-            option.value = model;
-            option.textContent = model;
+                option.value = model;
+                option.textContent = model;
 
-            modelElement.appendChild(
-                option
-            );
-        });
+                modelElement.appendChild(
+                    option
+                );
+            }
+        );
     }
 
+
     const finalModelElement =
-        document.getElementById('addModel');
+        document.getElementById(
+            'addModel'
+        );
 
     if (finalModelElement) {
 
         finalModelElement.value =
-            models.includes(currentValue)
+            models.includes(
+                currentValue
+            )
                 ? currentValue
                 : '';
 
@@ -542,26 +595,11 @@ function updateModelSelect(brand, selectedModel = '') {
 
 function setupYearSelect() {
 
-    const yearSelect =
-        replaceFieldWithSelect(
-            'addYear',
-            LISTING_YEARS,
-            'Model yılı seçiniz'
-        );
-
-    if (!yearSelect) {
-        return;
-    }
-
-    const currentYear =
-        new Date().getFullYear();
-
-    if (
-        !yearSelect.value &&
-        currentYear
-    ) {
-        // Otomatik seçim yapılmıyor.
-    }
+    replaceFieldWithSelect(
+        'addYear',
+        LISTING_YEARS,
+        'Model yılı seçiniz'
+    );
 }
 
 
@@ -580,7 +618,7 @@ function setupColorSelect() {
 
 
 /* ==========================================================================
-   DONANIMLARI YENİDEN OLUŞTUR
+   DONANIMLARI OLUŞTUR
    ========================================================================== */
 
 function setupFeatureCards() {
@@ -604,10 +642,6 @@ function setupFeatureCards() {
         return;
     }
 
-    /*
-       Daha önce oluşturduysak tekrar oluşturma.
-    */
-
     if (
         document.querySelector(
             '.listing-feature-groups'
@@ -618,8 +652,12 @@ function setupFeatureCards() {
 
     const selectedValues =
         featureInputs
-            .filter(input => input.checked)
-            .map(input => input.value);
+            .filter(
+                input => input.checked
+            )
+            .map(
+                input => input.value
+            );
 
     const wrapper =
         document.createElement('div');
@@ -633,7 +671,9 @@ function setupFeatureCards() {
         ([groupName, features]) => {
 
             const group =
-                document.createElement('div');
+                document.createElement(
+                    'div'
+                );
 
             group.className =
                 'listing-feature-group';
@@ -663,7 +703,9 @@ function setupFeatureCards() {
                             );
 
                     const option =
-                        document.createElement('div');
+                        document.createElement(
+                            'div'
+                        );
 
                     option.className =
                         'listing-feature-option';
@@ -700,8 +742,9 @@ function setupFeatureCards() {
         }
     );
 
-    firstContainer
-        .replaceWith(wrapper);
+    firstContainer.replaceWith(
+        wrapper
+    );
 }
 
 
@@ -716,12 +759,16 @@ function initializeListingSelectors() {
     setupColorSelect();
     setupFeatureCards();
 
+
     const body =
-        document.getElementById('addBody');
+        document.getElementById(
+            'addBody'
+        );
 
     if (
         body &&
-        body.tagName.toLowerCase() !== 'select'
+        body.tagName.toLowerCase() !==
+        'select'
     ) {
 
         replaceFieldWithSelect(
@@ -740,12 +787,16 @@ function initializeListingSelectors() {
         );
     }
 
+
     const fuel =
-        document.getElementById('addFuel');
+        document.getElementById(
+            'addFuel'
+        );
 
     if (
         fuel &&
-        fuel.tagName.toLowerCase() !== 'select'
+        fuel.tagName.toLowerCase() !==
+        'select'
     ) {
 
         replaceFieldWithSelect(
@@ -761,12 +812,16 @@ function initializeListingSelectors() {
         );
     }
 
+
     const trans =
-        document.getElementById('addTrans');
+        document.getElementById(
+            'addTrans'
+        );
 
     if (
         trans &&
-        trans.tagName.toLowerCase() !== 'select'
+        trans.tagName.toLowerCase() !==
+        'select'
     ) {
 
         replaceFieldWithSelect(
@@ -780,12 +835,16 @@ function initializeListingSelectors() {
         );
     }
 
+
     const damage =
-        document.getElementById('addDamage');
+        document.getElementById(
+            'addDamage'
+        );
 
     if (
         damage &&
-        damage.tagName.toLowerCase() !== 'select'
+        damage.tagName.toLowerCase() !==
+        'select'
     ) {
 
         replaceFieldWithSelect(
@@ -816,98 +875,118 @@ function goToSellStep(stepNumber) {
         return;
     }
 
+
     listingState.currentSellStep =
         stepNumber;
 
-    for (
-        let i = 1;
-        i <= 4;
-        i++
-    ) {
 
-        const step =
-            document.getElementById(
-                `sellStep${i}`
+    /* --------------------------------------------------------------
+       TÜM PANELLERİ KAPAT
+       -------------------------------------------------------------- */
+
+    document
+        .querySelectorAll(
+            '[data-listing-step]'
+        )
+        .forEach(panel => {
+
+            panel.classList.remove(
+                'listing-panel-active'
             );
 
-        const node =
-            document.getElementById(
-                `stepNode${i}`
+            panel.classList.remove(
+                'active'
             );
+        });
 
-        if (step) {
+
+    /* --------------------------------------------------------------
+       TÜM ADIMLARI SIFIRLA
+       -------------------------------------------------------------- */
+
+    document
+        .querySelectorAll(
+            '.listing-step'
+        )
+        .forEach(step => {
+
             step.classList.remove(
                 'active'
             );
-        }
 
-        if (node) {
-            node.classList.remove(
-                'active'
+            step.classList.remove(
+                'completed'
             );
-        }
-    }
+        });
 
-    const activeStep =
-        document.getElementById(
-            `sellStep${stepNumber}`
+
+    /* --------------------------------------------------------------
+       AKTİF PANEL
+       -------------------------------------------------------------- */
+
+    const activePanel =
+        document.querySelector(
+            `[data-listing-step="${stepNumber}"]`
         );
 
-    const activeNode =
-        document.getElementById(
-            `stepNode${stepNumber}`
+    if (activePanel) {
+
+        activePanel.classList.add(
+            'listing-panel-active'
+        );
+
+        activePanel.classList.add(
+            'active'
+        );
+    }
+
+
+    /* --------------------------------------------------------------
+       AKTİF ADIM
+       -------------------------------------------------------------- */
+
+    const activeStep =
+        document.querySelector(
+            `.listing-step[data-step="${stepNumber}"]`
         );
 
     if (activeStep) {
+
         activeStep.classList.add(
             'active'
         );
     }
 
-    if (activeNode) {
-        activeNode.classList.add(
-            'active'
-        );
-    }
 
-    for (
-        let i = 1;
-        i < stepNumber;
-        i++
-    ) {
+    /* --------------------------------------------------------------
+       TAMAMLANAN ADIMLAR
+       -------------------------------------------------------------- */
 
-        const node =
-            document.getElementById(
-                `stepNode${i}`
-            );
+    document
+        .querySelectorAll(
+            '.listing-step'
+        )
+        .forEach(step => {
 
-        if (node) {
-            node.classList.add(
-                'completed'
-            );
-        }
-    }
+            const value =
+                Number(
+                    step.dataset.step
+                );
 
-    for (
-        let i = stepNumber;
-        i <= 4;
-        i++
-    ) {
+            if (
+                value < stepNumber
+            ) {
 
-        const node =
-            document.getElementById(
-                `stepNode${i}`
-            );
+                step.classList.add(
+                    'completed'
+                );
+            }
+        });
 
-        if (
-            node &&
-            i !== stepNumber
-        ) {
-            node.classList.remove(
-                'completed'
-            );
-        }
-    }
+
+    /* --------------------------------------------------------------
+       İLERLEME ÇİZGİSİ
+       -------------------------------------------------------------- */
 
     const fill =
         document.getElementById(
@@ -920,7 +999,15 @@ function goToSellStep(stepNumber) {
             `${stepNumber * 25}%`;
     }
 
-    if (stepNumber === 4) {
+
+    /* --------------------------------------------------------------
+       4. ADIM ÖNİZLEME
+       -------------------------------------------------------------- */
+
+    if (
+        stepNumber === 4
+    ) {
+
         buildListingSummary();
     }
 }
@@ -935,11 +1022,16 @@ function nextSellStep() {
     const current =
         listingState.currentSellStep;
 
-    if (!validateSellStep(current)) {
+    if (
+        !validateSellStep(current)
+    ) {
         return;
     }
 
-    if (current < 4) {
+    if (
+        current < 4
+    ) {
+
         goToSellStep(
             current + 1
         );
@@ -956,7 +1048,10 @@ function previousSellStep() {
     const current =
         listingState.currentSellStep;
 
-    if (current > 1) {
+    if (
+        current > 1
+    ) {
+
         goToSellStep(
             current - 1
         );
@@ -970,19 +1065,35 @@ function previousSellStep() {
 
 function validateSellStep(step) {
 
-    if (step === 1) {
+
+    /* --------------------------------------------------------------
+       ADIM 1
+       -------------------------------------------------------------- */
+
+    if (
+        step === 1
+    ) {
 
         const brand =
-            getFieldValue('addBrand');
+            getFieldValue(
+                'addBrand'
+            );
 
         const model =
-            getFieldValue('addModel');
+            getFieldValue(
+                'addModel'
+            );
 
         const price =
-            getNumberValue('addPrice');
+            getNumberValue(
+                'addPrice'
+            );
 
         const year =
-            getNumberValue('addYear');
+            getNumberValue(
+                'addYear'
+            );
+
 
         if (!brand) {
 
@@ -991,11 +1102,14 @@ function validateSellStep(step) {
             );
 
             document
-                .getElementById('addBrand')
+                .getElementById(
+                    'addBrand'
+                )
                 ?.focus();
 
             return false;
         }
+
 
         if (!model) {
 
@@ -1004,11 +1118,14 @@ function validateSellStep(step) {
             );
 
             document
-                .getElementById('addModel')
+                .getElementById(
+                    'addModel'
+                )
                 ?.focus();
 
             return false;
         }
+
 
         if (
             !price ||
@@ -1020,14 +1137,18 @@ function validateSellStep(step) {
             );
 
             document
-                .getElementById('addPrice')
+                .getElementById(
+                    'addPrice'
+                )
                 ?.focus();
 
             return false;
         }
 
+
         const currentYear =
             new Date().getFullYear();
+
 
         if (
             !year ||
@@ -1040,26 +1161,42 @@ function validateSellStep(step) {
             );
 
             document
-                .getElementById('addYear')
+                .getElementById(
+                    'addYear'
+                )
                 ?.focus();
 
             return false;
         }
 
+
         return true;
     }
 
 
-    if (step === 2) {
+    /* --------------------------------------------------------------
+       ADIM 2
+       -------------------------------------------------------------- */
+
+    if (
+        step === 2
+    ) {
 
         const km =
-            getFieldValue('addKm');
+            getFieldValue(
+                'addKm'
+            );
 
         const fuel =
-            getFieldValue('addFuel');
+            getFieldValue(
+                'addFuel'
+            );
 
         const trans =
-            getFieldValue('addTrans');
+            getFieldValue(
+                'addTrans'
+            );
+
 
         if (
             km === '' ||
@@ -1071,11 +1208,14 @@ function validateSellStep(step) {
             );
 
             document
-                .getElementById('addKm')
+                .getElementById(
+                    'addKm'
+                )
                 ?.focus();
 
             return false;
         }
+
 
         if (!fuel) {
 
@@ -1084,11 +1224,14 @@ function validateSellStep(step) {
             );
 
             document
-                .getElementById('addFuel')
+                .getElementById(
+                    'addFuel'
+                )
                 ?.focus();
 
             return false;
         }
+
 
         if (!trans) {
 
@@ -1097,20 +1240,30 @@ function validateSellStep(step) {
             );
 
             document
-                .getElementById('addTrans')
+                .getElementById(
+                    'addTrans'
+                )
                 ?.focus();
 
             return false;
         }
 
+
         return true;
     }
 
 
-    if (step === 3) {
+    /* --------------------------------------------------------------
+       ADIM 3
+       -------------------------------------------------------------- */
+
+    if (
+        step === 3
+    ) {
 
         if (
-            listingState.uploadedImages.length === 0
+            listingState.uploadedImages.length ===
+            0
         ) {
 
             const answer =
@@ -1126,6 +1279,7 @@ function validateSellStep(step) {
 
         return true;
     }
+
 
     return true;
 }
@@ -1144,20 +1298,26 @@ function handleImageUpload(event) {
         return;
     }
 
+
     const files =
         Array.from(
             event.target.files || []
         );
 
+
     if (!files.length) {
         return;
     }
+
 
     const remainingSlots =
         MAX_IMAGES -
         listingState.uploadedImages.length;
 
-    if (remainingSlots <= 0) {
+
+    if (
+        remainingSlots <= 0
+    ) {
 
         alert(
             `En fazla ${MAX_IMAGES} fotoğraf yükleyebilirsiniz.`
@@ -1168,11 +1328,13 @@ function handleImageUpload(event) {
         return;
     }
 
+
     const selectedFiles =
         files.slice(
             0,
             remainingSlots
         );
+
 
     if (
         files.length >
@@ -1185,76 +1347,91 @@ function handleImageUpload(event) {
         );
     }
 
-    selectedFiles.forEach(file => {
 
-        const allowedTypes = [
-            'image/jpeg',
-            'image/png',
-            'image/webp'
-        ];
+    selectedFiles.forEach(
+        file => {
 
-        if (
-            !allowedTypes.includes(
-                file.type
-            )
-        ) {
+            const allowedTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/webp'
+            ];
 
-            alert(
-                `"${file.name}" desteklenmeyen bir format.\n\n` +
-                'JPG, PNG veya WEBP kullanın.'
-            );
 
-            return;
-        }
-
-        if (
-            file.size >
-            MAX_FILE_SIZE
-        ) {
-
-            alert(
-                `"${file.name}" çok büyük.\n\n` +
-                'Tek fotoğraf maksimum 8 MB olabilir.'
-            );
-
-            return;
-        }
-
-        const imageId =
-            `${Date.now()}_${Math.random()
-                .toString(36)
-                .slice(2)}`;
-
-        const reader =
-            new FileReader();
-
-        reader.onload =
-            function (e) {
-
-                listingState.uploadedImages.push({
-
-                    id: imageId,
-
-                    data: e.target.result,
-
-                    name: file.name
-                });
-
-                renderImagePreviews();
-
-                updateImageCounter();
-            };
-
-        reader.onerror =
-            function () {
+            if (
+                !allowedTypes.includes(
+                    file.type
+                )
+            ) {
 
                 alert(
-                    `"${file.name}" yüklenemedi.`
+                    `"${file.name}" desteklenmeyen bir format.\n\n` +
+                    'JPG, PNG veya WEBP kullanın.'
                 );
-            };
 
-        reader.readAsDataURL(file);
-    });
+                return;
+            }
+
+
+            if (
+                file.size >
+                MAX_FILE_SIZE
+            ) {
+
+                alert(
+                    `"${file.name}" çok büyük.\n\n` +
+                    'Tek fotoğraf maksimum 8 MB olabilir.'
+                );
+
+                return;
+            }
+
+
+            const imageId =
+                `${Date.now()}_${Math.random()
+                    .toString(36)
+                    .slice(2)}`;
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function (e) {
+
+                    listingState.uploadedImages.push({
+
+                        id:
+                            imageId,
+
+                        data:
+                            e.target.result,
+
+                        name:
+                            file.name
+                    });
+
+
+                    renderImagePreviews();
+
+                    updateImageCounter();
+                };
+
+
+            reader.onerror =
+                function () {
+
+                    alert(
+                        `"${file.name}" yüklenemedi.`
+                    );
+                };
+
+
+            reader.readAsDataURL(file);
+        }
+    );
+
 
     event.target.value = '';
 }
@@ -1271,11 +1448,14 @@ function renderImagePreviews() {
             'imgPreviewGrid'
         );
 
+
     if (!previewGrid) {
         return;
     }
 
+
     previewGrid.innerHTML = '';
+
 
     listingState.uploadedImages.forEach(
         (image, index) => {
@@ -1285,11 +1465,14 @@ function renderImagePreviews() {
                     'div'
                 );
 
+
             card.className =
                 'image-preview-card';
 
+
             card.dataset.imageId =
                 image.id;
+
 
             card.innerHTML = `
 
@@ -1315,6 +1498,7 @@ function renderImagePreviews() {
                 </button>
             `;
 
+
             previewGrid.appendChild(
                 card
             );
@@ -1327,13 +1511,16 @@ function renderImagePreviews() {
    FOTOĞRAF SİL
    ========================================================================== */
 
-function removeImageById(imageId) {
+function removeImageById(
+    imageId
+) {
 
     listingState.uploadedImages =
         listingState.uploadedImages.filter(
             image =>
                 image.id !== imageId
         );
+
 
     renderImagePreviews();
 
@@ -1347,15 +1534,17 @@ function removeImage(index) {
         typeof index !== 'number' ||
         index < 0 ||
         index >=
-            listingState.uploadedImages.length
+        listingState.uploadedImages.length
     ) {
         return;
     }
+
 
     listingState.uploadedImages.splice(
         index,
         1
     );
+
 
     renderImagePreviews();
 
@@ -1374,12 +1563,48 @@ function updateImageCounter() {
             'imageCounter'
         );
 
-    if (!counter) {
-        return;
+
+    /*
+       Yeni HTML'de sayaç:
+       listingPhotoCount
+
+       Eski HTML'deki imageCounter da
+       destekleniyor.
+    */
+
+    const newCounter =
+        document.getElementById(
+            'listingPhotoCount'
+        );
+
+
+    const text =
+        `${listingState.uploadedImages.length}/${MAX_IMAGES} fotoğraf`;
+
+
+    if (counter) {
+        counter.textContent = text;
     }
 
-    counter.textContent =
-        `${listingState.uploadedImages.length}/${MAX_IMAGES} fotoğraf`;
+
+    if (newCounter) {
+        newCounter.textContent = text;
+    }
+
+
+    const empty =
+        document.getElementById(
+            'listingPhotoEmpty'
+        );
+
+
+    if (empty) {
+
+        empty.style.display =
+            listingState.uploadedImages.length
+                ? 'none'
+                : '';
+    }
 }
 
 
@@ -1394,56 +1619,93 @@ function buildListingSummary() {
             'listingSummary'
         );
 
+
     if (!summary) {
         return;
     }
 
+
     const brand =
-        getFieldValue('addBrand') ||
-        '-';
+        getFieldValue(
+            'addBrand'
+        ) || '-';
+
 
     const model =
-        getFieldValue('addModel') ||
-        '-';
+        getFieldValue(
+            'addModel'
+        ) || '-';
+
 
     const price =
-        getNumberValue('addPrice');
+        getNumberValue(
+            'addPrice'
+        );
+
 
     const year =
-        getNumberValue('addYear');
+        getNumberValue(
+            'addYear'
+        );
+
 
     const km =
-        getNumberValue('addKm');
+        getNumberValue(
+            'addKm'
+        );
+
 
     const body =
-        getFieldValue('addBody') ||
+        getFieldValue(
+            'addBody'
+        ) ||
         'Belirtilmemiş';
+
 
     const fuel =
-        getFieldValue('addFuel') ||
+        getFieldValue(
+            'addFuel'
+        ) ||
         'Belirtilmemiş';
+
 
     const trans =
-        getFieldValue('addTrans') ||
+        getFieldValue(
+            'addTrans'
+        ) ||
         'Belirtilmemiş';
+
 
     const color =
-        getFieldValue('addColor') ||
+        getFieldValue(
+            'addColor'
+        ) ||
         'Belirtilmemiş';
+
 
     const damage =
-        getFieldValue('addDamage') ||
+        getFieldValue(
+            'addDamage'
+        ) ||
         'Belirtilmemiş';
 
+
     const tramer =
-        getNumberValue('addTramer');
+        getNumberValue(
+            'addTramer'
+        );
+
 
     const description =
-        getFieldValue('addDesc') ||
+        getFieldValue(
+            'addDesc'
+        ) ||
         'Açıklama eklenmemiş.';
+
 
     const features =
         getCheckedFeatures();
+
 
     const formattedPrice =
         price > 0
@@ -1452,15 +1714,18 @@ function buildListingSummary() {
             ).format(price) + ' TL'
             : '-';
 
+
     const formattedKm =
         new Intl.NumberFormat(
             'tr-TR'
         ).format(km) + ' km';
 
+
     const formattedTramer =
         new Intl.NumberFormat(
             'tr-TR'
         ).format(tramer) + ' TL';
+
 
     const featureHtml =
         features.length
@@ -1474,6 +1739,7 @@ function buildListingSummary() {
             ).join('')
 
             : '<span>Ek donanım seçilmedi.</span>';
+
 
     summary.innerHTML = `
 
@@ -1635,12 +1901,14 @@ function saveListingDraft() {
             new Date().toISOString()
     };
 
+
     try {
 
         localStorage.setItem(
             DRAFT_KEY,
             JSON.stringify(draft)
         );
+
 
         alert(
             'Taslağınız kaydedildi.'
@@ -1653,6 +1921,7 @@ function saveListingDraft() {
             error
         );
 
+
         try {
 
             const smallDraft = {
@@ -1660,12 +1929,14 @@ function saveListingDraft() {
                 images: []
             };
 
+
             localStorage.setItem(
                 DRAFT_KEY,
                 JSON.stringify(
                     smallDraft
                 )
             );
+
 
             alert(
                 'Taslak kaydedildi ancak fotoğraflar ' +
@@ -1678,6 +1949,7 @@ function saveListingDraft() {
                 'Taslak kaydetme hatası:',
                 secondError
             );
+
 
             alert(
                 'Taslak kaydedilemedi. ' +
@@ -1701,22 +1973,29 @@ function loadListingDraft() {
                 DRAFT_KEY
             );
 
+
         if (!raw) {
             return;
         }
 
+
         const draft =
             JSON.parse(raw);
+
 
         if (!draft) {
             return;
         }
 
+
         const setValue =
             (id, value) => {
 
                 const element =
-                    document.getElementById(id);
+                    document.getElementById(
+                        id
+                    );
+
 
                 if (
                     element &&
@@ -1735,55 +2014,66 @@ function loadListingDraft() {
             draft.brand
         );
 
+
         updateModelSelect(
             draft.brand,
             draft.model
         );
+
 
         setValue(
             'addPrice',
             draft.price
         );
 
+
         setValue(
             'addYear',
             draft.year
         );
+
 
         setValue(
             'addBody',
             draft.body
         );
 
+
         setValue(
             'addColor',
             draft.color
         );
+
 
         setValue(
             'addKm',
             draft.km
         );
 
+
         setValue(
             'addFuel',
             draft.fuel
         );
+
 
         setValue(
             'addTrans',
             draft.trans
         );
 
+
         setValue(
             'addDamage',
             draft.damage
         );
 
+
         setValue(
             'addTramer',
             draft.tramer
         );
+
 
         setValue(
             'addDesc',
@@ -1825,6 +2115,7 @@ function loadListingDraft() {
                         image &&
                         image.data
                 );
+
 
             renderImagePreviews();
 
@@ -1870,64 +2161,105 @@ function clearListingDraft() {
 function createNewCarObject() {
 
     const brand =
-        getFieldValue('addBrand');
+        getFieldValue(
+            'addBrand'
+        );
+
 
     const model =
-        getFieldValue('addModel');
+        getFieldValue(
+            'addModel'
+        );
+
 
     const price =
-        getNumberValue('addPrice');
+        getNumberValue(
+            'addPrice'
+        );
+
 
     const year =
-        getNumberValue('addYear');
+        getNumberValue(
+            'addYear'
+        );
+
 
     const km =
-        getNumberValue('addKm');
+        getNumberValue(
+            'addKm'
+        );
+
 
     const body =
-        getFieldValue('addBody') ||
+        getFieldValue(
+            'addBody'
+        ) ||
         'Sedan';
 
+
     const fuel =
-        getFieldValue('addFuel') ||
+        getFieldValue(
+            'addFuel'
+        ) ||
         'Benzin';
 
+
     const trans =
-        getFieldValue('addTrans') ||
+        getFieldValue(
+            'addTrans'
+        ) ||
         'Otomatik';
 
+
     const color =
-        getFieldValue('addColor') ||
+        getFieldValue(
+            'addColor'
+        ) ||
         'Belirtilmemiş';
+
 
     const damage =
-        getFieldValue('addDamage') ||
+        getFieldValue(
+            'addDamage'
+        ) ||
         'Belirtilmemiş';
 
+
     const tramer =
-        getNumberValue('addTramer');
+        getNumberValue(
+            'addTramer'
+        );
+
 
     const description =
-        getFieldValue('addDesc');
+        getFieldValue(
+            'addDesc'
+        );
+
 
     const features =
         getCheckedFeatures();
 
+
     const fallbackImage =
         'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200';
+
 
     const imageList =
         listingState.uploadedImages.length
 
             ? listingState.uploadedImages
                 .map(
-                    image => image.data
+                    image =>
+                        image.data
                 )
 
             : [fallbackImage];
 
+
     const id =
         Date.now();
+
 
     return {
 
@@ -2036,10 +2368,12 @@ function createNewCarObject() {
 
 
 /* ==========================================================================
-   İLANI LOCAL STORAGE'A KAYDET
+   LOCAL STORAGE'A KAYDET
    ========================================================================== */
 
-function persistNewListing(newCar) {
+function persistNewListing(
+    newCar
+) {
 
     try {
 
@@ -2050,11 +2384,13 @@ function persistNewListing(newCar) {
                 ) || '[]'
             );
 
+
         if (
             !Array.isArray(savedCars)
         ) {
             savedCars = [];
         }
+
 
         savedCars =
             savedCars.filter(
@@ -2062,9 +2398,11 @@ function persistNewListing(newCar) {
                     car.id !== newCar.id
             );
 
+
         savedCars.unshift(
             newCar
         );
+
 
         localStorage.setItem(
             MY_LISTINGS_KEY,
@@ -2072,6 +2410,7 @@ function persistNewListing(newCar) {
                 savedCars
             )
         );
+
 
         return true;
 
@@ -2082,10 +2421,12 @@ function persistNewListing(newCar) {
             error
         );
 
+
         alert(
             'İlan kaydedilirken tarayıcı depolama ' +
             'hatası oluştu.'
         );
+
 
         return false;
     }
@@ -2105,12 +2446,15 @@ function loadSavedListingsIntoCatalog() {
                 MY_LISTINGS_KEY
             );
 
+
         if (!raw) {
             return;
         }
 
+
         const savedCars =
             JSON.parse(raw);
+
 
         if (
             !Array.isArray(
@@ -2120,6 +2464,7 @@ function loadSavedListingsIntoCatalog() {
             return;
         }
 
+
         if (
             !Array.isArray(
                 window.dummyCars
@@ -2128,6 +2473,7 @@ function loadSavedListingsIntoCatalog() {
             return;
         }
 
+
         const existingIds =
             new Set(
                 window.dummyCars.map(
@@ -2135,6 +2481,7 @@ function loadSavedListingsIntoCatalog() {
                         String(car.id)
                 )
             );
+
 
         const newListings =
             savedCars.filter(
@@ -2145,6 +2492,7 @@ function loadSavedListingsIntoCatalog() {
                         String(car.id)
                     )
             );
+
 
         if (
             newListings.length
@@ -2186,6 +2534,7 @@ function addListingToGlobalData(
                     String(newCar.id)
             );
 
+
         if (!exists) {
 
             window.dummyCars.unshift(
@@ -2207,6 +2556,7 @@ function addListingToGlobalData(
                     String(car.id) ===
                     String(newCar.id)
             );
+
 
         if (!exists) {
 
@@ -2244,32 +2594,33 @@ function addListingToGlobalData(
 
 function resetListingForm() {
 
-    /*
-       Mevcut HTML'deki gerçek form ID:
-       listingForm
-    */
-
     const form =
         document.getElementById(
             'listingForm'
         );
 
+
     if (form) {
         form.reset();
     }
 
+
     listingState.uploadedImages = [];
+
 
     const previewGrid =
         document.getElementById(
             'imgPreviewGrid'
         );
 
+
     if (previewGrid) {
         previewGrid.innerHTML = '';
     }
 
+
     updateImageCounter();
+
 
     document
         .querySelectorAll(
@@ -2277,21 +2628,27 @@ function resetListingForm() {
         )
         .forEach(
             input => {
+
                 input.checked = false;
             }
         );
+
 
     const model =
         document.getElementById(
             'addModel'
         );
 
+
     if (model) {
+
         model.value = '';
         model.disabled = true;
     }
 
+
     clearListingDraft();
+
 
     goToSellStep(1);
 }
@@ -2306,6 +2663,7 @@ function submitNewCar(event) {
     if (event) {
         event.preventDefault();
     }
+
 
     for (
         let step = 1;
@@ -2337,6 +2695,7 @@ function submitNewCar(event) {
             newCar
         );
 
+
     if (!saved) {
         return;
     }
@@ -2365,11 +2724,89 @@ function submitNewCar(event) {
 
         setTimeout(
             () => {
+
                 go('browse');
+
             },
             150
         );
     }
+}
+
+
+/* ==========================================================================
+   ADIM BUTONLARINI AKTİFLEŞTİR
+   ========================================================================== */
+
+function initializeListingStepButtons() {
+
+    document
+        .querySelectorAll(
+            '.listing-step[data-step]'
+        )
+        .forEach(step => {
+
+            /*
+               HTML'de onclick olmasa bile
+               adımlar çalışsın.
+            */
+
+            if (
+                step.dataset.listingBound ===
+                'true'
+            ) {
+                return;
+            }
+
+
+            step.dataset.listingBound =
+                'true';
+
+
+            step.addEventListener(
+                'click',
+                function () {
+
+                    const targetStep =
+                        Number(
+                            this.dataset.step
+                        );
+
+
+                    if (
+                        targetStep ===
+                        listingState.currentSellStep
+                    ) {
+                        return;
+                    }
+
+
+                    /*
+                       İleriye doğrudan geçerken
+                       mevcut adımı doğrula.
+                    */
+
+                    if (
+                        targetStep >
+                        listingState.currentSellStep
+                    ) {
+
+                        if (
+                            !validateSellStep(
+                                listingState.currentSellStep
+                            )
+                        ) {
+                            return;
+                        }
+                    }
+
+
+                    goToSellStep(
+                        targetStep
+                    );
+                }
+            );
+        });
 }
 
 
@@ -2382,38 +2819,55 @@ document.addEventListener(
     function () {
 
         /*
-           Önce seçim alanlarını oluştur.
+           Seçim alanları
         */
 
         initializeListingSelectors();
 
 
         /*
-           Sonra kayıtlı ilanları yükle.
+           Kayıtlı ilanlar
         */
 
         loadSavedListingsIntoCatalog();
 
 
         /*
-           İlk adım.
+           Adım butonları
+        */
+
+        initializeListingStepButtons();
+
+
+        /*
+           İlk adım
         */
 
         goToSellStep(1);
 
 
         /*
-           Fotoğraf sayacı.
+           Fotoğraf sayacı
         */
 
         updateImageCounter();
 
 
         /*
-           Taslak.
+           Taslak
         */
 
         loadListingDraft();
+
+
+        /*
+           Taslak yüklendikten sonra
+           fotoğraf alanını güncelle
+        */
+
+        renderImagePreviews();
+
+        updateImageCounter();
     }
 );
 
@@ -2429,7 +2883,8 @@ window.addEventListener(
         try {
 
             if (
-                typeof renderBrowse === 'function'
+                typeof renderBrowse ===
+                'function'
             ) {
 
                 renderBrowse();
@@ -2447,7 +2902,8 @@ window.addEventListener(
         try {
 
             if (
-                typeof renderCars === 'function'
+                typeof renderCars ===
+                'function'
             ) {
 
                 renderCars();
