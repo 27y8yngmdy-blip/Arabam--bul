@@ -14,12 +14,14 @@
 
   window.ArabamiBul = window.ArabamiBul || {};
 
-  window.ArabamiBul.listing = window.ArabamiBul.listing || {
-    uploadedImages: [],
-    currentSellStep: 1
-  };
+  window.ArabamiBul.listing =
+    window.ArabamiBul.listing || {
+      uploadedImages: [],
+      currentSellStep: 1
+    };
 
-  const listingState = window.ArabamiBul.listing;
+  const listingState =
+    window.ArabamiBul.listing;
 
   const MAX_IMAGES = 20;
 
@@ -29,26 +31,36 @@
      ============================================================ */
 
   function getEl(id) {
+
     return document.getElementById(id);
+
   }
 
 
   function getValue(id) {
+
     const el = getEl(id);
-    return el ? String(el.value || '').trim() : '';
+
+    return el
+      ? String(el.value || '').trim()
+      : '';
+
   }
 
 
   function setValue(id, value) {
+
     const el = getEl(id);
 
     if (!el) return;
 
     el.value = value ?? '';
+
   }
 
 
   function getNumberValue(id) {
+
     const value = getValue(id);
 
     if (!value) return 0;
@@ -58,6 +70,7 @@
         .replace(/\./g, '')
         .replace(',', '.')
     ) || 0;
+
   }
 
 
@@ -134,9 +147,9 @@
     }
 
 
-    /*
-      Bütün panelleri kapat
-    */
+    /* ----------------------------------------------------------
+       BÜTÜN PANELLERİ KAPAT
+       ---------------------------------------------------------- */
 
     document.querySelectorAll(
       '[data-listing-step]'
@@ -150,25 +163,26 @@
     });
 
 
-    /*
-      İstenen paneli aç
-    */
+    /* ----------------------------------------------------------
+       İSTENEN PANELİ AÇ
+       ---------------------------------------------------------- */
 
-    const targetPanel = getSellPanel(stepNumber);
+    const targetPanel =
+      getSellPanel(stepNumber);
 
     if (targetPanel) {
 
       targetPanel.classList.add('active');
       targetPanel.classList.add('listing-panel-active');
 
-      targetPanel.style.display = 'block';
+      panelDisplay(targetPanel);
 
     }
 
 
-    /*
-      Bütün step göstergelerini temizle
-    */
+    /* ----------------------------------------------------------
+       STEP GÖSTERGELERİNİ TEMİZLE
+       ---------------------------------------------------------- */
 
     document.querySelectorAll(
       '.listing-step'
@@ -180,11 +194,12 @@
     });
 
 
-    /*
-      Aktif step
-    */
+    /* ----------------------------------------------------------
+       AKTİF STEP
+       ---------------------------------------------------------- */
 
-    const activeNode = getSellStepNode(stepNumber);
+    const activeNode =
+      getSellStepNode(stepNumber);
 
     if (activeNode) {
 
@@ -193,19 +208,23 @@
     }
 
 
-    /*
-      Önceki adımlar tamamlandı
-    */
+    /* ----------------------------------------------------------
+       ÖNCEKİ ADIMLARI TAMAMLANDI YAP
+       ---------------------------------------------------------- */
 
     document.querySelectorAll(
       '.listing-step'
     ).forEach(function (node) {
 
-      const nodeStep = Number(
-        node.getAttribute('data-step')
-      );
+      const nodeStep =
+        Number(
+          node.getAttribute('data-step')
+        );
 
-      if (nodeStep < stepNumber) {
+      if (
+        Number.isFinite(nodeStep) &&
+        nodeStep < stepNumber
+      ) {
 
         node.classList.add('completed');
 
@@ -214,18 +233,20 @@
     });
 
 
-    /*
-      Global state
-    */
+    /* ----------------------------------------------------------
+       GLOBAL STATE
+       ---------------------------------------------------------- */
 
-    listingState.currentSellStep = stepNumber;
+    listingState.currentSellStep =
+      stepNumber;
 
 
-    /*
-      Progress bar varsa güncelle
-    */
+    /* ----------------------------------------------------------
+       PROGRESS BAR VARSA
+       ---------------------------------------------------------- */
 
-    const progressFill = getEl('sellStepFill');
+    const progressFill =
+      getEl('sellStepFill');
 
     if (progressFill) {
 
@@ -235,24 +256,32 @@
         stepNumber === 3 ? 75 :
         100;
 
-      progressFill.style.width = percentage + '%';
+      progressFill.style.width =
+        percentage + '%';
 
     }
 
 
-    /*
-      Alt butonlar
-    */
+    /* ----------------------------------------------------------
+       ALT BUTONLAR
+       ---------------------------------------------------------- */
 
-    const backButton = getEl('listingBackBtn');
-    const nextButton = getEl('listingNextBtn');
-    const publishButton = getEl('listingPublishBtn');
+    const backButton =
+      getEl('listingBackBtn');
+
+    const nextButton =
+      getEl('listingNextBtn');
+
+    const publishButton =
+      getEl('listingPublishBtn');
 
 
     if (backButton) {
 
       backButton.style.display =
-        stepNumber === 1 ? 'none' : '';
+        stepNumber === 1
+          ? 'none'
+          : '';
 
     }
 
@@ -260,7 +289,9 @@
     if (nextButton) {
 
       nextButton.style.display =
-        stepNumber === 4 ? 'none' : '';
+        stepNumber === 4
+          ? 'none'
+          : '';
 
     }
 
@@ -268,14 +299,16 @@
     if (publishButton) {
 
       publishButton.style.display =
-        stepNumber === 4 ? '' : 'none';
+        stepNumber === 4
+          ? ''
+          : 'none';
 
     }
 
 
-    /*
-      4. adıma gelince önizlemeyi oluştur
-    */
+    /* ----------------------------------------------------------
+       4. ADIM ÖNİZLEME
+       ---------------------------------------------------------- */
 
     if (stepNumber === 4) {
 
@@ -284,11 +317,20 @@
     }
 
 
-    /*
-      Fotoğraf sayacını güncelle
-    */
+    /* ----------------------------------------------------------
+       FOTOĞRAF SAYACI
+       ---------------------------------------------------------- */
 
     updateImageCounter();
+
+  }
+
+
+  function panelDisplay(panel) {
+
+    if (!panel) return;
+
+    panel.style.display = 'block';
 
   }
 
@@ -309,56 +351,76 @@
     if (stepNumber === 1) {
 
       const requiredFields = [
+
         {
           id: 'addBrand',
           name: 'Marka'
         },
+
         {
           id: 'addModel',
           name: 'Model'
         },
+
         {
           id: 'addYear',
           name: 'Model Yılı'
         },
+
         {
           id: 'addBody',
           name: 'Kasa Tipi'
         },
+
         {
           id: 'addFuel',
           name: 'Yakıt Tipi'
         },
+
         {
           id: 'addTrans',
           name: 'Vites Tipi'
         },
+
         {
           id: 'addKm',
           name: 'Kilometre'
         },
+
         {
           id: 'addPrice',
           name: 'Satış Fiyatı'
         }
+
       ];
 
 
-      for (let i = 0; i < requiredFields.length; i++) {
+      for (
+        let i = 0;
+        i < requiredFields.length;
+        i++
+      ) {
 
-        const field = requiredFields[i];
+        const field =
+          requiredFields[i];
 
-        const element = getEl(field.id);
+        const element =
+          getEl(field.id);
 
         if (!element) {
           continue;
         }
 
 
-        if (!String(element.value || '').trim()) {
+        if (
+          !String(
+            element.value || ''
+          ).trim()
+        ) {
 
           alert(
-            field.name + ' alanını doldurmalısın.'
+            field.name +
+            ' alanını doldurmalısın.'
           );
 
           element.focus();
@@ -381,17 +443,15 @@
 
     if (stepNumber === 2) {
 
-      /*
-        Fotoğraf zorunlu değil.
-        Ancak hiç fotoğraf yoksa kullanıcıya soruyoruz.
-      */
+      if (
+        listingState.uploadedImages.length === 0
+      ) {
 
-      if (listingState.uploadedImages.length === 0) {
-
-        const continueWithoutPhoto = confirm(
-          'Henüz fotoğraf eklemedin.\n\n' +
-          'Fotoğraf eklemeden devam etmek istiyor musun?'
-        );
+        const continueWithoutPhoto =
+          confirm(
+            'Henüz fotoğraf eklemedin.\n\n' +
+            'Fotoğraf eklemeden devam etmek istiyor musun?'
+          );
 
         if (!continueWithoutPhoto) {
 
@@ -413,12 +473,15 @@
 
     if (stepNumber === 3) {
 
-      const titleInput = getEl('addTitle');
+      const titleInput =
+        getEl('addTitle');
 
 
       if (titleInput) {
 
-        if (!titleInput.value.trim()) {
+        if (
+          !titleInput.value.trim()
+        ) {
 
           alert(
             'İlan başlığını yazmalısın.'
@@ -461,10 +524,14 @@
   function listingNextStep() {
 
     const currentStep =
-      Number(listingState.currentSellStep) || 1;
+      Number(
+        listingState.currentSellStep
+      ) || 1;
 
 
-    if (!validateSellStep(currentStep)) {
+    if (
+      !validateSellStep(currentStep)
+    ) {
 
       return;
 
@@ -473,7 +540,9 @@
 
     if (currentStep < 4) {
 
-      goToSellStep(currentStep + 1);
+      goToSellStep(
+        currentStep + 1
+      );
 
     }
 
@@ -487,19 +556,25 @@
   function listingPrevStep() {
 
     const currentStep =
-      Number(listingState.currentSellStep) || 1;
+      Number(
+        listingState.currentSellStep
+      ) || 1;
 
 
     if (currentStep > 1) {
 
-      goToSellStep(currentStep - 1);
+      goToSellStep(
+        currentStep - 1
+      );
 
     }
 
   }
 
 
-  /* Eski isimlerle uyumluluk */
+  /* ============================================================
+     ESKİ İSİMLERLE UYUMLULUK
+     ============================================================ */
 
   function nextSellStep() {
 
@@ -521,19 +596,27 @@
 
   function processImageFiles(files) {
 
-    if (!files || !files.length) {
+    if (
+      !files ||
+      !files.length
+    ) {
+
       return;
+
     }
 
 
     const remainingSlots =
-      MAX_IMAGES - listingState.uploadedImages.length;
+      MAX_IMAGES -
+      listingState.uploadedImages.length;
 
 
     if (remainingSlots <= 0) {
 
       alert(
-        'En fazla ' + MAX_IMAGES + ' fotoğraf ekleyebilirsin.'
+        'En fazla ' +
+        MAX_IMAGES +
+        ' fotoğraf ekleyebilirsin.'
       );
 
       return;
@@ -542,90 +625,106 @@
 
 
     const selectedFiles =
-      Array.from(files).slice(0, remainingSlots);
+      Array.from(files)
+        .slice(0, remainingSlots);
 
 
     let processedCount = 0;
 
 
-    selectedFiles.forEach(function (file) {
+    selectedFiles.forEach(
+      function (file) {
 
-      if (!file.type.startsWith('image/')) {
+        if (
+          !file.type.startsWith('image/')
+        ) {
 
-        processedCount++;
+          processedCount++;
 
-        return;
+          return;
+
+        }
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          function (event) {
+
+            listingState.uploadedImages.push({
+
+              id:
+                Date.now() +
+                '_' +
+                Math.random()
+                  .toString(36)
+                  .substring(2, 9),
+
+              name:
+                file.name,
+
+              type:
+                file.type,
+
+              size:
+                file.size,
+
+              data:
+                event.target.result
+
+            });
+
+
+            processedCount++;
+
+
+            if (
+              processedCount >=
+              selectedFiles.length
+            ) {
+
+              renderImagePreviews();
+
+              updateImageCounter();
+
+              saveListingDraft();
+
+            }
+
+          };
+
+
+        reader.onerror =
+          function () {
+
+            processedCount++;
+
+
+            if (
+              processedCount >=
+              selectedFiles.length
+            ) {
+
+              renderImagePreviews();
+
+              updateImageCounter();
+
+            }
+
+          };
+
+
+        reader.readAsDataURL(file);
 
       }
+    );
 
 
-      const reader = new FileReader();
-
-
-      reader.onload = function (event) {
-
-        listingState.uploadedImages.push({
-
-          id:
-            Date.now() +
-            '_' +
-            Math.random()
-              .toString(36)
-              .substring(2, 9),
-
-          name: file.name,
-
-          type: file.type,
-
-          size: file.size,
-
-          data: event.target.result
-
-        });
-
-
-        processedCount++;
-
-
-        if (
-          processedCount >= selectedFiles.length
-        ) {
-
-          renderImagePreviews();
-
-          updateImageCounter();
-
-          saveListingDraft();
-
-        }
-
-      };
-
-
-      reader.onerror = function () {
-
-        processedCount++;
-
-
-        if (
-          processedCount >= selectedFiles.length
-        ) {
-
-          renderImagePreviews();
-
-          updateImageCounter();
-
-        }
-
-      };
-
-
-      reader.readAsDataURL(file);
-
-    });
-
-
-    if (files.length > remainingSlots) {
+    if (
+      files.length > remainingSlots
+    ) {
 
       alert(
         'En fazla ' +
@@ -646,11 +745,17 @@
 
 
     const input =
-      event.target || event.srcElement;
+      event.target ||
+      event.srcElement;
 
 
-    if (!input || !input.files) {
+    if (
+      !input ||
+      !input.files
+    ) {
+
       return;
+
     }
 
 
@@ -660,18 +765,26 @@
 
 
     /*
-      Aynı fotoğrafı tekrar seçebilmek için input'u temizle
+      Aynı fotoğrafı tekrar seçebilmek
+      için input'u temizle
     */
 
-    setTimeout(function () {
+    setTimeout(
+      function () {
 
-      try {
-        input.value = '';
-      } catch (error) {
-        /* boş */
-      }
+        try {
 
-    }, 100);
+          input.value = '';
+
+        } catch (error) {
+
+          /* boş */
+
+        }
+
+      },
+      100
+    );
 
   }
 
@@ -682,7 +795,9 @@
 
   function renderImagePreviews() {
 
-    const grid = getEl('imgPreviewGrid');
+    const grid =
+      getEl('imgPreviewGrid');
+
 
     if (!grid) {
       return;
@@ -708,7 +823,7 @@
           <div class="image-preview-image">
 
             <img
-              src="${image.data}"
+              src="${escapeHtml(image.data)}"
               alt="Araç fotoğrafı ${index + 1}"
             >
 
@@ -749,9 +864,12 @@
             function (event) {
 
               event.preventDefault();
+
               event.stopPropagation();
 
-              removeImageById(image.id);
+              removeImageById(
+                image.id
+              );
 
             }
           );
@@ -803,7 +921,8 @@
     if (
       Number.isNaN(index) ||
       index < 0 ||
-      index >= listingState.uploadedImages.length
+      index >=
+        listingState.uploadedImages.length
     ) {
 
       return;
@@ -836,10 +955,6 @@
       listingState.uploadedImages.length;
 
 
-    /*
-      Yeni HTML
-    */
-
     const newCounter =
       getEl('listingPhotoCount');
 
@@ -847,14 +962,13 @@
     if (newCounter) {
 
       newCounter.textContent =
-        count + '/' + MAX_IMAGES + ' fotoğraf';
+        count +
+        '/' +
+        MAX_IMAGES +
+        ' fotoğraf';
 
     }
 
-
-    /*
-      Eski HTML ile uyumluluk
-    */
 
     const oldCounter =
       getEl('imageCounter');
@@ -863,14 +977,13 @@
     if (oldCounter) {
 
       oldCounter.textContent =
-        count + '/' + MAX_IMAGES + ' fotoğraf';
+        count +
+        '/' +
+        MAX_IMAGES +
+        ' fotoğraf';
 
     }
 
-
-    /*
-      Boş durum mesajı
-    */
 
     const emptyMessage =
       getEl('listingPhotoEmpty');
@@ -879,15 +992,12 @@
     if (emptyMessage) {
 
       emptyMessage.style.display =
-        count === 0 ? 'block' : 'none';
+        count === 0
+          ? 'block'
+          : 'none';
 
     }
 
-
-    /*
-      Upload kutusunu tamamen kapatmak yerine
-      maksimuma ulaştığında pasifleştir.
-    */
 
     const uploadBox =
       getEl('listingUploadBox');
@@ -947,7 +1057,9 @@
 
         event.preventDefault();
 
-        box.classList.add('dragover');
+        box.classList.add(
+          'dragover'
+        );
 
       }
     );
@@ -959,7 +1071,9 @@
 
         event.preventDefault();
 
-        box.classList.add('dragover');
+        box.classList.add(
+          'dragover'
+        );
 
       }
     );
@@ -971,7 +1085,9 @@
 
         event.preventDefault();
 
-        box.classList.remove('dragover');
+        box.classList.remove(
+          'dragover'
+        );
 
       }
     );
@@ -983,7 +1099,9 @@
 
         event.preventDefault();
 
-        box.classList.remove('dragover');
+        box.classList.remove(
+          'dragover'
+        );
 
 
         const files =
@@ -1012,58 +1130,43 @@
     const brand =
       getValue('addBrand');
 
-
     const model =
       getValue('addModel');
-
 
     const version =
       getValue('addVersion');
 
-
     const year =
       getValue('addYear');
-
-
-    const body =
-      getValue('addBody');
-
 
     const fuel =
       getValue('addFuel');
 
-
     const trans =
       getValue('addTrans');
-
 
     const km =
       getNumberValue('addKm');
 
-
     const price =
       getNumberValue('addPrice');
-
 
     const title =
       getValue('addTitle');
 
-
     const description =
       getValue('addDesc');
 
-
     const city =
       getValue('addCity');
-
 
     const district =
       getValue('addDistrict');
 
 
-    /*
-      Başlık
-    */
+    /* ----------------------------------------------------------
+       BAŞLIK
+       ---------------------------------------------------------- */
 
     const previewTitle =
       getEl('listingPreviewTitle');
@@ -1090,9 +1193,9 @@
     }
 
 
-    /*
-      Fiyat
-    */
+    /* ----------------------------------------------------------
+       FİYAT
+       ---------------------------------------------------------- */
 
     const previewPrice =
       getEl('listingPreviewPrice');
@@ -1108,9 +1211,9 @@
     }
 
 
-    /*
-      Yıl
-    */
+    /* ----------------------------------------------------------
+       YIL
+       ---------------------------------------------------------- */
 
     const previewYear =
       getEl('previewYear');
@@ -1124,9 +1227,9 @@
     }
 
 
-    /*
-      KM
-    */
+    /* ----------------------------------------------------------
+       KM
+       ---------------------------------------------------------- */
 
     const previewKm =
       getEl('previewKm');
@@ -1142,9 +1245,9 @@
     }
 
 
-    /*
-      Yakıt
-    */
+    /* ----------------------------------------------------------
+       YAKIT
+       ---------------------------------------------------------- */
 
     const previewFuel =
       getEl('previewFuel');
@@ -1158,9 +1261,9 @@
     }
 
 
-    /*
-      Vites
-    */
+    /* ----------------------------------------------------------
+       VİTES
+       ---------------------------------------------------------- */
 
     const previewTrans =
       getEl('previewTrans');
@@ -1174,12 +1277,14 @@
     }
 
 
-    /*
-      Konum
-    */
+    /* ----------------------------------------------------------
+       KONUM
+       ---------------------------------------------------------- */
 
     const previewLocation =
-      getEl('listingPreviewLocation');
+      getEl(
+        'listingPreviewLocation'
+      );
 
 
     if (previewLocation) {
@@ -1188,18 +1293,28 @@
 
         const locationParts = [];
 
+
         if (city) {
+
           locationParts.push(city);
+
         }
 
+
         if (district) {
-          locationParts.push(district);
+
+          locationParts.push(
+            district
+          );
+
         }
 
 
         previewLocation.textContent =
           '📍 ' +
-          locationParts.join(' / ');
+          locationParts.join(
+            ' / '
+          );
 
       } else {
 
@@ -1211,12 +1326,14 @@
     }
 
 
-    /*
-      Açıklama
-    */
+    /* ----------------------------------------------------------
+       AÇIKLAMA
+       ---------------------------------------------------------- */
 
     const previewDesc =
-      getEl('listingPreviewDesc');
+      getEl(
+        'listingPreviewDesc'
+      );
 
 
     if (previewDesc) {
@@ -1228,12 +1345,14 @@
     }
 
 
-    /*
-      Kapak fotoğrafı
-    */
+    /* ----------------------------------------------------------
+       KAPAK FOTOĞRAFI
+       ---------------------------------------------------------- */
 
     const previewImage =
-      getEl('listingPreviewImage');
+      getEl(
+        'listingPreviewImage'
+      );
 
 
     if (previewImage) {
@@ -1279,14 +1398,18 @@
 
 
         const span =
-          document.createElement('span');
+          document.createElement(
+            'span'
+          );
 
 
         span.textContent =
           'Fotoğraf eklenmedi';
 
 
-        previewImage.appendChild(span);
+        previewImage.appendChild(
+          span
+        );
 
       }
 
@@ -1305,24 +1428,56 @@
 
       const draft = {
 
-        brand: getValue('addBrand'),
-        model: getValue('addModel'),
-        version: getValue('addVersion'),
-        year: getValue('addYear'),
-        body: getValue('addBody'),
-        fuel: getValue('addFuel'),
-        trans: getValue('addTrans'),
-        km: getValue('addKm'),
-        price: getValue('addPrice'),
+        brand:
+          getValue('addBrand'),
 
-        title: getValue('addTitle'),
-        damage: getValue('addDamage'),
-        paint: getValue('addPaint'),
-        tramer: getValue('addTramer'),
-        expertise: getValue('addExpertise'),
-        city: getValue('addCity'),
-        district: getValue('addDistrict'),
-        desc: getValue('addDesc'),
+        model:
+          getValue('addModel'),
+
+        version:
+          getValue('addVersion'),
+
+        year:
+          getValue('addYear'),
+
+        body:
+          getValue('addBody'),
+
+        fuel:
+          getValue('addFuel'),
+
+        trans:
+          getValue('addTrans'),
+
+        km:
+          getValue('addKm'),
+
+        price:
+          getValue('addPrice'),
+
+        title:
+          getValue('addTitle'),
+
+        damage:
+          getValue('addDamage'),
+
+        paint:
+          getValue('addPaint'),
+
+        tramer:
+          getValue('addTramer'),
+
+        expertise:
+          getValue('addExpertise'),
+
+        city:
+          getValue('addCity'),
+
+        district:
+          getValue('addDistrict'),
+
+        desc:
+          getValue('addDesc'),
 
         trade:
           !!getEl('addTrade') &&
@@ -1347,11 +1502,6 @@
       );
 
     } catch (error) {
-
-      /*
-        Büyük fotoğraflar localStorage limitini
-        aşarsa uygulama bozulmasın.
-      */
 
       console.warn(
         'İlan taslağı kaydedilemedi:',
@@ -1391,24 +1541,98 @@
       }
 
 
-      setValue('addBrand', draft.brand);
-      setValue('addModel', draft.model);
-      setValue('addVersion', draft.version);
-      setValue('addYear', draft.year);
-      setValue('addBody', draft.body);
-      setValue('addFuel', draft.fuel);
-      setValue('addTrans', draft.trans);
-      setValue('addKm', draft.km);
-      setValue('addPrice', draft.price);
+      setValue(
+        'addBrand',
+        draft.brand
+      );
 
-      setValue('addTitle', draft.title);
-      setValue('addDamage', draft.damage);
-      setValue('addPaint', draft.paint);
-      setValue('addTramer', draft.tramer);
-      setValue('addExpertise', draft.expertise);
-      setValue('addCity', draft.city);
-      setValue('addDistrict', draft.district);
-      setValue('addDesc', draft.desc');
+      setValue(
+        'addModel',
+        draft.model
+      );
+
+      setValue(
+        'addVersion',
+        draft.version
+      );
+
+      setValue(
+        'addYear',
+        draft.year
+      );
+
+      setValue(
+        'addBody',
+        draft.body
+      );
+
+      setValue(
+        'addFuel',
+        draft.fuel
+      );
+
+      setValue(
+        'addTrans',
+        draft.trans
+      );
+
+      setValue(
+        'addKm',
+        draft.km
+      );
+
+      setValue(
+        'addPrice',
+        draft.price
+      );
+
+
+      setValue(
+        'addTitle',
+        draft.title
+      );
+
+      setValue(
+        'addDamage',
+        draft.damage
+      );
+
+      setValue(
+        'addPaint',
+        draft.paint
+      );
+
+      setValue(
+        'addTramer',
+        draft.tramer
+      );
+
+      setValue(
+        'addExpertise',
+        draft.expertise
+      );
+
+      setValue(
+        'addCity',
+        draft.city
+      );
+
+      setValue(
+        'addDistrict',
+        draft.district
+      );
+
+      /*
+        BURADAKİ HATA DÜZELTİLDİ:
+        draft.desc'
+        yerine
+        draft.desc
+      */
+
+      setValue(
+        'addDesc',
+        draft.desc
+      );
 
 
       const trade =
@@ -1436,7 +1660,9 @@
 
 
       if (
-        Array.isArray(draft.uploadedImages)
+        Array.isArray(
+          draft.uploadedImages
+        )
       ) {
 
         listingState.uploadedImages =
@@ -1448,9 +1674,19 @@
       }
 
 
+      /*
+        Taslak yüklenirken
+        eski adım numarasını zorla açmıyoruz.
+
+        Böylece kullanıcı sayfayı açtığında
+        her zaman Adım 1'den başlar.
+      */
+
       renderImagePreviews();
 
       updateImageCounter();
+
+      setupDescriptionCounter();
 
 
     } catch (error) {
@@ -1498,39 +1734,32 @@
     const brand =
       getValue('addBrand');
 
-
     const model =
       getValue('addModel');
-
 
     const version =
       getValue('addVersion');
 
-
     const year =
-      Number(getValue('addYear')) ||
+      Number(
+        getValue('addYear')
+      ) ||
       new Date().getFullYear();
-
 
     const body =
       getValue('addBody');
 
-
     const fuel =
       getValue('addFuel');
-
 
     const trans =
       getValue('addTrans');
 
-
     const km =
       getNumberValue('addKm');
 
-
     const price =
       getNumberValue('addPrice');
-
 
     const customTitle =
       getValue('addTitle');
@@ -1555,35 +1784,27 @@
     const city =
       getValue('addCity');
 
-
     const district =
       getValue('addDistrict');
-
 
     const description =
       getValue('addDesc');
 
-
     const damage =
       getValue('addDamage');
-
 
     const paint =
       getValue('addPaint');
 
-
     const tramer =
       getNumberValue('addTramer');
-
 
     const expertise =
       getValue('addExpertise');
 
-
     const trade =
       !!getEl('addTrade') &&
       getEl('addTrade').checked;
-
 
     const credit =
       !!getEl('addCredit') &&
@@ -1631,7 +1852,9 @@
       images:
         listingState.uploadedImages.map(
           function (image) {
+
             return image.data;
+
           }
         ),
 
@@ -1657,7 +1880,9 @@
 
       tco: 0,
 
-      expert: expertise || 'Belirtilmemiş',
+      expert:
+        expertise ||
+        'Belirtilmemiş',
 
       source: 'user',
 
@@ -1678,17 +1903,15 @@
   function addListingToGlobalData(car) {
 
     if (
-      !Array.isArray(window.dummyCars)
+      !Array.isArray(
+        window.dummyCars
+      )
     ) {
 
       window.dummyCars = [];
 
     }
 
-
-    /*
-      Aynı ID varsa tekrar ekleme
-    */
 
     const exists =
       window.dummyCars.some(
@@ -1702,7 +1925,9 @@
 
     if (!exists) {
 
-      window.dummyCars.unshift(car);
+      window.dummyCars.unshift(
+        car
+      );
 
     }
 
@@ -1768,15 +1993,21 @@
         );
 
 
-      if (!Array.isArray(stored)) {
+      if (
+        !Array.isArray(stored)
+      ) {
+
         return;
+
       }
 
 
       stored.forEach(
         function (car) {
 
-          addListingToGlobalData(car);
+          addListingToGlobalData(
+            car
+          );
 
         }
       );
@@ -1811,9 +2042,11 @@
     }
 
 
-    listingState.uploadedImages = [];
+    listingState.uploadedImages =
+      [];
 
-    listingState.currentSellStep = 1;
+    listingState.currentSellStep =
+      1;
 
 
     renderImagePreviews();
@@ -1825,12 +2058,14 @@
     clearListingDraft();
 
 
-    /*
-      Preview'ı da temizle
-    */
+    /* ----------------------------------------------------------
+       ÖNİZLEMEYİ TEMİZLE
+       ---------------------------------------------------------- */
 
     const previewTitle =
-      getEl('listingPreviewTitle');
+      getEl(
+        'listingPreviewTitle'
+      );
 
 
     if (previewTitle) {
@@ -1842,7 +2077,9 @@
 
 
     const previewPrice =
-      getEl('listingPreviewPrice');
+      getEl(
+        'listingPreviewPrice'
+      );
 
 
     if (previewPrice) {
@@ -1854,7 +2091,9 @@
 
 
     const previewDesc =
-      getEl('listingPreviewDesc');
+      getEl(
+        'listingPreviewDesc'
+      );
 
 
     if (previewDesc) {
@@ -1866,7 +2105,9 @@
 
 
     const previewLocation =
-      getEl('listingPreviewLocation');
+      getEl(
+        'listingPreviewLocation'
+      );
 
 
     if (previewLocation) {
@@ -1878,7 +2119,9 @@
 
 
     const previewImage =
-      getEl('listingPreviewImage');
+      getEl(
+        'listingPreviewImage'
+      );
 
 
     if (previewImage) {
@@ -1888,6 +2131,10 @@
 
       previewImage.innerHTML =
         '<span>Fotoğraf eklenmedi</span>';
+
+      previewImage.classList.remove(
+        'has-image'
+      );
 
     }
 
@@ -1917,7 +2164,9 @@
       step++
     ) {
 
-      if (!validateSellStep(step)) {
+      if (
+        !validateSellStep(step)
+      ) {
 
         goToSellStep(step);
 
@@ -1928,9 +2177,9 @@
     }
 
 
-    /*
-      Yeni araç oluştur
-    */
+    /* ----------------------------------------------------------
+       YENİ ARAÇ OLUŞTUR
+       ---------------------------------------------------------- */
 
     const car =
       createNewCarObject();
@@ -1947,57 +2196,63 @@
     }
 
 
-    /*
-      Global listeye ekle
-    */
+    /* ----------------------------------------------------------
+       GLOBAL LİSTEYE EKLE
+       ---------------------------------------------------------- */
 
-    addListingToGlobalData(car);
-
-
-    /*
-      Kalıcı olarak kaydet
-    */
-
-    persistNewListing(car);
+    addListingToGlobalData(
+      car
+    );
 
 
-    /*
-      Taslağı temizle
-    */
+    /* ----------------------------------------------------------
+       KALICI KAYDET
+       ---------------------------------------------------------- */
+
+    persistNewListing(
+      car
+    );
+
+
+    /* ----------------------------------------------------------
+       TASLAĞI TEMİZLE
+       ---------------------------------------------------------- */
 
     clearListingDraft();
 
 
-    /*
-      Kullanıcıya bilgi
-    */
+    /* ----------------------------------------------------------
+       BİLGİ
+       ---------------------------------------------------------- */
 
     alert(
       '🎉 İlanın başarıyla oluşturuldu!'
     );
 
 
-    /*
-      Formu temizle
-    */
+    /* ----------------------------------------------------------
+       FORMU TEMİZLE
+       ---------------------------------------------------------- */
 
     resetListingForm();
 
 
-    /*
-      Araçlar sayfasına geç
-    */
+    /* ----------------------------------------------------------
+       ARAÇLAR SAYFASINA GEÇ
+       ---------------------------------------------------------- */
 
-    if (typeof window.go === 'function') {
+    if (
+      typeof window.go === 'function'
+    ) {
 
       window.go('browse');
 
     }
 
 
-    /*
-      Browse yeniden çiz
-    */
+    /* ----------------------------------------------------------
+       BROWSE YENİDEN ÇİZ
+       ---------------------------------------------------------- */
 
     if (
       typeof window.renderBrowse === 'function'
@@ -2037,7 +2292,8 @@
     }
 
 
-    form.dataset.autoSaveReady = 'true';
+    form.dataset.autoSaveReady =
+      'true';
 
 
     form.addEventListener(
@@ -2063,15 +2319,13 @@
 
 
   /* ============================================================
-     MARKA / MODEL İÇİN UYUMLULUK
+     MARKA / MODEL UYUMLULUK
      ============================================================ */
 
   function initializeListingSelectors() {
 
     /*
-      Mevcut HTML'de marka ve model INPUT.
-      Bu nedenle burada onları select'e çevirmiyoruz.
-      Kullanıcının serbest marka/model yazmasına izin veriyoruz.
+      Marka ve model input olarak kalıyor.
     */
 
     const brand =
@@ -2141,10 +2395,20 @@
     }
 
 
-    textarea.addEventListener(
-      'input',
-      update
-    );
+    if (
+      textarea.dataset.counterReady !== 'true'
+    ) {
+
+      textarea.dataset.counterReady =
+        'true';
+
+
+      textarea.addEventListener(
+        'input',
+        update
+      );
+
+    }
 
 
     update();
@@ -2171,7 +2435,8 @@
       }
 
 
-      node.dataset.clickReady = 'true';
+      node.dataset.clickReady =
+        'true';
 
 
       node.addEventListener(
@@ -2191,27 +2456,36 @@
           }
 
 
-          /*
-            Kullanıcı geriye gidebilir.
-            İleriye geçerken mevcut adımı
-            kontrol ediyoruz.
-          */
-
           const current =
             Number(
               listingState.currentSellStep
             ) || 1;
 
 
-          if (step > current) {
+          /*
+            Geriye istenilen adıma
+            dönülebilir.
+          */
 
-            if (
-              !validateSellStep(current)
-            ) {
+          if (step <= current) {
 
-              return;
+            goToSellStep(step);
 
-            }
+            return;
+
+          }
+
+
+          /*
+            İleri giderken sadece
+            mevcut adımı kontrol et.
+          */
+
+          if (
+            !validateSellStep(current)
+          ) {
+
+            return;
 
           }
 
@@ -2232,80 +2506,80 @@
 
   function initializeListing() {
 
-    /*
-      Önce kayıtlı ilanlar
-    */
+    /* ----------------------------------------------------------
+       KAYITLI İLANLAR
+       ---------------------------------------------------------- */
 
     loadSavedListingsIntoCatalog();
 
 
-    /*
-      Form
-    */
+    /* ----------------------------------------------------------
+       FORM
+       ---------------------------------------------------------- */
 
     initializeListingSelectors();
 
 
-    /*
-      Drag & Drop
-    */
+    /* ----------------------------------------------------------
+       DRAG & DROP
+       ---------------------------------------------------------- */
 
     setupImageDropzone();
 
 
-    /*
-      Otomatik kayıt
-    */
+    /* ----------------------------------------------------------
+       OTOMATİK KAYIT
+       ---------------------------------------------------------- */
 
     setupAutoSave();
 
 
-    /*
-      Açıklama sayacı
-    */
+    /* ----------------------------------------------------------
+       AÇIKLAMA SAYACI
+       ---------------------------------------------------------- */
 
     setupDescriptionCounter();
 
 
-    /*
-      Step tıklamaları
-    */
+    /* ----------------------------------------------------------
+       STEP TIKLAMALARI
+       ---------------------------------------------------------- */
 
     setupStepNavigation();
 
 
-    /*
-      Fotoğraflar
-    */
+    /* ----------------------------------------------------------
+       FOTOĞRAFLAR
+       ---------------------------------------------------------- */
 
     renderImagePreviews();
 
     updateImageCounter();
 
 
-    /*
-      İlk adım
-    */
+    /* ----------------------------------------------------------
+       İLK ADIM
+       ---------------------------------------------------------- */
 
-    goToSellStep(
-      Number(listingState.currentSellStep) || 1
-    );
+    goToSellStep(1);
 
 
-    /*
-      Draft yükle
-    */
+    /* ----------------------------------------------------------
+       DRAFT YÜKLE
+       ---------------------------------------------------------- */
 
     loadListingDraft();
 
 
-    /*
-      Draft yüklendikten sonra tekrar güncelle
-    */
+    /* ----------------------------------------------------------
+       DRAFT SONRASI GÜNCELLE
+       ---------------------------------------------------------- */
 
     renderImagePreviews();
 
     updateImageCounter();
+
+    setupDescriptionCounter();
 
   }
 
