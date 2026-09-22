@@ -3,8 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>ARABAMI BUL — Akıllı Otomobil Platformu</title>
+
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/listing.css">
 
 <style>
 /* =========================================================
@@ -353,12 +356,8 @@
     </div>
 
     <div class="search-container">
-
       <div class="search-bar">
-
-        <span style="margin-right:6px;font-size:14px;opacity:.6;">
-          🔍
-        </span>
+        <span style="margin-right:6px;font-size:14px;opacity:.6;">🔍</span>
 
         <input
           type="text"
@@ -369,11 +368,9 @@
         >
 
         <span class="kbd">Ctrl K</span>
-
       </div>
 
       <div class="search-dropdown" id="searchDropdown"></div>
-
     </div>
 
     <div class="navlinks">
@@ -441,7 +438,7 @@
 
   <button onclick="toggleChat()">
     <svg viewBox="0 0 24 24">
-      <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+      <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
     </svg>
     AI Destek
   </button>
@@ -664,14 +661,11 @@
   </section>
 
 
-  <!-- =====================================================
-       ARAÇ İNCELE V2
-       ===================================================== -->
+  <!-- ARAÇ İNCELE -->
   <section id="browse" class="page">
 
     <div class="browse-v2">
 
-      <!-- BAŞLIK -->
       <div class="browse-hero">
 
         <div>
@@ -706,7 +700,6 @@
       </div>
 
 
-      <!-- HIZLI KATEGORİLER -->
       <div class="browse-quick">
 
         <button
@@ -804,27 +797,18 @@
       </div>
 
 
-      <!-- MOBİL FİLTRE BUTONU -->
       <button
         type="button"
         class="btn-secondary browse-filter-toggle"
         onclick="toggleFilters()"
       >
-
-        <span>
-          🎛️ Filtreleri Göster / Gizle
-        </span>
-
-        <b id="filterState">
-          +
-        </b>
-
+        <span>🎛️ Filtreleri Göster / Gizle</span>
+        <b id="filterState">+</b>
       </button>
 
 
       <div class="browse-layout">
 
-        <!-- SOL FİLTRE -->
         <aside
           class="browse-filter-panel"
           id="filterPanel"
@@ -832,9 +816,7 @@
 
           <div class="browse-filter-head">
 
-            <strong>
-              Filtreler
-            </strong>
+            <strong>Filtreler</strong>
 
             <button
               type="button"
@@ -847,7 +829,6 @@
           </div>
 
 
-          <!-- ARAMA -->
           <div class="browse-filter-section">
 
             <div class="browse-filter-section-title">
@@ -864,7 +845,6 @@
           </div>
 
 
-          <!-- MARKA -->
           <div class="browse-filter-section">
 
             <div class="browse-filter-section-title">
@@ -876,9 +856,7 @@
               onchange="renderBrowse()"
             >
 
-              <option value="">
-                Tüm Markalar
-              </option>
+              <option value="">Tüm Markalar</option>
 
               <option>BMW</option>
               <option>Mercedes-Benz</option>
@@ -907,7 +885,6 @@
           </div>
 
 
-          <!-- KASA -->
           <div class="browse-filter-section">
 
             <div class="browse-filter-section-title">
@@ -919,9 +896,7 @@
               onchange="renderBrowse()"
             >
 
-              <option value="">
-                Tüm Kasa Tipleri
-              </option>
+              <option value="">Tüm Kasa Tipleri</option>
 
               <option>Sedan</option>
               <option>SUV</option>
@@ -933,7 +908,6 @@
           </div>
 
 
-          <!-- FİYAT -->
           <div class="browse-filter-section">
 
             <div class="browse-filter-section-title">
@@ -961,7 +935,6 @@
           </div>
 
 
-          <!-- MODEL YILI -->
           <div class="browse-filter-section">
 
             <div class="browse-filter-section-title">
@@ -989,7 +962,6 @@
           </div>
 
 
-          <!-- KM -->
           <div class="browse-filter-section">
 
             <div class="browse-filter-section-title">
@@ -1006,7 +978,6 @@
           </div>
 
 
-          <!-- YAKIT -->
           <div class="browse-filter-section">
 
             <div class="browse-filter-section-title">
@@ -1018,9 +989,7 @@
               onchange="renderBrowse()"
             >
 
-              <option value="">
-                Tüm Yakıtlar
-              </option>
+              <option value="">Tüm Yakıtlar</option>
 
               <option>Benzin</option>
               <option>Dizel</option>
@@ -1032,7 +1001,6 @@
           </div>
 
 
-          <!-- VİTES -->
           <div class="browse-filter-section">
 
             <div class="browse-filter-section-title">
@@ -1044,9 +1012,7 @@
               onchange="renderBrowse()"
             >
 
-              <option value="">
-                Tüm Vitesler
-              </option>
+              <option value="">Tüm Vitesler</option>
 
               <option>Otomatik</option>
               <option>Manuel</option>
@@ -1058,7 +1024,6 @@
         </aside>
 
 
-        <!-- SAĞ SONUÇ ALANI -->
         <div class="browse-grid-wrap">
 
           <div class="browse-toolbar">
@@ -1111,7 +1076,6 @@
           </div>
 
 
-          <!-- MEVCUT ARAÇ KARTLARI BURADA -->
           <div
             class="vehicle-grid"
             id="browseGrid"
@@ -1141,7 +1105,7 @@
   </section>
 
 
-  <!-- İLAN VER V2 -->
+  <!-- İLAN VER -->
   <section id="sell" class="page">
 
     <div class="listing-page">
@@ -1317,38 +1281,15 @@
                 Kasa Tipi <em>*</em>
               </label>
 
-              <select
-                id="addBody"
-                required
-              >
+              <select id="addBody" required>
 
-                <option value="">
-                  Seçiniz
-                </option>
-
-                <option value="Sedan">
-                  Sedan
-                </option>
-
-                <option value="SUV">
-                  SUV
-                </option>
-
-                <option value="Hatchback">
-                  Hatchback
-                </option>
-
-                <option value="Coupe">
-                  Coupe
-                </option>
-
-                <option value="Cabrio">
-                  Cabrio
-                </option>
-
-                <option value="Station Wagon">
-                  Station Wagon
-                </option>
+                <option value="">Seçiniz</option>
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Hatchback">Hatchback</option>
+                <option value="Coupe">Coupe</option>
+                <option value="Cabrio">Cabrio</option>
+                <option value="Station Wagon">Station Wagon</option>
 
               </select>
 
@@ -1361,34 +1302,14 @@
                 Yakıt Tipi <em>*</em>
               </label>
 
-              <select
-                id="addFuel"
-                required
-              >
+              <select id="addFuel" required>
 
-                <option value="">
-                  Seçiniz
-                </option>
-
-                <option value="Benzin">
-                  Benzin
-                </option>
-
-                <option value="Dizel">
-                  Dizel
-                </option>
-
-                <option value="Hibrit">
-                  Hibrit
-                </option>
-
-                <option value="Elektrik">
-                  Elektrik
-                </option>
-
-                <option value="LPG">
-                  LPG
-                </option>
+                <option value="">Seçiniz</option>
+                <option value="Benzin">Benzin</option>
+                <option value="Dizel">Dizel</option>
+                <option value="Hibrit">Hibrit</option>
+                <option value="Elektrik">Elektrik</option>
+                <option value="LPG">LPG</option>
 
               </select>
 
@@ -1401,22 +1322,11 @@
                 Vites Tipi <em>*</em>
               </label>
 
-              <select
-                id="addTrans"
-                required
-              >
+              <select id="addTrans" required>
 
-                <option value="">
-                  Seçiniz
-                </option>
-
-                <option value="Otomatik">
-                  Otomatik
-                </option>
-
-                <option value="Manuel">
-                  Manuel
-                </option>
+                <option value="">Seçiniz</option>
+                <option value="Otomatik">Otomatik</option>
+                <option value="Manuel">Manuel</option>
 
               </select>
 
@@ -1456,9 +1366,7 @@
                   required
                 >
 
-                <span>
-                  TL
-                </span>
+                <span>TL</span>
 
               </div>
 
@@ -1469,9 +1377,7 @@
 
           <div class="listing-tip">
 
-            <span>
-              💡
-            </span>
+            <span>💡</span>
 
             <div>
               <strong>İpucu:</strong>
@@ -1628,21 +1534,10 @@
 
               <select id="addDamage">
 
-                <option value="">
-                  Belirtilmedi
-                </option>
-
-                <option value="Hasarsız">
-                  Hasarsız
-                </option>
-
-                <option value="Hafif Hasarlı">
-                  Hafif Hasarlı
-                </option>
-
-                <option value="Hasar Kayıtlı">
-                  Hasar Kayıtlı
-                </option>
+                <option value="">Belirtilmedi</option>
+                <option value="Hasarsız">Hasarsız</option>
+                <option value="Hafif Hasarlı">Hafif Hasarlı</option>
+                <option value="Hasar Kayıtlı">Hasar Kayıtlı</option>
 
               </select>
 
@@ -1657,21 +1552,10 @@
 
               <select id="addPaint">
 
-                <option value="">
-                  Belirtilmedi
-                </option>
-
-                <option value="Boyasız">
-                  Boyasız
-                </option>
-
-                <option value="1-2 Parça Boyalı">
-                  1-2 Parça Boyalı
-                </option>
-
-                <option value="3+ Parça Boyalı">
-                  3+ Parça Boyalı
-                </option>
+                <option value="">Belirtilmedi</option>
+                <option value="Boyasız">Boyasız</option>
+                <option value="1-2 Parça Boyalı">1-2 Parça Boyalı</option>
+                <option value="3+ Parça Boyalı">3+ Parça Boyalı</option>
 
               </select>
 
@@ -1702,17 +1586,9 @@
 
               <select id="addExpertise">
 
-                <option value="">
-                  Belirtilmedi
-                </option>
-
-                <option value="Ekspertiz mevcut">
-                  Ekspertiz mevcut
-                </option>
-
-                <option value="Ekspertiz yapılmadı">
-                  Ekspertiz yapılmadı
-                </option>
+                <option value="">Belirtilmedi</option>
+                <option value="Ekspertiz mevcut">Ekspertiz mevcut</option>
+                <option value="Ekspertiz yapılmadı">Ekspertiz yapılmadı</option>
 
               </select>
 
@@ -1906,9 +1782,7 @@
 
           <div class="listing-publish-note">
 
-            <span>
-              ✓
-            </span>
+            <span>✓</span>
 
             İlanını yayınladığında araç listesinde görünür hale gelecek.
 
