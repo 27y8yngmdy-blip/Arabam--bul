@@ -8,6 +8,7 @@
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/listing.css">
+<link rel="stylesheet" href="css/account.css">
 
 <style>
 
@@ -552,7 +553,7 @@
     onclick="go('browse')"
   >
     <svg viewBox="0 0 24 24">
-      <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5S16.67 13 17.5 13s1.5.67 1.5 1.5S18.33 16 18.33 16zM5 11l1.5-4.5h11L19 11H5z"/>
+      <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5S16.67 13 17.5 13s1.5.67 1.5 1.5S18.33 16 18.33 16zM5 11l1.5-4.5h11L19 11H5z"/>
     </svg>
     Araçlar
   </button>
@@ -2420,55 +2421,397 @@
 
 
 <!-- =====================================================
-     HESAP
+     HESAP / GİRİŞ
      ===================================================== -->
 
-<section
-  id="account"
-  class="page"
->
+<section id="account" class="page">
 
-  <div class="form-card">
+  <div class="account-page">
 
-    <h2 style="font-weight:900;margin-top:0;">
-      Kullanıcı Girişi
-    </h2>
+    <div class="account-container">
 
-    <div class="form-group">
+      <!-- SOL TARAF -->
 
-      <label>
-        E-Posta Adresi
-      </label>
+      <div class="account-info">
 
-      <input
-        type="email"
-        placeholder="ornek@email.com"
-      >
+        <div class="account-info-content">
+
+          <div class="account-mini-logo">
+
+            <div class="account-mini-logo-icon">
+              🚗
+            </div>
+
+            <div>
+              ARABAMI <span>BUL</span>
+            </div>
+
+          </div>
+
+
+          <h1>
+            Aracını bul.<br>
+            <strong>Hayatına devam et.</strong>
+          </h1>
+
+
+          <p class="account-info-text">
+            Arabamı Bul hesabınla ilanlarını, favorilerini ve
+            araç aramalarını tek bir yerden yönet.
+          </p>
+
+
+          <div class="account-benefits">
+
+            <div class="account-benefit">
+
+              <div class="account-benefit-icon">
+                ✓
+              </div>
+
+              <span>
+                Favori araçlarını kaydet
+              </span>
+
+            </div>
+
+
+            <div class="account-benefit">
+
+              <div class="account-benefit-icon">
+                ✓
+              </div>
+
+              <span>
+                İlanlarını kolayca yönet
+              </span>
+
+            </div>
+
+
+            <div class="account-benefit">
+
+              <div class="account-benefit-icon">
+                ✓
+              </div>
+
+              <span>
+                Sana uygun araçları keşfet
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="account-info-bottom">
+          Arabamı Bul — Akıllı Otomobil Platformu
+        </div>
+
+      </div>
+
+
+      <!-- SAĞ TARAF -->
+
+      <div class="account-form-area">
+
+        <div class="account-form-wrapper">
+
+          <div class="account-form-header">
+
+            <h2 id="accountFormTitle">
+              Tekrar hoş geldin
+            </h2>
+
+            <p id="accountFormText">
+              Hesabına giriş yap ve Arabamı Bul deneyimine devam et.
+            </p>
+
+          </div>
+
+
+          <div
+            id="accountMessage"
+            class="account-message"
+          ></div>
+
+
+          <!-- =========================
+               GİRİŞ FORMU
+               ========================= -->
+
+          <form
+            id="accountLoginForm"
+            onsubmit="handleAccountLogin(event)"
+          >
+
+            <div class="account-field">
+
+              <label for="loginEmail">
+                E-Posta Adresi
+              </label>
+
+              <input
+                id="loginEmail"
+                class="account-input"
+                type="email"
+                placeholder="ornek@email.com"
+                autocomplete="email"
+              >
+
+            </div>
+
+
+            <div class="account-field">
+
+              <label for="loginPassword">
+                Parola
+              </label>
+
+              <div class="account-input-wrap">
+
+                <input
+                  id="loginPassword"
+                  class="account-input"
+                  type="password"
+                  placeholder="Parolanızı girin"
+                  autocomplete="current-password"
+                  style="padding-right:75px;"
+                >
+
+                <button
+                  type="button"
+                  class="account-password-toggle"
+                  onclick="toggleAccountPassword('loginPassword', this)"
+                >
+                  Göster
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <div class="account-options">
+
+              <label class="account-check">
+
+                <input
+                  type="checkbox"
+                  id="rememberAccount"
+                >
+
+                <span>
+                  Beni hatırla
+                </span>
+
+              </label>
+
+
+              <button
+                type="button"
+                class="account-link"
+                onclick="accountForgotPassword()"
+              >
+                Şifremi unuttum
+              </button>
+
+            </div>
+
+
+            <button
+              type="submit"
+              class="account-submit"
+            >
+              Giriş Yap
+            </button>
+
+          </form>
+
+
+          <div class="account-divider">
+            veya
+          </div>
+
+
+          <button
+            type="button"
+            class="account-social"
+            onclick="accountGoogleLogin()"
+          >
+
+            <span class="account-google-icon">
+              G
+            </span>
+
+            Google ile devam et
+
+          </button>
+
+
+          <div class="account-register">
+
+            Hesabın yok mu?
+
+            <button
+              type="button"
+              onclick="showRegisterForm()"
+            >
+              Hesap oluştur
+            </button>
+
+          </div>
+
+
+          <!-- =========================
+               KAYIT FORMU
+               ========================= -->
+
+          <form
+            id="accountRegisterForm"
+            class="account-form-hidden"
+            onsubmit="handleAccountRegister(event)"
+          >
+
+            <div class="account-field">
+
+              <label for="registerName">
+                Ad Soyad
+              </label>
+
+              <input
+                id="registerName"
+                class="account-input"
+                type="text"
+                placeholder="Adınız ve soyadınız"
+                autocomplete="name"
+              >
+
+            </div>
+
+
+            <div class="account-field">
+
+              <label for="registerEmail">
+                E-Posta Adresi
+              </label>
+
+              <input
+                id="registerEmail"
+                class="account-input"
+                type="email"
+                placeholder="ornek@email.com"
+                autocomplete="email"
+              >
+
+            </div>
+
+
+            <div class="account-field">
+
+              <label for="registerPassword">
+                Parola
+              </label>
+
+              <div class="account-input-wrap">
+
+                <input
+                  id="registerPassword"
+                  class="account-input"
+                  type="password"
+                  placeholder="En az 6 karakter"
+                  autocomplete="new-password"
+                  style="padding-right:75px;"
+                >
+
+                <button
+                  type="button"
+                  class="account-password-toggle"
+                  onclick="toggleAccountPassword('registerPassword', this)"
+                >
+                  Göster
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <div class="account-field">
+
+              <label for="registerPasswordAgain">
+                Parola Tekrar
+              </label>
+
+              <div class="account-input-wrap">
+
+                <input
+                  id="registerPasswordAgain"
+                  class="account-input"
+                  type="password"
+                  placeholder="Parolanızı tekrar girin"
+                  autocomplete="new-password"
+                  style="padding-right:75px;"
+                >
+
+                <button
+                  type="button"
+                  class="account-password-toggle"
+                  onclick="toggleAccountPassword('registerPasswordAgain', this)"
+                >
+                  Göster
+                </button>
+
+              </div>
+
+            </div>
+
+
+            <label class="account-terms">
+
+              <input
+                id="registerTerms"
+                type="checkbox"
+              >
+
+              <span>
+                Kullanım koşullarını ve gizlilik politikasını
+                kabul ediyorum.
+              </span>
+
+            </label>
+
+
+            <button
+              type="submit"
+              class="account-submit"
+            >
+              Hesap Oluştur
+            </button>
+
+
+            <div class="account-register">
+
+              Zaten hesabın var mı?
+
+              <button
+                type="button"
+                onclick="showLoginForm()"
+              >
+                Giriş yap
+              </button>
+
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
 
     </div>
-
-
-    <div class="form-group">
-
-      <label>
-        Parola
-      </label>
-
-      <input
-        type="password"
-        placeholder="••••••••"
-      >
-
-    </div>
-
-
-    <button
-      class="btn-primary"
-      style="width:100%;"
-      onclick="alert('Giriş yapıldı!')"
-    >
-      Giriş Yap
-    </button>
 
   </div>
 
@@ -2715,6 +3058,9 @@
 <script src="js/listing.js"></script>
 
 <script src="js/chat.js"></script>
+
+<!-- HESAP / GİRİŞ SİSTEMİ -->
+<script src="js/account.js"></script>
 
 
 </body>
