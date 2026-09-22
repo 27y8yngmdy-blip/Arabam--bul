@@ -1,750 +1,1178 @@
-/* ==========================================================================
-ARABAMI BUL — LISTING PAGE
-İlan Ver / Araç Ekle özel tasarım
-Ana style.css'e dokunmaz.
-========================================================================== */
+/* =========================================================
+   ARABAMI BUL — İLAN VER / ARAÇ EKLE
+   Listing Page Polish V2
+   Ana style.css'e dokunmadan çalışır.
+   ========================================================= */
 
-/* ==========================================================================
-GENEL
-========================================================================== */
+
+/* =========================================================
+   1. SAYFA GENELİ
+   ========================================================= */
 
 .sell-page{
-width:100%;
-max-width:1180px;
-margin:0 auto;
-padding:34px 20px 70px;
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+  padding:34px 20px 70px;
 }
-
-.sell-page *,
-.sell-page *::before,
-.sell-page *::after{
-box-sizing:border-box;
-}
-
-/* ==========================================================================
-ÜST BAŞLIK
-========================================================================== */
 
 .sell-header{
-display:flex;
-align-items:flex-end;
-justify-content:space-between;
-gap:25px;
-margin-bottom:28px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  margin-bottom:28px;
+}
+
+.sell-header-main{
+  min-width:0;
 }
 
 .sell-kicker{
-display:inline-flex;
-align-items:center;
-gap:7px;
-margin-bottom:9px;
-padding:6px 11px;
-border-radius:999px;
-background:#fff1f1;
-color:#e30613;
-font-size:11px;
-font-weight:850;
-letter-spacing:.04em;
-text-transform:uppercase;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-bottom:8px;
+  padding:6px 11px;
+  border-radius:999px;
+  background:#fff1f1;
+  color:#e30613;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.02em;
+}
+
+.sell-kicker::before{
+  content:"";
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#e30613;
 }
 
 .sell-header h1{
-margin:0;
-font-size:32px;
-line-height:1.15;
-letter-spacing:-.8px;
-color:#17191c;
+  margin:0;
+  font-size:32px;
+  line-height:1.15;
+  font-weight:850;
+  letter-spacing:-.03em;
+  color:#17191c;
 }
 
 .sell-header p{
-margin:9px 0 0;
-max-width:650px;
-color:#707780;
-font-size:14px;
-line-height:1.65;
+  margin:9px 0 0;
+  max-width:650px;
+  color:#707780;
+  font-size:14px;
+  line-height:1.6;
 }
 
 .sell-header-badge{
-display:flex;
-align-items:center;
-gap:9px;
-flex-shrink:0;
-padding:11px 15px;
-border:1px solid #e8eaed;
-border-radius:12px;
-background:#fff;
-color:#555b63;
-font-size:12px;
-font-weight:750;
-box-shadow:0 5px 18px rgba(20,24,30,.05);
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:11px 15px;
+  border:1px solid #e8eaed;
+  border-radius:12px;
+  background:#fff;
+  color:#454a50;
+  font-size:12px;
+  font-weight:700;
+  box-shadow:0 5px 20px rgba(20,25,30,.04);
 }
 
 .sell-header-badge::before{
-content:"✓";
-display:flex;
-align-items:center;
-justify-content:center;
-width:21px;
-height:21px;
-border-radius:50%;
-background:#e30613;
-color:#fff;
-font-size:11px;
-font-weight:900;
+  content:"✓";
+  display:grid;
+  place-items:center;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:#e30613;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
 }
 
-/* ==========================================================================
-PROGRESS
-========================================================================== */
+
+/* =========================================================
+   2. İLERLEME BARİ
+   ========================================================= */
 
 .sell-progress{
-position:relative;
-margin-bottom:28px;
-padding:0 4px;
+  position:relative;
+  margin:0 0 22px;
+  padding:18px 22px;
+  border:1px solid #e8eaed;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 8px 30px rgba(20,25,30,.05);
 }
 
 .sell-progress-line{
-position:absolute;
-top:19px;
-left:7%;
-right:7%;
-height:3px;
-overflow:hidden;
-border-radius:999px;
-background:#eceef1;
-z-index:0;
+  position:absolute;
+  top:35px;
+  left:76px;
+  right:76px;
+  height:3px;
+  overflow:hidden;
+  border-radius:99px;
+  background:#eceef1;
+  z-index:0;
 }
 
 .sell-progress-fill{
-width:25%;
-height:100%;
-border-radius:999px;
-background:#e30613;
-transition:width .3s ease;
+  width:25%;
+  height:100%;
+  border-radius:inherit;
+  background:#e30613;
+  transition:width .3s ease;
 }
 
 .sell-steps{
-position:relative;
-z-index:1;
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:10px;
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
 }
 
 .sell-step-node{
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:8px;
-color:#9aa0a7;
-text-align:center;
+  min-width:0;
+  border:0;
+  background:transparent;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  cursor:pointer;
+  color:#92979e;
 }
 
-.sell-step-node > span:first-child{
-display:flex;
-align-items:center;
-justify-content:center;
-width:40px;
-height:40px;
-border:2px solid #e2e5e8;
-border-radius:50%;
-background:#fff;
-color:#8b9198;
-font-size:13px;
-font-weight:850;
-transition:.25s ease;
+.sell-step-node span{
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  border:2px solid #e4e6e9;
+  border-radius:50%;
+  background:#fff;
+  color:#858b92;
+  font-size:13px;
+  font-weight:850;
+  transition:.25s ease;
 }
 
-.sell-step-node > span:last-child{
-font-size:11px;
-font-weight:800;
+.sell-step-node strong{
+  max-width:100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+  font-weight:750;
+}
+
+.sell-step-node:hover span{
+  border-color:#e30613;
+  color:#e30613;
 }
 
 .sell-step-node.active{
-color:#17191c;
+  color:#17191c;
 }
 
-.sell-step-node.active > span:first-child{
-border-color:#e30613;
-background:#e30613;
-color:#fff;
-box-shadow:0 7px 18px rgba(227,6,19,.18);
+.sell-step-node.active span,
+.sell-step-node.completed span{
+  border-color:#e30613;
+  background:#e30613;
+  color:#fff;
+  box-shadow:0 0 0 5px rgba(227,6,19,.08);
 }
 
 .sell-step-node.completed{
-color:#e30613;
+  color:#4d535a;
 }
 
-.sell-step-node.completed > span:first-child
 
-/* ==========================================================================
-FORM CARD
-========================================================================== */
+/* =========================================================
+   3. FORM KARTI
+   ========================================================= */
 
 .sell-form-card{
-border:1px solid #e5e7ea;
-border-radius:20px;
-background:#fff;
-box-shadow:0 12px 40px rgba(20,24,30,.07);
-overflow:hidden;
+  border:1px solid #e8eaed;
+  border-radius:22px;
+  background:#fff;
+  box-shadow:0 12px 38px rgba(20,25,30,.06);
+  overflow:hidden;
 }
 
 .sell-step{
-display:none;
-padding:30px;
+  display:none;
+  padding:30px;
 }
 
 .sell-step.active{
-display:block;
-animation:sellStepIn .25s ease;
+  display:block;
+  animation:sellStepIn .28s ease;
 }
 
 @keyframes sellStepIn{
-from{
-opacity:0;
-transform:translateY(7px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-/* ==========================================================================
-STEP BAŞLIĞI
-========================================================================== */
-
-.sell-step-header{
-margin-bottom:25px;
-padding-bottom:20px;
-border-bottom:1px solid #edf0f2;
+  from{
+    opacity:0;
+    transform:translateY(7px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
 }
 
-.sell-step-header h2{
-margin:0;
-color:#17191c;
-font-size:22px;
-letter-spacing:-.35px;
+
+/* =========================================================
+   4. STEP BAŞLIĞI
+   ========================================================= */
+
+.sell-step-heading{
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  margin-bottom:26px;
+  padding-bottom:20px;
+  border-bottom:1px solid #eef0f2;
 }
 
-.sell-step-header p{
-margin:7px 0 0;
-color:#737981;
-font-size:13px;
-line-height:1.6;
+.sell-step-icon{
+  flex:0 0 44px;
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:#fff1f1;
+  color:#e30613;
+  font-size:19px;
+  font-weight:900;
 }
 
-/* ==========================================================================
-FORM GRID
-========================================================================== */
+.sell-step-heading h2{
+  margin:0;
+  color:#17191c;
+  font-size:21px;
+  line-height:1.25;
+  font-weight:850;
+  letter-spacing:-.02em;
+}
+
+.sell-step-heading p{
+  margin:5px 0 0;
+  color:#7a8087;
+  font-size:13px;
+  line-height:1.5;
+}
+
+
+/* =========================================================
+   5. FORM GRID
+   ========================================================= */
 
 .sell-form-grid{
-display:grid;
-grid-template-columns:repeat(2,minmax(0,1fr));
-gap:18px;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
 }
 
-.sell-form-grid .full-width{
-grid-column:1/-1;
+.sell-form-grid .form-group.full{
+  grid-column:1 / -1;
 }
 
-.sell-form-card .form-group{
-margin-bottom:0;
+.form-group{
+  min-width:0;
 }
 
-.sell-form-card .form-group label{
-display:block;
-margin-bottom:7px;
-color:#34383e;
-font-size:12px;
-font-weight:850;
+.form-group label{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  margin-bottom:8px;
+  color:#30353a;
+  font-size:12px;
+  font-weight:800;
 }
 
-.sell-form-card .form-group input,
-.sell-form-card .form-group select,
-.sell-form-card .form-group textarea{
-width:100%;
-min-height:45px;
-padding:11px 13px;
-border:1px solid #dfe3e7;
-border-radius:11px;
-outline:none;
-background:#fff;
-color:#17191c;
-font-family:inherit;
-font-size:13px;
-transition:border-color .2s ease,
-box-shadow .2s ease,
-background .2s ease;
+.form-group label .required{
+  color:#e30613;
 }
 
-.sell-form-card .form-group textarea{
-min-height:130px;
-resize:vertical;
-line-height:1.6;
+.form-group input,
+.form-group select,
+.form-group textarea{
+  width:100%;
+  box-sizing:border-box;
+  border:1px solid #dfe2e6;
+  border-radius:11px;
+  outline:none;
+  background:#fff;
+  color:#17191c;
+  font-family:inherit;
+  font-size:14px;
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
 }
 
-.sell-form-card .form-group input::placeholder,
-.sell-form-card .form-group textarea::placeholder{
-color:#a1a6ac;
+.form-group input,
+.form-group select{
+  min-height:46px;
+  padding:0 13px;
 }
 
-.sell-form-card .form-group input:hover,
-.sell-form-card .form-group select:hover,
-.sell-form-card .form-group textarea:hover
-
-.sell-form-card .form-group input:focus,
-.sell-form-card .form-group select:focus,
-.sell-form-card .form-group textarea:focus{
-border-color:#e30613;
-box-shadow:0 0 0 4px rgba(227,6,19,.08);
-background:#fff;
+.form-group textarea{
+  min-height:125px;
+  padding:13px;
+  resize:vertical;
+  line-height:1.55;
 }
 
-/* ==========================================================================
-INPUT SUFFIX
-========================================================================== */
+.form-group input::placeholder,
+.form-group textarea::placeholder{
+  color:#a2a7ad;
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover{
+  border-color:#c8cdd2;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+  border-color:#e30613;
+  box-shadow:0 0 0 4px rgba(227,6,19,.08);
+  background:#fff;
+}
 
 .input-with-suffix{
-position:relative;
+  position:relative;
 }
 
 .input-with-suffix input{
-padding-right:62px !important;
+  padding-right:52px;
 }
 
-.input-with-suffix::after{
-content:"";
-position:absolute;
-right:13px;
-top:50%;
-transform:translateY(-50%);
-color:#8b9198;
-font-size:11px;
-font-weight:800;
-pointer-events:none;
+.input-with-suffix span{
+  position:absolute;
+  right:13px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#8b9198;
+  font-size:12px;
+  font-weight:700;
+  pointer-events:none;
 }
 
-/* ==========================================================================
-DONANIMLAR
-========================================================================== */
+
+/* =========================================================
+   6. DONANIMLAR
+   ========================================================= */
 
 .sell-feature-section{
-margin-top:26px;
-padding-top:24px;
-border-top:1px solid #edf0f2;
+  margin-top:28px;
+  padding-top:25px;
+  border-top:1px solid #eef0f2;
 }
 
 .sell-section-title{
-margin-bottom:13px;
+  margin-bottom:14px;
 }
 
 .sell-section-title h3{
-margin:0;
-font-size:14px;
-color:#20242a;
+  margin:0;
+  color:#24282d;
+  font-size:14px;
+  font-weight:850;
 }
 
 .sell-section-title p{
-margin:5px 0 0;
-color:#858b92;
-font-size:12px;
+  margin:4px 0 0;
+  color:#858b92;
+  font-size:12px;
 }
 
 .feature-grid{
-display:grid;
-grid-template-columns:repeat(3,minmax(0,1fr));
-gap:10px;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
 }
 
 .feature-option{
-position:relative;
+  position:relative;
 }
 
 .feature-option input{
-position:absolute;
-opacity:0;
-pointer-events:none;
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
 }
 
 .feature-option label{
-display:flex;
-align-items:center;
-min-height:44px;
-padding:10px 12px;
-border:1px solid #e1e4e7;
-border-radius:10px;
-background:#fff;
-color:#565c64;
-font-size:12px;
-font-weight:700;
-cursor:pointer;
-transition:.2s ease;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-height:44px;
+  padding:9px 11px;
+  border:1px solid #e1e4e7;
+  border-radius:10px;
+  background:#fff;
+  color:#555b62;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:700;
+  transition:.2s ease;
 }
 
-.feature-option label:hover
+.feature-option label::before{
+  content:"";
+  flex:0 0 17px;
+  width:17px;
+  height:17px;
+  border:1.5px solid #cbd0d5;
+  border-radius:5px;
+  background:#fff;
+  transition:.2s ease;
+}
+
+.feature-option label:hover{
+  border-color:#f0a0a4;
+  background:#fffafa;
+}
 
 .feature-option input:checked + label{
-border-color:#e30613;
-background:#fff1f1;
-color:#c4000c;
+  border-color:#e30613;
+  background:#fff5f5;
+  color:#b9000b;
 }
 
-/* ==========================================================================
-AÇIKLAMA
-========================================================================== */
+.feature-option input:checked + label::before{
+  content:"✓";
+  display:grid;
+  place-items:center;
+  border-color:#e30613;
+  background:#e30613;
+  color:#fff;
+  font-size:11px;
+  font-weight:900;
+}
+
+
+/* =========================================================
+   7. AÇIKLAMA
+   ========================================================= */
 
 .sell-description{
-margin-top:20px;
+  margin-top:20px;
 }
 
-/* ==========================================================================
-FOTOĞRAF ALANI
-========================================================================== */
+.sell-description textarea{
+  min-height:145px;
+}
+
+.description-counter{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:5px;
+  color:#969ba1;
+  font-size:11px;
+}
+
+
+/* =========================================================
+   8. FOTOĞRAF YÜKLEME
+   ========================================================= */
 
 .sell-upload-box{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-min-height:220px;
-padding:30px;
-border:2px dashed #d9dde2;
-border-radius:17px;
-background:#fafbfc;
-text-align:center;
-cursor:pointer;
-transition:.25s ease;
+  position:relative;
+  min-height:205px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+  border:2px dashed #d9dde1;
+  border-radius:17px;
+  background:#fafbfc;
+  text-align:center;
+  cursor:pointer;
+  transition:.25s ease;
 }
 
 .sell-upload-box:hover{
-border-color:#e30613;
-background:#fff7f7;
-transform:translateY(-1px);
+  border-color:#e30613;
+  background:#fff8f8;
+}
+
+.sell-upload-box input[type="file"]{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:0;
+  cursor:pointer;
 }
 
 .sell-upload-icon{
-display:flex;
-align-items:center;
-justify-content:center;
-width:58px;
-height:58px;
-margin-bottom:13px;
-border-radius:16px;
-background:#fff1f1;
-color:#e30613;
-font-size:25px;
+  width:55px;
+  height:55px;
+  display:grid;
+  place-items:center;
+  margin-bottom:12px;
+  border-radius:16px;
+  background:#fff1f1;
+  color:#e30613;
+  font-size:23px;
+  font-weight:900;
 }
 
-.sell-upload-box strong{
-color:#24282e;
-font-size:14px;
+.sell-upload-box h3{
+  margin:0;
+  color:#252a2f;
+  font-size:15px;
+  font-weight:850;
 }
 
 .sell-upload-box p{
-margin:7px 0 0;
-color:#888f97;
-font-size:12px;
-line-height:1.5;
+  margin:6px 0 0;
+  color:#8a9097;
+  font-size:12px;
 }
 
 .image-counter{
-margin-top:10px;
-color:#707780;
-font-size:11px;
-font-weight:750;
-text-align:right;
+  display:inline-flex;
+  align-items:center;
+  margin-top:12px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#f0f1f3;
+  color:#656b72;
+  font-size:11px;
+  font-weight:800;
 }
 
-.preview-grid{
-display:grid;
-grid-template-columns:repeat(5,minmax(0,1fr));
-gap:10px;
-margin-top:14px;
+
+/* =========================================================
+   9. FOTOĞRAF ÖNİZLEME
+   ========================================================= */
+
+.preview-grid,
+.img-preview-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-top:18px;
 }
 
 .image-preview-card{
-transition:transform .2s ease,
-box-shadow .2s ease;
+  position:relative;
+  aspect-ratio:4 / 3;
+  overflow:hidden;
+  border:1px solid #e2e5e8;
+  border-radius:13px;
+  background:#f4f5f6;
 }
 
-.image-preview-card:hover{
-transform:translateY(-2px);
-box-shadow:0 8px 20px rgba(20,24,30,.10);
+.image-preview-card img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
 }
+
+.image-preview-card:first-child::after{
+  content:"KAPAK";
+  position:absolute;
+  left:8px;
+  top:8px;
+  padding:4px 7px;
+  border-radius:5px;
+  background:#e30613;
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.04em;
+}
+
+.image-preview-card button,
+.image-preview-card .remove-image{
+  position:absolute;
+  top:7px;
+  right:7px;
+  z-index:2;
+  width:27px;
+  height:27px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:rgba(20,23,27,.78);
+  color:#fff;
+  cursor:pointer;
+  font-size:13px;
+  transition:.2s ease;
+}
+
+.image-preview-card button:hover,
+.image-preview-card .remove-image:hover{
+  background:#e30613;
+  transform:scale(1.05);
+}
+
+
+/* =========================================================
+   10. FOTOĞRAF İPUÇLARI
+   ========================================================= */
 
 .photo-tips{
-margin-top:18px;
-padding:14px 16px;
-border:1px solid #eceef0;
-border-radius:12px;
-background:#fafbfc;
+  margin-top:20px;
+  padding:17px;
+  border:1px solid #eceef0;
+  border-radius:13px;
+  background:#fafbfc;
 }
 
-.photo-tips strong{
-display:block;
-margin-bottom:8px;
-color:#34383e;
-font-size:12px;
+.photo-tips h4{
+  margin:0 0 12px;
+  color:#34393f;
+  font-size:12px;
+  font-weight:850;
 }
 
-.photo-tips p{
-margin:4px 0;
-color:#7b8188;
-font-size:11px;
+.photo-tip-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
 }
 
-/* ==========================================================================
-ÖZET
-========================================================================== */
+.photo-tip{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  color:#777e85;
+  font-size:11px;
+  line-height:1.45;
+}
+
+.photo-tip::before{
+  content:"✓";
+  flex:0 0 18px;
+  width:18px;
+  height:18px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#eaf7ee;
+  color:#268449;
+  font-size:10px;
+  font-weight:900;
+}
+
+
+/* =========================================================
+   11. İLAN ÖZETİ
+   ========================================================= */
 
 .listing-summary{
-border:1px solid #e6e8eb;
-border-radius:15px;
-background:#fafbfc;
-padding:20px;
+  border:1px solid #e5e8eb;
+  border-radius:16px;
+  overflow:hidden;
+  background:#fff;
 }
 
-.listing-summary small{
-display:block;
-margin-bottom:5px;
-color:#8a9097;
-font-size:10px;
-font-weight:750;
-text-transform:uppercase;
-letter-spacing:.03em;
+.listing-summary > *{
+  box-sizing:border-box;
 }
 
-.listing-summary strong{
-display:block;
-color:#20242a;
-font-size:13px;
-line-height:1.45;
+.listing-summary-header{
+  padding:17px 18px;
+  border-bottom:1px solid #eef0f2;
+  background:#fafbfc;
 }
 
-/* ==========================================================================
-YAYINLAMA BİLGİSİ
-========================================================================== */
+.listing-summary-header h3{
+  margin:0;
+  color:#252a2f;
+  font-size:15px;
+  font-weight:850;
+}
+
+.listing-summary-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:0;
+}
+
+.listing-summary-item{
+  min-height:58px;
+  padding:12px 17px;
+  border-bottom:1px solid #f0f1f3;
+}
+
+.listing-summary-item:nth-child(odd){
+  border-right:1px solid #f0f1f3;
+}
+
+.listing-summary-item span{
+  display:block;
+  margin-bottom:4px;
+  color:#92979d;
+  font-size:10px;
+  font-weight:750;
+}
+
+.listing-summary-item strong{
+  color:#292e33;
+  font-size:13px;
+  font-weight:800;
+}
+
+.listing-summary-price{
+  color:#e30613 !important;
+  font-size:16px !important;
+}
+
+
+/* =========================================================
+   12. YAYINLAMA BİLGİSİ
+   ========================================================= */
 
 .publish-info{
-display:flex;
-align-items:flex-start;
-gap:12px;
-margin-top:20px;
-padding:15px 16px;
-border:1px solid #eceef1;
-border-radius:12px;
-background:#fafbfc;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-top:18px;
+  padding:13px 15px;
+  border:1px solid #e9ebee;
+  border-radius:11px;
+  background:#fafbfc;
+  color:#747a81;
+  font-size:11px;
+  line-height:1.5;
 }
 
-.publish-info-icon{
-display:flex;
-align-items:center;
-justify-content:center;
-flex:0 0 auto;
-width:34px;
-height:34px;
-border-radius:9px;
-background:#fff1f1;
-color:#e30613;
-font-weight:900;
+.publish-info::before{
+  content:"i";
+  flex:0 0 20px;
+  width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#eceef1;
+  color:#656b72;
+  font-size:11px;
+  font-weight:900;
 }
 
-.publish-info strong{
-display:block;
-margin-bottom:3px;
-color:#30343a;
-font-size:12px;
+
+/* =========================================================
+   13. ALT BUTONLAR
+   ========================================================= */
+
+.sell-step-actions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:30px;
+  padding-top:22px;
+  border-top:1px solid #eef0f2;
 }
 
-.publish-info p{
-margin:0;
-color:#7c8289;
-font-size:11px;
-line-height:1.5;
+.sell-step-actions-left,
+.sell-actions-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-/* ==========================================================================
-BUTONLAR
-========================================================================== */
-
-.sell-actions{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
-margin-top:28px;
-padding-top:22px;
-border-top:1px solid #edf0f2;
-}
-
-.sell-actions-left,
+.sell-step-actions-right,
 .sell-actions-right{
-display:flex;
-align-items:center;
-gap:10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
+.sell-step-actions button,
 .sell-actions button{
-min-height:43px;
-padding:0 17px;
-border:1px solid #dfe3e7;
-border-radius:10px;
-background:#fff;
-color:#34383e;
-font-family:inherit;
-font-size:12px;
-font-weight:800;
-cursor:pointer;
-transition:.2s ease;
+  min-height:44px;
+  padding:0 17px;
+  border:1px solid #dfe2e5;
+  border-radius:10px;
+  background:#fff;
+  color:#4b5157;
+  font-family:inherit;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s ease;
 }
 
-.sell-actions button:hover
+.sell-step-actions button:hover,
+.sell-actions button:hover{
+  border-color:#c9cdd2;
+  background:#f8f9fa;
+}
 
-.sell-actions button[type="submit"],
+.sell-step-actions .primary,
+.sell-step-actions .next-btn,
+.sell-actions .primary,
+.sell-actions .next-btn{
+  border-color:#e30613;
+  background:#e30613;
+  color:#fff;
+}
+
+.sell-step-actions .primary:hover,
+.sell-step-actions .next-btn:hover,
+.sell-actions .primary:hover,
+.sell-actions .next-btn:hover{
+  border-color:#b9000b;
+  background:#b9000b;
+}
+
 .sell-publish-btn{
-border-color:#e30613 !important;
-background:#e30613 !important;
-color:#fff !important;
-box-shadow:0 7px 18px rgba(227,6,19,.18);
+  min-width:150px;
+  min-height:46px !important;
+  border-color:#e30613 !important;
+  background:#e30613 !important;
+  color:#fff !important;
+  box-shadow:0 7px 18px rgba(227,6,19,.18);
 }
 
-.sell-actions button[type="submit"]:hover,
 .sell-publish-btn:hover{
-background:#c9000b !important;
-border-color:#c9000b !important;
-transform:translateY(-1px);
+  border-color:#b9000b !important;
+  background:#b9000b !important;
+  transform:translateY(-1px);
+  box-shadow:0 9px 22px rgba(227,6,19,.23);
 }
 
-.sell-actions button:active{
-transform:translateY(0);
+
+/* =========================================================
+   14. KAYDET BUTONU
+   ========================================================= */
+
+.save-draft-btn{
+  color:#686f76 !important;
+  background:#fff !important;
 }
 
-/* ==========================================================================
-MOBİL
-========================================================================== */
-
-@media (max-width:800px){
-
-```
-.sell-page{
-    padding:25px 14px 55px;
+.save-draft-btn:hover{
+  color:#e30613 !important;
+  border-color:#e30613 !important;
+  background:#fff8f8 !important;
 }
 
-.sell-header{
+
+/* =========================================================
+   15. BAŞARILI İLAN EKRANI
+   ========================================================= */
+
+.listing-success{
+  padding:50px 25px;
+  text-align:center;
+}
+
+.listing-success-icon{
+  width:70px;
+  height:70px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 18px;
+  border-radius:50%;
+  background:#eaf7ee;
+  color:#238145;
+  font-size:30px;
+  font-weight:900;
+}
+
+.listing-success h2{
+  margin:0;
+  color:#20252a;
+  font-size:25px;
+  font-weight:900;
+}
+
+.listing-success p{
+  max-width:520px;
+  margin:9px auto 0;
+  color:#777e85;
+  font-size:13px;
+  line-height:1.6;
+}
+
+
+/* =========================================================
+   16. HATA / VALIDASYON
+   ========================================================= */
+
+.form-group.has-error input,
+.form-group.has-error select,
+.form-group.has-error textarea{
+  border-color:#e30613;
+  background:#fff8f8;
+}
+
+.form-error{
+  margin-top:5px;
+  color:#e30613;
+  font-size:10px;
+  font-weight:700;
+}
+
+
+/* =========================================================
+   17. MOBİL
+   ========================================================= */
+
+@media (max-width:900px){
+
+  .sell-page{
+    padding:25px 15px 55px;
+  }
+
+  .sell-header{
     align-items:flex-start;
     flex-direction:column;
     gap:15px;
-}
+  }
 
-.sell-header h1{
+  .sell-header h1{
     font-size:27px;
-}
+  }
 
-.sell-header-badge{
-    width:100%;
-}
+  .sell-header-badge{
+    align-self:flex-start;
+  }
 
-.sell-progress{
-    overflow-x:auto;
-    padding-bottom:4px;
-}
+  .sell-step{
+    padding:23px 20px;
+  }
 
-.sell-steps{
-    min-width:520px;
-}
-
-.sell-progress-line{
-    left:9%;
-    right:9%;
-}
-
-.sell-step{
-    padding:22px 17px;
-}
-
-.sell-form-grid{
-    grid-template-columns:1fr;
-    gap:15px;
-}
-
-.sell-form-grid .full-width{
-    grid-column:auto;
-}
-
-.feature-grid{
+  .feature-grid{
     grid-template-columns:repeat(2,minmax(0,1fr));
-}
+  }
 
-.preview-grid{
+  .preview-grid,
+  .img-preview-grid{
     grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+
+  .photo-tip-grid{
+    grid-template-columns:1fr;
+  }
 }
 
-.sell-actions{
+
+@media (max-width:650px){
+
+  .sell-page{
+    padding:20px 11px 45px;
+  }
+
+  .sell-header{
+    margin-bottom:20px;
+  }
+
+  .sell-header h1{
+    font-size:24px;
+  }
+
+  .sell-header p{
+    font-size:13px;
+  }
+
+  .sell-header-badge{
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  .sell-progress{
+    padding:15px 10px;
+    border-radius:15px;
+  }
+
+  .sell-progress-line{
+    left:45px;
+    right:45px;
+    top:31px;
+  }
+
+  .sell-step-node span{
+    width:30px;
+    height:30px;
+    font-size:11px;
+  }
+
+  .sell-step-node strong{
+    font-size:9px;
+  }
+
+  .sell-step{
+    padding:20px 15px;
+  }
+
+  .sell-step-heading{
+    gap:10px;
+    margin-bottom:21px;
+    padding-bottom:17px;
+  }
+
+  .sell-step-icon{
+    flex-basis:38px;
+    width:38px;
+    height:38px;
+    border-radius:11px;
+  }
+
+  .sell-step-heading h2{
+    font-size:18px;
+  }
+
+  .sell-step-heading p{
+    font-size:11px;
+  }
+
+  .sell-form-grid{
+    grid-template-columns:1fr;
+    gap:14px;
+  }
+
+  .sell-form-grid .form-group.full{
+    grid-column:auto;
+  }
+
+  .feature-grid{
+    grid-template-columns:1fr;
+  }
+
+  .preview-grid,
+  .img-preview-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:9px;
+  }
+
+  .sell-upload-box{
+    min-height:175px;
+    padding:22px 15px;
+  }
+
+  .sell-step-actions{
     flex-direction:column;
     align-items:stretch;
-}
+  }
 
-.sell-actions-left,
-.sell-actions-right{
+  .sell-step-actions-left,
+  .sell-step-actions-right,
+  .sell-actions-left,
+  .sell-actions-right{
     width:100%;
-}
+  }
 
-.sell-actions button{
+  .sell-step-actions button,
+  .sell-actions button{
     flex:1;
-}
-```
+  }
 
-}
+  .sell-publish-btn{
+    width:100%;
+  }
 
-/* ==========================================================================
-KÜÇÜK TELEFON
-========================================================================== */
-
-@media (max-width:480px){
-
-```
-.sell-page{
-    padding-left:10px;
-    padding-right:10px;
-}
-
-.sell-header h1{
-    font-size:24px;
-}
-
-.sell-header p{
-    font-size:12px;
-}
-
-.sell-form-card{
-    border-radius:15px;
-}
-
-.sell-step{
-    padding:18px 13px;
-}
-
-.sell-step-header h2{
-    font-size:19px;
-}
-
-.feature-grid{
+  .listing-summary-grid{
     grid-template-columns:1fr;
+  }
+
+  .listing-summary-item{
+    border-right:0 !important;
+  }
 }
 
-.preview-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr));
+
+@media (max-width:420px){
+
+  .sell-header h1{
+    font-size:22px;
+  }
+
+  .sell-progress{
+    margin-left:-2px;
+    margin-right:-2px;
+  }
+
+  .sell-step-node strong{
+    font-size:8px;
+  }
+
+  .sell-step{
+    padding:18px 12px;
+  }
+
+  .form-group input,
+  .form-group select{
+    min-height:44px;
+  }
+
+  .sell-upload-icon{
+    width:48px;
+    height:48px;
+    font-size:20px;
+  }
+
+  .sell-upload-box h3{
+    font-size:14px;
+  }
+
+  .sell-upload-box p{
+    font-size:11px;
+  }
 }
 
-.sell-upload-box{
-    min-height:190px;
-    padding:24px 15px;
+
+/* =========================================================
+   18. KÜÇÜK DOKUNUŞLAR
+   ========================================================= */
+
+.sell-page button{
+  -webkit-tap-highlight-color:transparent;
 }
 
-.sell-actions{
-    margin-top:22px;
+.sell-page input,
+.sell-page select,
+.sell-page textarea{
+  -webkit-appearance:none;
+  appearance:none;
 }
-```
 
+.sell-page select{
+  background-image:
+    linear-gradient(45deg,transparent 50%,#777 50%),
+    linear-gradient(135deg,#777 50%,transparent 50%);
+  background-position:
+    calc(100% - 16px) 20px,
+    calc(100% - 11px) 20px;
+  background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;
+  padding-right:35px;
+}
+
+.sell-page input[type="number"]::-webkit-inner-spin-button,
+.sell-page input[type="number"]::-webkit-outer-spin-button{
+  opacity:.5;
+}
+
+.sell-page ::selection{
+  background:#ffdfe1;
+  color:#8d0008;
 }
