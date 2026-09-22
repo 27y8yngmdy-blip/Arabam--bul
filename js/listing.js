@@ -1,6 +1,7 @@
 /* ==========================================================================
    ARABAMI BUL V2 — listing.js
    İlan Ver / Araç Ekle Modülü
+   Selection System + Listing Flow
    ========================================================================== */
 
 'use strict';
@@ -8,7 +9,6 @@
 
 /* ==========================================================================
    MODÜL DURUMU
-   app.js ile çakışmaması için let/const global değişken kullanılmıyor.
    ========================================================================== */
 
 window.ArabamiBul = window.ArabamiBul || {};
@@ -28,7 +28,288 @@ const MY_LISTINGS_KEY = 'my_listings';
 
 
 /* ==========================================================================
-   YARDIMCI
+   MARKA / MODEL VERİLERİ
+   ========================================================================== */
+
+const LISTING_BRANDS = {
+
+    "BMW": [
+        "1 Serisi",
+        "2 Serisi",
+        "3 Serisi",
+        "4 Serisi",
+        "5 Serisi",
+        "7 Serisi",
+        "X1",
+        "X2",
+        "X3",
+        "X4",
+        "X5",
+        "X6",
+        "X7"
+    ],
+
+    "Mercedes-Benz": [
+        "A Serisi",
+        "B Serisi",
+        "C Serisi",
+        "E Serisi",
+        "S Serisi",
+        "CLA",
+        "GLA",
+        "GLB",
+        "GLC",
+        "GLE",
+        "GLS"
+    ],
+
+    "Audi": [
+        "A1",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+        "A7",
+        "A8",
+        "Q2",
+        "Q3",
+        "Q5",
+        "Q7",
+        "Q8"
+    ],
+
+    "Volkswagen": [
+        "Polo",
+        "Golf",
+        "Passat",
+        "Jetta",
+        "T-Roc",
+        "T-Cross",
+        "Tiguan",
+        "Touareg"
+    ],
+
+    "Toyota": [
+        "Yaris",
+        "Corolla",
+        "Camry",
+        "C-HR",
+        "RAV4",
+        "Yaris Cross"
+    ],
+
+    "Honda": [
+        "Jazz",
+        "Civic",
+        "City",
+        "HR-V",
+        "CR-V"
+    ],
+
+    "Ford": [
+        "Fiesta",
+        "Focus",
+        "Mondeo",
+        "Puma",
+        "Kuga",
+        "Mustang"
+    ],
+
+    "Opel": [
+        "Corsa",
+        "Astra",
+        "Mokka",
+        "Crossland",
+        "Grandland",
+        "Insignia"
+    ],
+
+    "Renault": [
+        "Clio",
+        "Megane",
+        "Taliant",
+        "Captur",
+        "Austral",
+        "Arkana"
+    ],
+
+    "Peugeot": [
+        "208",
+        "308",
+        "408",
+        "2008",
+        "3008",
+        "5008"
+    ],
+
+    "Tesla": [
+        "Model 3",
+        "Model Y",
+        "Model S",
+        "Model X"
+    ],
+
+    "Volvo": [
+        "S60",
+        "S90",
+        "V60",
+        "XC40",
+        "XC60",
+        "XC90"
+    ],
+
+    "Porsche": [
+        "718",
+        "911",
+        "Taycan",
+        "Macan",
+        "Cayenne",
+        "Panamera"
+    ],
+
+    "Fiat": [
+        "Egea",
+        "500",
+        "500X",
+        "Panda",
+        "Tipo"
+    ],
+
+    "Hyundai": [
+        "i10",
+        "i20",
+        "i30",
+        "Elantra",
+        "Bayon",
+        "Kona",
+        "Tucson"
+    ],
+
+    "Kia": [
+        "Picanto",
+        "Rio",
+        "Ceed",
+        "Stonic",
+        "Sportage",
+        "Sorento"
+    ],
+
+    "Nissan": [
+        "Micra",
+        "Juke",
+        "Qashqai",
+        "X-Trail"
+    ],
+
+    "Skoda": [
+        "Fabia",
+        "Scala",
+        "Octavia",
+        "Superb",
+        "Kamiq",
+        "Karoq",
+        "Kodiaq"
+    ],
+
+    "Dacia": [
+        "Sandero",
+        "Logan",
+        "Duster",
+        "Jogger"
+    ]
+};
+
+
+/* ==========================================================================
+   SEÇİM VERİLERİ
+   ========================================================================== */
+
+const LISTING_YEARS = [];
+
+for (
+    let year = new Date().getFullYear() + 1;
+    year >= 1990;
+    year--
+) {
+    LISTING_YEARS.push(String(year));
+}
+
+
+const LISTING_COLORS = [
+    "Beyaz",
+    "Siyah",
+    "Gri",
+    "Gümüş",
+    "Kırmızı",
+    "Mavi",
+    "Lacivert",
+    "Yeşil",
+    "Turuncu",
+    "Sarı",
+    "Kahverengi",
+    "Bej",
+    "Bordo",
+    "Mor",
+    "Diğer"
+];
+
+
+/* ==========================================================================
+   DONANIMLAR
+   ========================================================================== */
+
+const LISTING_FEATURE_GROUPS = {
+
+    "Güvenlik": [
+        "ABS",
+        "ESP",
+        "6 Hava Yastığı",
+        "Şerit Takip Sistemi",
+        "Kör Nokta Uyarısı",
+        "Çarpışma Önleme"
+    ],
+
+    "Konfor": [
+        "Klima",
+        "Çift Bölgeli Klima",
+        "Isıtmalı Koltuk",
+        "Elektrikli Koltuk",
+        "Hafızalı Koltuk",
+        "Anahtarsız Giriş",
+        "Anahtarsız Çalıştırma"
+    ],
+
+    "Multimedya": [
+        "Apple CarPlay",
+        "Android Auto",
+        "Bluetooth",
+        "Navigasyon",
+        "Kablosuz Şarj",
+        "Premium Ses Sistemi"
+    ],
+
+    "Dış Donanım": [
+        "LED Far",
+        "Panoramik Cam Tavan",
+        "Sunroof",
+        "Elektrikli Bagaj",
+        "Yağmur Sensörü",
+        "Otomatik Far"
+    ],
+
+    "Sürüş Destek": [
+        "Adaptif Hız Sabitleyici",
+        "Park Sensörü",
+        "Geri Görüş Kamerası",
+        "360° Kamera",
+        "Otomatik Park",
+        "Yokuş Kalkış Desteği"
+    ]
+};
+
+
+/* ==========================================================================
+   YARDIMCI FONKSİYONLAR
    ========================================================================== */
 
 function getFieldValue(id) {
@@ -50,7 +331,9 @@ function getNumberValue(id) {
     }
 
     const number = Number(
-        String(value).replace(/\./g, '').replace(',', '.')
+        String(value)
+            .replace(/\./g, '')
+            .replace(',', '.')
     );
 
     return Number.isFinite(number)
@@ -67,10 +350,6 @@ function getCheckedFeatures() {
 }
 
 
-/* ==========================================================================
-   GÜVENLİ HTML
-   ========================================================================== */
-
 function escapeHtml(value) {
 
     return String(value ?? '')
@@ -83,82 +362,564 @@ function escapeHtml(value) {
 
 
 /* ==========================================================================
+   SELECT OLUŞTURMA
+   ========================================================================== */
+
+function replaceFieldWithSelect(id, options, placeholder) {
+
+    const oldElement = document.getElementById(id);
+
+    if (!oldElement) {
+        return null;
+    }
+
+    if (oldElement.tagName.toLowerCase() === 'select') {
+        return oldElement;
+    }
+
+    const select = document.createElement('select');
+
+    Array.from(oldElement.attributes).forEach(attribute => {
+
+        if (
+            attribute.name !== 'type' &&
+            attribute.name !== 'value'
+        ) {
+            select.setAttribute(
+                attribute.name,
+                attribute.value
+            );
+        }
+    });
+
+    select.id = id;
+    select.name = oldElement.name || id;
+
+    select.innerHTML = '';
+
+    const placeholderOption =
+        document.createElement('option');
+
+    placeholderOption.value = '';
+    placeholderOption.textContent = placeholder;
+
+    select.appendChild(placeholderOption);
+
+    options.forEach(optionValue => {
+
+        const option =
+            document.createElement('option');
+
+        option.value = optionValue;
+        option.textContent = optionValue;
+
+        select.appendChild(option);
+    });
+
+    oldElement.replaceWith(select);
+
+    return select;
+}
+
+
+/* ==========================================================================
+   MARKA SELECT
+   ========================================================================== */
+
+function setupBrandSelect() {
+
+    const brandSelect =
+        replaceFieldWithSelect(
+            'addBrand',
+            Object.keys(LISTING_BRANDS),
+            'Marka seçiniz'
+        );
+
+    if (!brandSelect) {
+        return;
+    }
+
+    brandSelect.addEventListener(
+        'change',
+        function () {
+
+            updateModelSelect(
+                this.value
+            );
+        }
+    );
+
+    updateModelSelect(
+        brandSelect.value
+    );
+}
+
+
+/* ==========================================================================
+   MODEL SELECT
+   ========================================================================== */
+
+function updateModelSelect(brand, selectedModel = '') {
+
+    const modelElement =
+        document.getElementById('addModel');
+
+    if (!modelElement) {
+        return;
+    }
+
+    const currentValue =
+        selectedModel ||
+        modelElement.value ||
+        '';
+
+    const models =
+        LISTING_BRANDS[brand] || [];
+
+    if (
+        modelElement.tagName.toLowerCase() !== 'select'
+    ) {
+
+        replaceFieldWithSelect(
+            'addModel',
+            models,
+            brand
+                ? 'Model seçiniz'
+                : 'Önce marka seçiniz'
+        );
+
+    } else {
+
+        modelElement.innerHTML = '';
+
+        const placeholder =
+            document.createElement('option');
+
+        placeholder.value = '';
+
+        placeholder.textContent =
+            brand
+                ? 'Model seçiniz'
+                : 'Önce marka seçiniz';
+
+        modelElement.appendChild(
+            placeholder
+        );
+
+        models.forEach(model => {
+
+            const option =
+                document.createElement('option');
+
+            option.value = model;
+            option.textContent = model;
+
+            modelElement.appendChild(
+                option
+            );
+        });
+    }
+
+    const finalModelElement =
+        document.getElementById('addModel');
+
+    if (finalModelElement) {
+
+        finalModelElement.value =
+            models.includes(currentValue)
+                ? currentValue
+                : '';
+
+        finalModelElement.disabled =
+            !brand;
+    }
+}
+
+
+/* ==========================================================================
+   YIL SELECT
+   ========================================================================== */
+
+function setupYearSelect() {
+
+    const yearSelect =
+        replaceFieldWithSelect(
+            'addYear',
+            LISTING_YEARS,
+            'Model yılı seçiniz'
+        );
+
+    if (!yearSelect) {
+        return;
+    }
+
+    const currentYear =
+        new Date().getFullYear();
+
+    if (
+        !yearSelect.value &&
+        currentYear
+    ) {
+        // Otomatik seçim yapılmıyor.
+    }
+}
+
+
+/* ==========================================================================
+   RENK SELECT
+   ========================================================================== */
+
+function setupColorSelect() {
+
+    replaceFieldWithSelect(
+        'addColor',
+        LISTING_COLORS,
+        'Renk seçiniz'
+    );
+}
+
+
+/* ==========================================================================
+   DONANIMLARI YENİDEN OLUŞTUR
+   ========================================================================== */
+
+function setupFeatureCards() {
+
+    const featureInputs =
+        Array.from(
+            document.querySelectorAll(
+                'input[name="feature"]'
+            )
+        );
+
+    if (!featureInputs.length) {
+        return;
+    }
+
+    const firstContainer =
+        featureInputs[0]
+            .closest('.feature-grid');
+
+    if (!firstContainer) {
+        return;
+    }
+
+    /*
+       Daha önce oluşturduysak tekrar oluşturma.
+    */
+
+    if (
+        document.querySelector(
+            '.listing-feature-groups'
+        )
+    ) {
+        return;
+    }
+
+    const selectedValues =
+        featureInputs
+            .filter(input => input.checked)
+            .map(input => input.value);
+
+    const wrapper =
+        document.createElement('div');
+
+    wrapper.className =
+        'listing-feature-groups';
+
+    Object.entries(
+        LISTING_FEATURE_GROUPS
+    ).forEach(
+        ([groupName, features]) => {
+
+            const group =
+                document.createElement('div');
+
+            group.className =
+                'listing-feature-group';
+
+            group.innerHTML = `
+                <div class="listing-feature-group-title">
+                    <strong>${escapeHtml(groupName)}</strong>
+                    <span>İstediğiniz özellikleri seçin</span>
+                </div>
+
+                <div class="listing-feature-options"></div>
+            `;
+
+            const optionsContainer =
+                group.querySelector(
+                    '.listing-feature-options'
+                );
+
+            features.forEach(
+                (feature, index) => {
+
+                    const id =
+                        `listingFeature_${groupName}_${index}`
+                            .replace(
+                                /[^a-zA-Z0-9_]/g,
+                                '_'
+                            );
+
+                    const option =
+                        document.createElement('div');
+
+                    option.className =
+                        'listing-feature-option';
+
+                    const checked =
+                        selectedValues.includes(
+                            feature
+                        );
+
+                    option.innerHTML = `
+                        <input
+                            type="checkbox"
+                            id="${id}"
+                            name="feature"
+                            value="${escapeHtml(feature)}"
+                            ${checked ? 'checked' : ''}
+                        >
+
+                        <label for="${id}">
+                            <span class="feature-check-icon">✓</span>
+                            <span class="feature-label-text">
+                                ${escapeHtml(feature)}
+                            </span>
+                        </label>
+                    `;
+
+                    optionsContainer.appendChild(
+                        option
+                    );
+                }
+            );
+
+            wrapper.appendChild(group);
+        }
+    );
+
+    firstContainer
+        .replaceWith(wrapper);
+}
+
+
+/* ==========================================================================
+   TÜM SEÇİM ALANLARINI BAŞLAT
+   ========================================================================== */
+
+function initializeListingSelectors() {
+
+    setupBrandSelect();
+    setupYearSelect();
+    setupColorSelect();
+    setupFeatureCards();
+
+    const body =
+        document.getElementById('addBody');
+
+    if (
+        body &&
+        body.tagName.toLowerCase() !== 'select'
+    ) {
+
+        replaceFieldWithSelect(
+            'addBody',
+            [
+                'Sedan',
+                'Hatchback',
+                'SUV',
+                'Coupe',
+                'Cabrio',
+                'Station Wagon',
+                'MPV',
+                'Pickup'
+            ],
+            'Kasa tipi seçiniz'
+        );
+    }
+
+    const fuel =
+        document.getElementById('addFuel');
+
+    if (
+        fuel &&
+        fuel.tagName.toLowerCase() !== 'select'
+    ) {
+
+        replaceFieldWithSelect(
+            'addFuel',
+            [
+                'Benzin',
+                'Dizel',
+                'Hibrit',
+                'Elektrik',
+                'LPG'
+            ],
+            'Yakıt tipi seçiniz'
+        );
+    }
+
+    const trans =
+        document.getElementById('addTrans');
+
+    if (
+        trans &&
+        trans.tagName.toLowerCase() !== 'select'
+    ) {
+
+        replaceFieldWithSelect(
+            'addTrans',
+            [
+                'Otomatik',
+                'Manuel',
+                'Yarı Otomatik'
+            ],
+            'Vites tipi seçiniz'
+        );
+    }
+
+    const damage =
+        document.getElementById('addDamage');
+
+    if (
+        damage &&
+        damage.tagName.toLowerCase() !== 'select'
+    ) {
+
+        replaceFieldWithSelect(
+            'addDamage',
+            [
+                'Hasarsız',
+                'Boyalı',
+                'Değişen Parça Var',
+                'Tramer Kayıtlı',
+                'Ağır Hasarlı'
+            ],
+            'Hasar durumu seçiniz'
+        );
+    }
+}
+
+
+/* ==========================================================================
    ADIM YÖNETİMİ
    ========================================================================== */
 
 function goToSellStep(stepNumber) {
 
-    if (stepNumber < 1 || stepNumber > 4) {
+    if (
+        stepNumber < 1 ||
+        stepNumber > 4
+    ) {
         return;
     }
 
-    listingState.currentSellStep = stepNumber;
+    listingState.currentSellStep =
+        stepNumber;
 
-    for (let i = 1; i <= 4; i++) {
+    for (
+        let i = 1;
+        i <= 4;
+        i++
+    ) {
 
-        const step = document.getElementById(`sellStep${i}`);
-        const node = document.getElementById(`stepNode${i}`);
+        const step =
+            document.getElementById(
+                `sellStep${i}`
+            );
+
+        const node =
+            document.getElementById(
+                `stepNode${i}`
+            );
 
         if (step) {
-            step.classList.remove('active');
+            step.classList.remove(
+                'active'
+            );
         }
 
         if (node) {
-            node.classList.remove('active');
+            node.classList.remove(
+                'active'
+            );
         }
     }
 
-
     const activeStep =
-        document.getElementById(`sellStep${stepNumber}`);
+        document.getElementById(
+            `sellStep${stepNumber}`
+        );
 
     const activeNode =
-        document.getElementById(`stepNode${stepNumber}`);
-
+        document.getElementById(
+            `stepNode${stepNumber}`
+        );
 
     if (activeStep) {
-        activeStep.classList.add('active');
+        activeStep.classList.add(
+            'active'
+        );
     }
 
     if (activeNode) {
-        activeNode.classList.add('active');
+        activeNode.classList.add(
+            'active'
+        );
     }
 
-
-    // Önceki adımlar tamamlandı
-    for (let i = 1; i < stepNumber; i++) {
+    for (
+        let i = 1;
+        i < stepNumber;
+        i++
+    ) {
 
         const node =
-            document.getElementById(`stepNode${i}`);
+            document.getElementById(
+                `stepNode${i}`
+            );
 
         if (node) {
-            node.classList.add('completed');
+            node.classList.add(
+                'completed'
+            );
         }
     }
 
-
-    // Sonraki adımları temizle
-    for (let i = stepNumber; i <= 4; i++) {
+    for (
+        let i = stepNumber;
+        i <= 4;
+        i++
+    ) {
 
         const node =
-            document.getElementById(`stepNode${i}`);
+            document.getElementById(
+                `stepNode${i}`
+            );
 
-        if (node && i !== stepNumber) {
-            node.classList.remove('completed');
+        if (
+            node &&
+            i !== stepNumber
+        ) {
+            node.classList.remove(
+                'completed'
+            );
         }
     }
 
-
-    // Progress
     const fill =
-        document.getElementById('sellStepFill');
+        document.getElementById(
+            'sellStepFill'
+        );
 
     if (fill) {
-        fill.style.width = `${stepNumber * 25}%`;
+
+        fill.style.width =
+            `${stepNumber * 25}%`;
     }
 
-
-    // Son adım
     if (stepNumber === 4) {
         buildListingSummary();
     }
@@ -179,7 +940,9 @@ function nextSellStep() {
     }
 
     if (current < 4) {
-        goToSellStep(current + 1);
+        goToSellStep(
+            current + 1
+        );
     }
 }
 
@@ -194,7 +957,9 @@ function previousSellStep() {
         listingState.currentSellStep;
 
     if (current > 1) {
-        goToSellStep(current - 1);
+        goToSellStep(
+            current - 1
+        );
     }
 }
 
@@ -204,11 +969,6 @@ function previousSellStep() {
    ========================================================================== */
 
 function validateSellStep(step) {
-
-
-    /* ----------------------------------------------------------------------
-       STEP 1
-       ---------------------------------------------------------------------- */
 
     if (step === 1) {
 
@@ -224,10 +984,11 @@ function validateSellStep(step) {
         const year =
             getNumberValue('addYear');
 
-
         if (!brand) {
 
-            alert('Lütfen marka seçiniz.');
+            alert(
+                'Lütfen marka seçiniz.'
+            );
 
             document
                 .getElementById('addBrand')
@@ -236,10 +997,11 @@ function validateSellStep(step) {
             return false;
         }
 
-
         if (!model) {
 
-            alert('Lütfen model bilgisini giriniz.');
+            alert(
+                'Lütfen model seçiniz.'
+            );
 
             document
                 .getElementById('addModel')
@@ -248,10 +1010,14 @@ function validateSellStep(step) {
             return false;
         }
 
+        if (
+            !price ||
+            price <= 0
+        ) {
 
-        if (!price || price <= 0) {
-
-            alert('Lütfen geçerli bir fiyat giriniz.');
+            alert(
+                'Lütfen geçerli bir fiyat giriniz.'
+            );
 
             document
                 .getElementById('addPrice')
@@ -260,10 +1026,8 @@ function validateSellStep(step) {
             return false;
         }
 
-
         const currentYear =
             new Date().getFullYear();
-
 
         if (
             !year ||
@@ -271,7 +1035,9 @@ function validateSellStep(step) {
             year > currentYear + 1
         ) {
 
-            alert('Lütfen geçerli bir model yılı giriniz.');
+            alert(
+                'Lütfen geçerli bir model yılı seçiniz.'
+            );
 
             document
                 .getElementById('addYear')
@@ -280,14 +1046,9 @@ function validateSellStep(step) {
             return false;
         }
 
-
         return true;
     }
 
-
-    /* ----------------------------------------------------------------------
-       STEP 2
-       ---------------------------------------------------------------------- */
 
     if (step === 2) {
 
@@ -300,13 +1061,14 @@ function validateSellStep(step) {
         const trans =
             getFieldValue('addTrans');
 
-
         if (
             km === '' ||
             Number(km) < 0
         ) {
 
-            alert('Lütfen kilometre bilgisini giriniz.');
+            alert(
+                'Lütfen kilometre bilgisini giriniz.'
+            );
 
             document
                 .getElementById('addKm')
@@ -315,10 +1077,11 @@ function validateSellStep(step) {
             return false;
         }
 
-
         if (!fuel) {
 
-            alert('Lütfen yakıt tipini seçiniz.');
+            alert(
+                'Lütfen yakıt tipini seçiniz.'
+            );
 
             document
                 .getElementById('addFuel')
@@ -327,10 +1090,11 @@ function validateSellStep(step) {
             return false;
         }
 
-
         if (!trans) {
 
-            alert('Lütfen vites tipini seçiniz.');
+            alert(
+                'Lütfen vites tipini seçiniz.'
+            );
 
             document
                 .getElementById('addTrans')
@@ -339,18 +1103,15 @@ function validateSellStep(step) {
             return false;
         }
 
-
         return true;
     }
 
 
-    /* ----------------------------------------------------------------------
-       STEP 3
-       ---------------------------------------------------------------------- */
-
     if (step === 3) {
 
-        if (listingState.uploadedImages.length === 0) {
+        if (
+            listingState.uploadedImages.length === 0
+        ) {
 
             const answer =
                 confirm(
@@ -366,7 +1127,6 @@ function validateSellStep(step) {
         return true;
     }
 
-
     return true;
 }
 
@@ -377,24 +1137,25 @@ function validateSellStep(step) {
 
 function handleImageUpload(event) {
 
-    if (!event || !event.target) {
+    if (
+        !event ||
+        !event.target
+    ) {
         return;
     }
 
-
     const files =
-        Array.from(event.target.files || []);
-
+        Array.from(
+            event.target.files || []
+        );
 
     if (!files.length) {
         return;
     }
 
-
     const remainingSlots =
         MAX_IMAGES -
         listingState.uploadedImages.length;
-
 
     if (remainingSlots <= 0) {
 
@@ -407,19 +1168,22 @@ function handleImageUpload(event) {
         return;
     }
 
-
     const selectedFiles =
-        files.slice(0, remainingSlots);
+        files.slice(
+            0,
+            remainingSlots
+        );
 
-
-    if (files.length > remainingSlots) {
+    if (
+        files.length >
+        remainingSlots
+    ) {
 
         alert(
             `En fazla ${MAX_IMAGES} fotoğraf yükleyebilirsiniz. ` +
             `${remainingSlots} fotoğraf eklenecek.`
         );
     }
-
 
     selectedFiles.forEach(file => {
 
@@ -429,8 +1193,11 @@ function handleImageUpload(event) {
             'image/webp'
         ];
 
-
-        if (!allowedTypes.includes(file.type)) {
+        if (
+            !allowedTypes.includes(
+                file.type
+            )
+        ) {
 
             alert(
                 `"${file.name}" desteklenmeyen bir format.\n\n` +
@@ -440,8 +1207,10 @@ function handleImageUpload(event) {
             return;
         }
 
-
-        if (file.size > MAX_FILE_SIZE) {
+        if (
+            file.size >
+            MAX_FILE_SIZE
+        ) {
 
             alert(
                 `"${file.name}" çok büyük.\n\n` +
@@ -451,46 +1220,41 @@ function handleImageUpload(event) {
             return;
         }
 
-
         const imageId =
             `${Date.now()}_${Math.random()
                 .toString(36)
                 .slice(2)}`;
 
-
         const reader =
             new FileReader();
 
+        reader.onload =
+            function (e) {
 
-        reader.onload = function (e) {
+                listingState.uploadedImages.push({
 
-            listingState.uploadedImages.push({
+                    id: imageId,
 
-                id: imageId,
+                    data: e.target.result,
 
-                data: e.target.result,
+                    name: file.name
+                });
 
-                name: file.name
-            });
+                renderImagePreviews();
 
+                updateImageCounter();
+            };
 
-            renderImagePreviews();
+        reader.onerror =
+            function () {
 
-            updateImageCounter();
-        };
-
-
-        reader.onerror = function () {
-
-            alert(
-                `"${file.name}" yüklenemedi.`
-            );
-        };
-
+                alert(
+                    `"${file.name}" yüklenemedi.`
+                );
+            };
 
         reader.readAsDataURL(file);
     });
-
 
     event.target.value = '';
 }
@@ -503,67 +1267,38 @@ function handleImageUpload(event) {
 function renderImagePreviews() {
 
     const previewGrid =
-        document.getElementById('imgPreviewGrid');
-
+        document.getElementById(
+            'imgPreviewGrid'
+        );
 
     if (!previewGrid) {
         return;
     }
 
-
     previewGrid.innerHTML = '';
-
 
     listingState.uploadedImages.forEach(
         (image, index) => {
 
             const card =
-                document.createElement('div');
-
+                document.createElement(
+                    'div'
+                );
 
             card.className =
                 'image-preview-card';
 
-
             card.dataset.imageId =
                 image.id;
-
-
-            card.style.cssText = `
-                position:relative;
-                width:100%;
-                aspect-ratio:1;
-                border-radius:14px;
-                overflow:hidden;
-                border:1px solid #e5e7eb;
-                background:#f3f4f6;
-            `;
-
 
             card.innerHTML = `
 
                 <img
                     src="${image.data}"
                     alt="İlan fotoğrafı ${index + 1}"
-                    style="
-                        width:100%;
-                        height:100%;
-                        object-fit:cover;
-                        display:block;
-                    "
                 >
 
-                <div style="
-                    position:absolute;
-                    left:8px;
-                    top:8px;
-                    padding:4px 7px;
-                    border-radius:6px;
-                    background:rgba(0,0,0,.65);
-                    color:#fff;
-                    font-size:11px;
-                    font-weight:700;
-                ">
+                <div class="listing-image-badge">
                     ${
                         index === 0
                             ? 'ANA FOTOĞRAF'
@@ -574,30 +1309,15 @@ function renderImagePreviews() {
                 <button
                     type="button"
                     onclick="removeImageById('${image.id}')"
-                    style="
-                        position:absolute;
-                        right:8px;
-                        top:8px;
-                        width:28px;
-                        height:28px;
-                        border:0;
-                        border-radius:50%;
-                        background:rgba(0,0,0,.72);
-                        color:#fff;
-                        cursor:pointer;
-                        font-size:15px;
-                        display:flex;
-                        align-items:center;
-                        justify-content:center;
-                    "
                     aria-label="Fotoğrafı sil"
                 >
                     ×
                 </button>
             `;
 
-
-            previewGrid.appendChild(card);
+            previewGrid.appendChild(
+                card
+            );
         }
     );
 }
@@ -611,9 +1331,9 @@ function removeImageById(imageId) {
 
     listingState.uploadedImages =
         listingState.uploadedImages.filter(
-            image => image.id !== imageId
+            image =>
+                image.id !== imageId
         );
-
 
     renderImagePreviews();
 
@@ -621,23 +1341,21 @@ function removeImageById(imageId) {
 }
 
 
-/* ==========================================================================
-   ESKİ SİSTEM UYUMLULUĞU
-   ========================================================================== */
-
 function removeImage(index) {
 
     if (
         typeof index !== 'number' ||
         index < 0 ||
-        index >= listingState.uploadedImages.length
+        index >=
+            listingState.uploadedImages.length
     ) {
         return;
     }
 
-
-    listingState.uploadedImages.splice(index, 1);
-
+    listingState.uploadedImages.splice(
+        index,
+        1
+    );
 
     renderImagePreviews();
 
@@ -652,13 +1370,13 @@ function removeImage(index) {
 function updateImageCounter() {
 
     const counter =
-        document.getElementById('imageCounter');
-
+        document.getElementById(
+            'imageCounter'
+        );
 
     if (!counter) {
         return;
     }
-
 
     counter.textContent =
         `${listingState.uploadedImages.length}/${MAX_IMAGES} fotoğraf`;
@@ -672,19 +1390,21 @@ function updateImageCounter() {
 function buildListingSummary() {
 
     const summary =
-        document.getElementById('listingSummary');
-
+        document.getElementById(
+            'listingSummary'
+        );
 
     if (!summary) {
         return;
     }
 
-
     const brand =
-        getFieldValue('addBrand') || '-';
+        getFieldValue('addBrand') ||
+        '-';
 
     const model =
-        getFieldValue('addModel') || '-';
+        getFieldValue('addModel') ||
+        '-';
 
     const price =
         getNumberValue('addPrice');
@@ -725,56 +1445,42 @@ function buildListingSummary() {
     const features =
         getCheckedFeatures();
 
-
     const formattedPrice =
         price > 0
-            ? new Intl.NumberFormat('tr-TR')
-                .format(price) + ' TL'
+            ? new Intl.NumberFormat(
+                'tr-TR'
+            ).format(price) + ' TL'
             : '-';
 
-
     const formattedKm =
-        new Intl.NumberFormat('tr-TR')
-            .format(km) + ' km';
-
+        new Intl.NumberFormat(
+            'tr-TR'
+        ).format(km) + ' km';
 
     const formattedTramer =
-        new Intl.NumberFormat('tr-TR')
-            .format(tramer) + ' TL';
-
+        new Intl.NumberFormat(
+            'tr-TR'
+        ).format(tramer) + ' TL';
 
     const featureHtml =
         features.length
 
-            ? features.map(feature => `
-                <span style="
-                    display:inline-flex;
-                    padding:6px 10px;
-                    border-radius:8px;
-                    background:#fff1f1;
-                    color:#c62828;
-                    font-size:12px;
-                    font-weight:700;
-                    margin:3px;
-                ">
-                    ${escapeHtml(feature)}
-                </span>
-            `).join('')
+            ? features.map(
+                feature => `
+                    <span class="summary-feature">
+                        ${escapeHtml(feature)}
+                    </span>
+                `
+            ).join('')
 
             : '<span>Ek donanım seçilmedi.</span>';
 
-
     summary.innerHTML = `
 
-        <div style="
-            display:grid;
-            grid-template-columns:
-                repeat(auto-fit,minmax(180px,1fr));
-            gap:12px;
-        ">
+        <div class="listing-summary-grid">
 
-            <div>
-                <small>İlan Başlığı</small>
+            <div class="listing-summary-item">
+                <span>İlan Başlığı</span>
                 <strong>
                     ${escapeHtml(year)}
                     ${escapeHtml(brand)}
@@ -782,64 +1488,64 @@ function buildListingSummary() {
                 </strong>
             </div>
 
-            <div>
-                <small>Fiyat</small>
-                <strong>
+            <div class="listing-summary-item">
+                <span>Fiyat</span>
+                <strong class="listing-summary-price">
                     ${formattedPrice}
                 </strong>
             </div>
 
-            <div>
-                <small>Kilometre</small>
+            <div class="listing-summary-item">
+                <span>Kilometre</span>
                 <strong>
                     ${formattedKm}
                 </strong>
             </div>
 
-            <div>
-                <small>Yakıt</small>
+            <div class="listing-summary-item">
+                <span>Yakıt</span>
                 <strong>
                     ${escapeHtml(fuel)}
                 </strong>
             </div>
 
-            <div>
-                <small>Vites</small>
+            <div class="listing-summary-item">
+                <span>Vites</span>
                 <strong>
                     ${escapeHtml(trans)}
                 </strong>
             </div>
 
-            <div>
-                <small>Kasa</small>
+            <div class="listing-summary-item">
+                <span>Kasa</span>
                 <strong>
                     ${escapeHtml(body)}
                 </strong>
             </div>
 
-            <div>
-                <small>Renk</small>
+            <div class="listing-summary-item">
+                <span>Renk</span>
                 <strong>
                     ${escapeHtml(color)}
                 </strong>
             </div>
 
-            <div>
-                <small>Hasar Durumu</small>
+            <div class="listing-summary-item">
+                <span>Hasar Durumu</span>
                 <strong>
                     ${escapeHtml(damage)}
                 </strong>
             </div>
 
-            <div>
-                <small>Tramer</small>
+            <div class="listing-summary-item">
+                <span>Tramer</span>
                 <strong>
                     ${formattedTramer}
                 </strong>
             </div>
 
-            <div>
-                <small>Fotoğraf</small>
+            <div class="listing-summary-item">
+                <span>Fotoğraf</span>
                 <strong>
                     ${listingState.uploadedImages.length}
                     adet
@@ -848,46 +1554,25 @@ function buildListingSummary() {
 
         </div>
 
+        <div class="listing-summary-section">
 
-        <div style="
-            margin-top:20px;
-            padding-top:20px;
-            border-top:1px solid #eee;
-        ">
-
-            <small style="
-                display:block;
-                margin-bottom:8px;
-            ">
+            <div class="listing-summary-section-title">
                 Donanımlar
-            </small>
+            </div>
 
-            <div>
+            <div class="listing-summary-features">
                 ${featureHtml}
             </div>
 
         </div>
 
+        <div class="listing-summary-section">
 
-        <div style="
-            margin-top:20px;
-            padding-top:20px;
-            border-top:1px solid #eee;
-        ">
-
-            <small style="
-                display:block;
-                margin-bottom:8px;
-            ">
+            <div class="listing-summary-section-title">
                 Açıklama
-            </small>
+            </div>
 
-            <p style="
-                margin:0;
-                line-height:1.7;
-                color:#555;
-                white-space:pre-line;
-            ">
+            <p class="listing-summary-description">
                 ${escapeHtml(description)}
             </p>
 
@@ -904,18 +1589,38 @@ function saveListingDraft() {
 
     const draft = {
 
-        brand: getFieldValue('addBrand'),
-        model: getFieldValue('addModel'),
-        price: getFieldValue('addPrice'),
-        year: getFieldValue('addYear'),
-        body: getFieldValue('addBody'),
-        color: getFieldValue('addColor'),
+        brand:
+            getFieldValue('addBrand'),
 
-        km: getFieldValue('addKm'),
-        fuel: getFieldValue('addFuel'),
-        trans: getFieldValue('addTrans'),
-        damage: getFieldValue('addDamage'),
-        tramer: getFieldValue('addTramer'),
+        model:
+            getFieldValue('addModel'),
+
+        price:
+            getFieldValue('addPrice'),
+
+        year:
+            getFieldValue('addYear'),
+
+        body:
+            getFieldValue('addBody'),
+
+        color:
+            getFieldValue('addColor'),
+
+        km:
+            getFieldValue('addKm'),
+
+        fuel:
+            getFieldValue('addFuel'),
+
+        trans:
+            getFieldValue('addTrans'),
+
+        damage:
+            getFieldValue('addDamage'),
+
+        tramer:
+            getFieldValue('addTramer'),
 
         description:
             getFieldValue('addDesc'),
@@ -930,14 +1635,12 @@ function saveListingDraft() {
             new Date().toISOString()
     };
 
-
     try {
 
         localStorage.setItem(
             DRAFT_KEY,
             JSON.stringify(draft)
         );
-
 
         alert(
             'Taslağınız kaydedildi.'
@@ -950,7 +1653,6 @@ function saveListingDraft() {
             error
         );
 
-
         try {
 
             const smallDraft = {
@@ -958,12 +1660,12 @@ function saveListingDraft() {
                 images: []
             };
 
-
             localStorage.setItem(
                 DRAFT_KEY,
-                JSON.stringify(smallDraft)
+                JSON.stringify(
+                    smallDraft
+                )
             );
-
 
             alert(
                 'Taslak kaydedildi ancak fotoğraflar ' +
@@ -976,7 +1678,6 @@ function saveListingDraft() {
                 'Taslak kaydetme hatası:',
                 secondError
             );
-
 
             alert(
                 'Taslak kaydedilemedi. ' +
@@ -996,22 +1697,20 @@ function loadListingDraft() {
     try {
 
         const raw =
-            localStorage.getItem(DRAFT_KEY);
-
+            localStorage.getItem(
+                DRAFT_KEY
+            );
 
         if (!raw) {
             return;
         }
 
-
         const draft =
             JSON.parse(raw);
-
 
         if (!draft) {
             return;
         }
-
 
         const setValue =
             (id, value) => {
@@ -1019,47 +1718,106 @@ function loadListingDraft() {
                 const element =
                     document.getElementById(id);
 
-
                 if (
                     element &&
                     value !== undefined &&
                     value !== null
                 ) {
-                    element.value = value;
+
+                    element.value =
+                        value;
                 }
             };
 
 
-        setValue('addBrand', draft.brand);
-        setValue('addModel', draft.model);
-        setValue('addPrice', draft.price);
-        setValue('addYear', draft.year);
-        setValue('addBody', draft.body);
-        setValue('addColor', draft.color);
+        setValue(
+            'addBrand',
+            draft.brand
+        );
 
-        setValue('addKm', draft.km);
-        setValue('addFuel', draft.fuel);
-        setValue('addTrans', draft.trans);
-        setValue('addDamage', draft.damage);
-        setValue('addTramer', draft.tramer);
-        setValue('addDesc', draft.description);
+        updateModelSelect(
+            draft.brand,
+            draft.model
+        );
+
+        setValue(
+            'addPrice',
+            draft.price
+        );
+
+        setValue(
+            'addYear',
+            draft.year
+        );
+
+        setValue(
+            'addBody',
+            draft.body
+        );
+
+        setValue(
+            'addColor',
+            draft.color
+        );
+
+        setValue(
+            'addKm',
+            draft.km
+        );
+
+        setValue(
+            'addFuel',
+            draft.fuel
+        );
+
+        setValue(
+            'addTrans',
+            draft.trans
+        );
+
+        setValue(
+            'addDamage',
+            draft.damage
+        );
+
+        setValue(
+            'addTramer',
+            draft.tramer
+        );
+
+        setValue(
+            'addDesc',
+            draft.description
+        );
 
 
-        if (Array.isArray(draft.features)) {
+        if (
+            Array.isArray(
+                draft.features
+            )
+        ) {
 
             document
-                .querySelectorAll('input[name="feature"]')
-                .forEach(input => {
+                .querySelectorAll(
+                    'input[name="feature"]'
+                )
+                .forEach(
+                    input => {
 
-                    input.checked =
-                        draft.features.includes(
-                            input.value
-                        );
-                });
+                        input.checked =
+                            draft.features.includes(
+                                input.value
+                            );
+                    }
+                );
         }
 
 
-        if (Array.isArray(draft.images)) {
+        if (
+            Array.isArray(
+                draft.images
+            )
+        ) {
 
             listingState.uploadedImages =
                 draft.images.filter(
@@ -1067,7 +1825,6 @@ function loadListingDraft() {
                         image &&
                         image.data
                 );
-
 
             renderImagePreviews();
 
@@ -1156,33 +1913,21 @@ function createNewCarObject() {
     const features =
         getCheckedFeatures();
 
-
     const fallbackImage =
         'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200';
-
 
     const imageList =
         listingState.uploadedImages.length
 
             ? listingState.uploadedImages
-                .map(image => image.data)
+                .map(
+                    image => image.data
+                )
 
             : [fallbackImage];
 
-
     const id =
         Date.now();
-
-
-    /*
-       ÖNEMLİ:
-
-       Burada hem eski hem yeni veri isimlerini
-       tutuyoruz.
-
-       Böylece mevcut app.js / kart sistemi
-       bozulmuyor.
-    */
 
     return {
 
@@ -1235,7 +1980,9 @@ function createNewCarObject() {
 
         date:
             new Date()
-                .toLocaleDateString('tr-TR'),
+                .toLocaleDateString(
+                    'tr-TR'
+                ),
 
         createdAt:
             new Date().toISOString(),
@@ -1303,30 +2050,28 @@ function persistNewListing(newCar) {
                 ) || '[]'
             );
 
-
-        if (!Array.isArray(savedCars)) {
+        if (
+            !Array.isArray(savedCars)
+        ) {
             savedCars = [];
         }
 
-
-        /*
-           Aynı ID varsa tekrar ekleme
-        */
-
         savedCars =
             savedCars.filter(
-                car => car.id !== newCar.id
+                car =>
+                    car.id !== newCar.id
             );
 
-
-        savedCars.unshift(newCar);
-
+        savedCars.unshift(
+            newCar
+        );
 
         localStorage.setItem(
             MY_LISTINGS_KEY,
-            JSON.stringify(savedCars)
+            JSON.stringify(
+                savedCars
+            )
         );
-
 
         return true;
 
@@ -1337,12 +2082,10 @@ function persistNewListing(newCar) {
             error
         );
 
-
         alert(
             'İlan kaydedilirken tarayıcı depolama ' +
             'hatası oluştu.'
         );
-
 
         return false;
     }
@@ -1362,40 +2105,36 @@ function loadSavedListingsIntoCatalog() {
                 MY_LISTINGS_KEY
             );
 
-
         if (!raw) {
             return;
         }
 
-
         const savedCars =
             JSON.parse(raw);
 
-
-        if (!Array.isArray(savedCars)) {
-            return;
-        }
-
-
         if (
-            !Array.isArray(window.dummyCars)
+            !Array.isArray(
+                savedCars
+            )
         ) {
             return;
         }
 
-
-        /*
-           Daha önce yüklenmiş user listingleri
-           tekrar eklemiyoruz.
-        */
+        if (
+            !Array.isArray(
+                window.dummyCars
+            )
+        ) {
+            return;
+        }
 
         const existingIds =
             new Set(
                 window.dummyCars.map(
-                    car => String(car.id)
+                    car =>
+                        String(car.id)
                 )
             );
-
 
         const newListings =
             savedCars.filter(
@@ -1407,14 +2146,14 @@ function loadSavedListingsIntoCatalog() {
                     )
             );
 
-
-        if (newListings.length) {
+        if (
+            newListings.length
+        ) {
 
             window.dummyCars.unshift(
                 ...newListings
             );
         }
-
 
     } catch (error) {
 
@@ -1430,14 +2169,14 @@ function loadSavedListingsIntoCatalog() {
    İLANI GLOBAL VERİYE EKLE
    ========================================================================== */
 
-function addListingToGlobalData(newCar) {
-
-    /*
-       Ana araç dizisi
-    */
+function addListingToGlobalData(
+    newCar
+) {
 
     if (
-        Array.isArray(window.dummyCars)
+        Array.isArray(
+            window.dummyCars
+        )
     ) {
 
         const exists =
@@ -1446,7 +2185,6 @@ function addListingToGlobalData(newCar) {
                     String(car.id) ===
                     String(newCar.id)
             );
-
 
         if (!exists) {
 
@@ -1457,13 +2195,10 @@ function addListingToGlobalData(newCar) {
     }
 
 
-    /*
-       Eski sistem cars kullanıyorsa
-       onu da destekle.
-    */
-
     if (
-        Array.isArray(window.cars)
+        Array.isArray(
+            window.cars
+        )
     ) {
 
         const exists =
@@ -1473,7 +2208,6 @@ function addListingToGlobalData(newCar) {
                     String(newCar.id)
             );
 
-
         if (!exists) {
 
             window.cars.unshift(
@@ -1482,10 +2216,6 @@ function addListingToGlobalData(newCar) {
         }
     }
 
-
-    /*
-       Diğer modüllere haber ver
-    */
 
     try {
 
@@ -1514,44 +2244,54 @@ function addListingToGlobalData(newCar) {
 
 function resetListingForm() {
 
-    const form =
-        document.getElementById('sellForm');
+    /*
+       Mevcut HTML'deki gerçek form ID:
+       listingForm
+    */
 
+    const form =
+        document.getElementById(
+            'listingForm'
+        );
 
     if (form) {
         form.reset();
     }
 
-
     listingState.uploadedImages = [];
-
 
     const previewGrid =
         document.getElementById(
             'imgPreviewGrid'
         );
 
-
     if (previewGrid) {
         previewGrid.innerHTML = '';
     }
 
-
     updateImageCounter();
-
 
     document
         .querySelectorAll(
             'input[name="feature"]'
         )
-        .forEach(input => {
+        .forEach(
+            input => {
+                input.checked = false;
+            }
+        );
 
-            input.checked = false;
-        });
+    const model =
+        document.getElementById(
+            'addModel'
+        );
 
+    if (model) {
+        model.value = '';
+        model.disabled = true;
+    }
 
     clearListingDraft();
-
 
     goToSellStep(1);
 }
@@ -1567,66 +2307,48 @@ function submitNewCar(event) {
         event.preventDefault();
     }
 
-
-    /*
-       1 → 2 → 3 kontrolleri
-    */
-
     for (
         let step = 1;
         step <= 3;
         step++
     ) {
 
-        if (!validateSellStep(step)) {
+        if (
+            !validateSellStep(
+                step
+            )
+        ) {
 
-            goToSellStep(step);
+            goToSellStep(
+                step
+            );
 
             return;
         }
     }
 
 
-    /*
-       Araç oluştur
-    */
-
     const newCar =
         createNewCarObject();
 
 
-    /*
-       LocalStorage
-    */
-
     const saved =
-        persistNewListing(newCar);
-
+        persistNewListing(
+            newCar
+        );
 
     if (!saved) {
         return;
     }
 
 
-    /*
-       Ana katalog
-    */
-
     addListingToGlobalData(
         newCar
     );
 
 
-    /*
-       Taslağı sil
-    */
-
     clearListingDraft();
 
-
-    /*
-       Kullanıcıya bilgi
-    */
 
     alert(
         '🎉 İlanınız başarıyla yayınlandı!\n\n' +
@@ -1634,24 +2356,19 @@ function submitNewCar(event) {
     );
 
 
-    /*
-       Formu temizle
-    */
-
     resetListingForm();
 
 
-    /*
-       Araçlar sayfasına git
-    */
+    if (
+        typeof go === 'function'
+    ) {
 
-    if (typeof go === 'function') {
-
-        setTimeout(() => {
-
-            go('browse');
-
-        }, 150);
+        setTimeout(
+            () => {
+                go('browse');
+            },
+            150
+        );
     }
 }
 
@@ -1665,29 +2382,35 @@ document.addEventListener(
     function () {
 
         /*
-           Önceden yayınlanmış ilanları
-           ana araç listesine getir.
+           Önce seçim alanlarını oluştur.
+        */
+
+        initializeListingSelectors();
+
+
+        /*
+           Sonra kayıtlı ilanları yükle.
         */
 
         loadSavedListingsIntoCatalog();
 
 
         /*
-           İlk adım
+           İlk adım.
         */
 
         goToSellStep(1);
 
 
         /*
-           Fotoğraf sayacı
+           Fotoğraf sayacı.
         */
 
         updateImageCounter();
 
 
         /*
-           Taslak
+           Taslak.
         */
 
         loadListingDraft();
@@ -1702,10 +2425,6 @@ document.addEventListener(
 window.addEventListener(
     'arabamiBulListingsUpdated',
     function () {
-
-        /*
-           Browse varsa yenile
-        */
 
         try {
 
@@ -1724,10 +2443,6 @@ window.addEventListener(
             );
         }
 
-
-        /*
-           Ana araç listesi varsa yenile
-        */
 
         try {
 
