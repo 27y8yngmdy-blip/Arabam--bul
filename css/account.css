@@ -1,0 +1,541 @@
+/* =========================================================
+   ARABAMI BUL V2 — ACCOUNT / GİRİŞ EKRANI
+   ========================================================= */
+
+.account-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(227, 6, 19, 0.08), transparent 30%),
+    radial-gradient(circle at 85% 80%, rgba(227, 6, 19, 0.06), transparent 30%),
+    #f6f7f9;
+}
+
+.account-container {
+  width: 100%;
+  max-width: 1050px;
+  display: grid;
+  grid-template-columns: 1fr 430px;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.10);
+  border: 1px solid #eceef1;
+}
+
+/* =========================================================
+   SOL TARAF
+   ========================================================= */
+
+.account-info {
+  position: relative;
+  min-height: 620px;
+  padding: 55px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(
+    145deg,
+    #17191c 0%,
+    #24272c 55%,
+    #111214 100%
+  );
+  color: #fff;
+  overflow: hidden;
+}
+
+.account-info::before {
+  content: "";
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: rgba(227, 6, 19, 0.18);
+  right: -150px;
+  top: -130px;
+}
+
+.account-info::after {
+  content: "";
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(227, 6, 19, 0.10);
+  left: -150px;
+  bottom: -120px;
+}
+
+.account-info-content,
+.account-info-bottom {
+  position: relative;
+  z-index: 2;
+}
+
+.account-mini-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.4px;
+}
+
+.account-mini-logo span {
+  color: #e30613;
+}
+
+.account-mini-logo-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e30613;
+  font-size: 19px;
+}
+
+.account-info h1 {
+  margin: 55px 0 18px;
+  max-width: 480px;
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 1.04;
+  letter-spacing: -2px;
+  font-weight: 900;
+}
+
+.account-info h1 strong {
+  color: #e30613;
+}
+
+.account-info-text {
+  max-width: 470px;
+  color: #c7cbd1;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.account-benefits {
+  display: grid;
+  gap: 14px;
+  margin-top: 38px;
+}
+
+.account-benefit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #e6e8eb;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.account-benefit-icon {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: rgba(227, 6, 19, 0.15);
+  color: #ff4b55;
+}
+
+.account-info-bottom {
+  color: #969ba3;
+  font-size: 12px;
+}
+
+/* =========================================================
+   SAĞ FORM
+   ========================================================= */
+
+.account-form-area {
+  padding: 48px 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.account-form-wrapper {
+  width: 100%;
+  max-width: 350px;
+}
+
+.account-form-header {
+  margin-bottom: 28px;
+}
+
+.account-form-header h2 {
+  margin: 0 0 8px;
+  color: #17191c;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.account-form-header p {
+  margin: 0;
+  color: #747982;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+.account-field {
+  margin-bottom: 18px;
+}
+
+.account-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: #25282d;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.account-input-wrap {
+  position: relative;
+}
+
+.account-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 15px;
+  border: 1px solid #dfe2e6;
+  border-radius: 12px;
+  outline: none;
+  background: #fff;
+  color: #17191c;
+  font-family: inherit;
+  font-size: 14px;
+  transition: 0.2s ease;
+  box-sizing: border-box;
+}
+
+.account-input::placeholder {
+  color: #a1a6ad;
+}
+
+.account-input:hover {
+  border-color: #c7cbd1;
+}
+
+.account-input:focus {
+  border-color: #e30613;
+  box-shadow: 0 0 0 4px rgba(227, 6, 19, 0.08);
+}
+
+/* Şifre göster butonu */
+
+.account-password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: #777d85;
+  cursor: pointer;
+  padding: 6px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.account-password-toggle:hover {
+  color: #e30613;
+}
+
+/* =========================================================
+   HATIRLA / ŞİFRE
+   ========================================================= */
+
+.account-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 2px 0 20px;
+}
+
+.account-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6d727a;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.account-check input {
+  width: 15px;
+  height: 15px;
+  accent-color: #e30613;
+  cursor: pointer;
+}
+
+.account-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #e30613;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.account-link:hover {
+  text-decoration: underline;
+}
+
+/* =========================================================
+   ANA BUTON
+   ========================================================= */
+
+.account-submit {
+  width: 100%;
+  height: 52px;
+  border: 0;
+  border-radius: 12px;
+  background: #e30613;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.account-submit:hover {
+  background: #c9000b;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(227, 6, 19, 0.22);
+}
+
+.account-submit:active {
+  transform: translateY(0);
+}
+
+/* =========================================================
+   AYIRICI
+   ========================================================= */
+
+.account-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  color: #a0a5ac;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.account-divider::before,
+.account-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e8eaed;
+}
+
+/* =========================================================
+   GOOGLE / SOSYAL BUTON
+   ========================================================= */
+
+.account-social {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #dfe2e6;
+  border-radius: 12px;
+  background: #fff;
+  color: #25282d;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.account-social:hover {
+  border-color: #c7cbd1;
+  background: #fafafa;
+}
+
+.account-google-icon {
+  width: 19px;
+  height: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+/* =========================================================
+   KAYIT ALANI
+   ========================================================= */
+
+.account-register {
+  margin-top: 25px;
+  text-align: center;
+  color: #777d85;
+  font-size: 13px;
+}
+
+.account-register button {
+  border: 0;
+  background: transparent;
+  color: #e30613;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.account-register button:hover {
+  text-decoration: underline;
+}
+
+/* =========================================================
+   KAYIT FORMU
+   ========================================================= */
+
+.account-form-hidden {
+  display: none;
+}
+
+.account-terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 3px 0 19px;
+  color: #777d85;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.account-terms input {
+  margin-top: 2px;
+  accent-color: #e30613;
+}
+
+/* =========================================================
+   BAŞARI / BİLGİ MESAJI
+   ========================================================= */
+
+.account-message {
+  display: none;
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f1faf3;
+  border: 1px solid #ccebd3;
+  color: #23733a;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.account-message.show {
+  display: block;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 850px) {
+  .account-page {
+    min-height: auto;
+    padding: 25px 16px 40px;
+  }
+
+  .account-container {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  .account-info {
+    min-height: auto;
+    padding: 32px;
+  }
+
+  .account-info h1 {
+    margin-top: 32px;
+    font-size: 36px;
+  }
+
+  .account-info-text {
+    font-size: 14px;
+  }
+
+  .account-benefits {
+    margin-top: 25px;
+  }
+
+  .account-info-bottom {
+    margin-top: 30px;
+  }
+
+  .account-form-area {
+    padding: 35px 30px 40px;
+  }
+}
+
+@media (max-width: 520px) {
+  .account-page {
+    padding: 15px 10px 30px;
+  }
+
+  .account-container {
+    border-radius: 18px;
+  }
+
+  .account-info {
+    padding: 25px 22px;
+  }
+
+  .account-info h1 {
+    margin-top: 25px;
+    font-size: 31px;
+    letter-spacing: -1.3px;
+  }
+
+  .account-info-text {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .account-benefit {
+    font-size: 12px;
+  }
+
+  .account-form-area {
+    padding: 30px 22px 35px;
+  }
+
+  .account-form-header h2 {
+    font-size: 26px;
+  }
+
+  .account-options {
+    align-items: flex-start;
+  }
+}
