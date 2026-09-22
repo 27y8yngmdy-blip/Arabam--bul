@@ -1,736 +1,1543 @@
 /* ============================================================
    ARABAMI BUL V2 — app.js
-   Ana uygulama çekirdeği
-   ------------------------------------------------------------
-   Sorumluluklar:
-   - Demo araç verileri
-   - Kullanıcı ilanlarını yükleme
-   - Sayfa navigasyonu
-   - Ana sayfa
-   - Araçları İncele
-   - Favoriler
-   - Arama
-   - Araç kartları
-   - Araç detay bağlantısı
-   - AI sohbet
-   ------------------------------------------------------------
-   İlan oluşturma işlemleri listing.js tarafından yönetilir.
-   ============================================================ */
+   Uygulama çekirdeği + gerçekçi demo araç veri tabanı
+   ============================================================
 
-'use strict';
+   NOT:
+   Araç fiyatları canlı ilan verisi değildir.
+   Türkiye otomobil pazarına benzer gerçekçi DEMO verileridir.
+   ============================================================ */
 
 
 /* ============================================================
-   1. DEMO ARAÇ VERİLERİ
+   1. ARAÇ VERİ TABANI
    ============================================================ */
 
 const brands = [
-    "Renault",
-    "Fiat",
-    "Opel",
-    "Peugeot",
-    "Volkswagen",
-    "Toyota",
-    "Honda",
-    "Hyundai",
-    "Ford",
-    "Skoda",
-    "SEAT",
-    "Dacia",
-    "Nissan",
-    "Kia",
-    "Cupra",
-    "BMW",
-    "Mercedes-Benz",
-    "Audi",
-    "Volvo",
-    "Tesla"
+  "Renault",
+  "Fiat",
+  "Opel",
+  "Peugeot",
+  "Volkswagen",
+  "Toyota",
+  "Honda",
+  "Hyundai",
+  "Ford",
+  "Skoda",
+  "SEAT",
+  "Dacia",
+  "Nissan",
+  "Kia",
+  "Cupra",
+  "BMW",
+  "Mercedes-Benz",
+  "Audi",
+  "Volvo",
+  "Tesla"
 ];
+
 
 const bodyTypes = [
-    "Sedan",
-    "SUV",
-    "Hatchback",
-    "Coupe"
+  "Sedan",
+  "SUV",
+  "Hatchback",
+  "Coupe"
 ];
+
 
 const fuels = [
-    "Benzin",
-    "Dizel",
-    "Elektrik",
-    "Hibrit"
-];
-
-const imgPool = [
-    "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1000&q=85",
-    "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=1000&q=85",
-    "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=1000&q=85",
-    "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=1000&q=85",
-    "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=1000&q=85",
-    "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1000&q=85"
+  "Benzin",
+  "Dizel",
+  "Elektrik",
+  "Hibrit"
 ];
 
 
 /* ============================================================
-   2. ARAÇ KATALOGU
+   GÖRSEL HAVUZU
+   ============================================================ */
+
+const imgPool = [
+  "https://images.unsplash.com/photo-1555215695-3004980ad54e?w=1000&q=85",
+  "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=1000&q=85",
+  "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=1000&q=85",
+  "https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=1000&q=85",
+  "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=1000&q=85",
+  "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=1000&q=85"
+];
+
+
+/* ============================================================
+   GERÇEKÇİ ARAÇ KATALOĞU
+   ------------------------------------------------------------
+   Her satır:
+   Marka,
+   Model,
+   Kasa,
+   Paket,
+   Yakıt,
+   Şanzıman,
+   Yıl,
+   Fiyat,
+   KM,
+   Motor,
+   HP,
+   Çekiş
    ============================================================ */
 
 const carCatalog = [
-    ["Renault", "Clio", "Hatchback", 825000, "Benzin", "Otomatik"],
-    ["Renault", "Megane", "Sedan", 1185000, "Benzin", "Otomatik"],
-    ["Fiat", "Egea", "Sedan", 795000, "Benzin", "Manuel"],
-    ["Fiat", "Egea Cross", "SUV", 965000, "Benzin", "Otomatik"],
-    ["Opel", "Corsa", "Hatchback", 985000, "Benzin", "Otomatik"],
-    ["Peugeot", "208", "Hatchback", 1045000, "Benzin", "Otomatik"],
-    ["Peugeot", "3008", "SUV", 1495000, "Benzin", "Otomatik"],
-    ["Volkswagen", "Polo", "Hatchback", 1095000, "Benzin", "Otomatik"],
-    ["Volkswagen", "Golf", "Hatchback", 1425000, "Benzin", "Otomatik"],
-    ["Toyota", "Corolla", "Sedan", 1295000, "Hibrit", "Otomatik"],
-    ["Toyota", "Yaris", "Hatchback", 1125000, "Hibrit", "Otomatik"],
-    ["Honda", "Civic", "Sedan", 1515000, "Benzin", "Otomatik"],
-    ["Hyundai", "i20", "Hatchback", 945000, "Benzin", "Otomatik"],
-    ["Hyundai", "Bayon", "SUV", 1085000, "Benzin", "Otomatik"],
-    ["Hyundai", "Tucson", "SUV", 1595000, "Benzin", "Otomatik"],
-    ["Ford", "Focus", "Sedan", 1295000, "Benzin", "Otomatik"],
-    ["Ford", "Puma", "SUV", 1275000, "Benzin", "Otomatik"],
-    ["Skoda", "Fabia", "Hatchback", 995000, "Benzin", "Otomatik"],
-    ["Skoda", "Octavia", "Sedan", 1375000, "Benzin", "Otomatik"],
-    ["Skoda", "Kamiq", "SUV", 1245000, "Benzin", "Otomatik"],
-    ["SEAT", "Ibiza", "Hatchback", 925000, "Benzin", "Otomatik"],
-    ["SEAT", "Leon", "Hatchback", 1185000, "Benzin", "Otomatik"],
-    ["Dacia", "Duster", "SUV", 1075000, "Benzin", "Manuel"],
-    ["Nissan", "Qashqai", "SUV", 1545000, "Benzin", "Otomatik"],
-    ["Kia", "Sportage", "SUV", 1695000, "Benzin", "Otomatik"],
-    ["Cupra", "Formentor", "SUV", 1875000, "Benzin", "Otomatik"],
-    ["BMW", "1 Serisi", "Hatchback", 1950000, "Benzin", "Otomatik"],
-    ["BMW", "3 Serisi", "Sedan", 2595000, "Benzin", "Otomatik"],
-    ["Mercedes-Benz", "A Serisi", "Hatchback", 2145000, "Benzin", "Otomatik"],
-    ["Mercedes-Benz", "C Serisi", "Sedan", 2875000, "Benzin", "Otomatik"],
-    ["Audi", "A3", "Sedan", 1995000, "Benzin", "Otomatik"],
-    ["Audi", "Q3", "SUV", 2295000, "Benzin", "Otomatik"],
-    ["Volvo", "XC40", "SUV", 2195000, "Benzin", "Otomatik"],
-    ["Volvo", "S60", "Sedan", 2395000, "Hibrit", "Otomatik"],
-    ["Tesla", "Model 3", "Sedan", 1895000, "Elektrik", "Otomatik"]
-];
 
+  ["Renault","Clio","Hatchback","1.0 TCe Icon","Benzin","Otomatik",2023,1450000,42000,"1.0 Turbo","90 HP","Ön Çekiş"],
+  ["Renault","Megane","Sedan","1.3 TCe Icon","Benzin","Otomatik",2022,1725000,68000,"1.3 Turbo","140 HP","Ön Çekiş"],
 
-const sellerNames = [
-    "AutoCenter",
-    "Premium Motors",
-    "Güven Otomotiv",
-    "Elite Cars",
-    "Şehir Otomotiv",
-    "Motorline",
-    "Prestij Auto",
-    "Oto Galeri"
-];
+  ["Fiat","Egea","Sedan","1.6 Multijet Lounge","Dizel","Otomatik",2023,1325000,54000,"1.6 Multijet","130 HP","Ön Çekiş"],
+  ["Fiat","Egea Cross","SUV","1.0 Firefly Urban","Benzin","Manuel",2022,1295000,61000,"1.0 Turbo","100 HP","Ön Çekiş"],
 
+  ["Opel","Corsa","Hatchback","1.2 Elegance","Benzin","Otomatik",2024,1585000,18500,"1.2 Turbo","100 HP","Ön Çekiş"],
+  ["Peugeot","208","Hatchback","1.2 PureTech Allure","Benzin","Otomatik",2023,1545000,31000,"1.2 Turbo","100 HP","Ön Çekiş"],
 
-const locations = [
-    ["İstanbul", "Kadıköy"],
-    ["İstanbul", "Ümraniye"],
-    ["Ankara", "Çankaya"],
-    ["İzmir", "Bornova"],
-    ["Bursa", "Nilüfer"],
-    ["Antalya", "Muratpaşa"],
-    ["Adana", "Seyhan"],
-    ["Hatay", "İskenderun"]
+  ["Peugeot","3008","SUV","1.5 BlueHDi Allure","Dizel","Otomatik",2022,2145000,72000,"1.5 BlueHDi","130 HP","Ön Çekiş"],
+  ["Volkswagen","Polo","Hatchback","1.0 TSI Style","Benzin","Otomatik",2023,1695000,36000,"1.0 TSI","95 HP","Ön Çekiş"],
+
+  ["Volkswagen","Golf","Hatchback","1.5 eTSI Style","Hibrit","Otomatik",2024,2265000,22000,"1.5 eTSI","150 HP","Ön Çekiş"],
+  ["Toyota","Corolla","Sedan","1.8 Hybrid Flame X-Pack","Hibrit","Otomatik",2023,1975000,47000,"1.8 Hybrid","140 HP","Ön Çekiş"],
+
+  ["Toyota","Yaris","Hatchback","1.5 Hybrid Dream","Hibrit","Otomatik",2022,1665000,39000,"1.5 Hybrid","116 HP","Ön Çekiş"],
+  ["Honda","Civic","Sedan","1.5 VTEC Turbo Executive+","Benzin","Otomatik",2022,2135000,58000,"1.5 Turbo","182 HP","Ön Çekiş"],
+
+  ["Hyundai","i20","Hatchback","1.0 T-GDI Elite","Benzin","Otomatik",2023,1375000,33000,"1.0 Turbo","100 HP","Ön Çekiş"],
+  ["Hyundai","Bayon","SUV","1.0 T-GDI Elite","Benzin","Otomatik",2023,1515000,41000,"1.0 Turbo","100 HP","Ön Çekiş"],
+
+  ["Hyundai","Tucson","SUV","1.6 T-GDI Elite Plus","Benzin","Otomatik",2023,2195000,52000,"1.6 Turbo","180 HP","Ön Çekiş"],
+  ["Ford","Focus","Sedan","1.5 EcoBlue Titanium","Dizel","Otomatik",2022,1765000,76000,"1.5 EcoBlue","120 HP","Ön Çekiş"],
+
+  ["Ford","Puma","SUV","1.0 EcoBoost ST-Line","Benzin","Otomatik",2023,1815000,35000,"1.0 EcoBoost","125 HP","Ön Çekiş"],
+  ["Skoda","Fabia","Hatchback","1.0 TSI Elite","Benzin","Otomatik",2023,1485000,29000,"1.0 TSI","110 HP","Ön Çekiş"],
+
+  ["Skoda","Octavia","Sedan","1.5 TSI Premium","Benzin","Otomatik",2022,1985000,64000,"1.5 TSI","150 HP","Ön Çekiş"],
+  ["Skoda","Kamiq","SUV","1.0 TSI Premium","Benzin","Otomatik",2023,1775000,38000,"1.0 TSI","110 HP","Ön Çekiş"],
+
+  ["SEAT","Ibiza","Hatchback","1.0 EcoTSI FR","Benzin","Otomatik",2023,1515000,27000,"1.0 TSI","110 HP","Ön Çekiş"],
+  ["SEAT","Leon","Hatchback","1.5 eTSI FR","Hibrit","Otomatik",2023,1915000,43000,"1.5 eTSI","150 HP","Ön Çekiş"],
+
+  ["Dacia","Duster","SUV","1.3 TCe Journey","Benzin","Otomatik",2023,1665000,49000,"1.3 Turbo","150 HP","Ön Çekiş"],
+  ["Nissan","Qashqai","SUV","1.3 DIG-T Designpack","Benzin","Otomatik",2022,2075000,69000,"1.3 Turbo","158 HP","Ön Çekiş"],
+
+  ["Kia","Sportage","SUV","1.6 T-GDI Prestige","Benzin","Otomatik",2023,2325000,44000,"1.6 Turbo","180 HP","Ön Çekiş"],
+  ["Cupra","Formentor","SUV","1.5 TSI VZ","Benzin","Otomatik",2023,2395000,36000,"1.5 TSI","150 HP","Ön Çekiş"],
+
+  ["BMW","1 Serisi","Hatchback","118i M Sport","Benzin","Otomatik",2022,2550000,52000,"1.5 Turbo","136 HP","Ön Çekiş"],
+  ["BMW","3 Serisi","Sedan","320i M Sport","Benzin","Otomatik",2021,3095000,79000,"1.6 Turbo","170 HP","Arka Çekiş"],
+
+  ["Mercedes-Benz","A-Serisi","Hatchback","A 200 AMG","Benzin","Otomatik",2022,2650000,48000,"1.3 Turbo","163 HP","Ön Çekiş"],
+  ["Mercedes-Benz","C-Serisi","Sedan","C 200 AMG","Benzin","Otomatik",2021,3295000,72000,"1.5 Turbo","170 HP","Arka Çekiş"],
+
+  ["Audi","A3","Sedan","35 TFSI Advanced","Benzin","Otomatik",2022,2495000,56000,"1.5 TFSI","150 HP","Ön Çekiş"],
+  ["Audi","Q3","SUV","35 TFSI Advanced","Benzin","Otomatik",2022,2945000,61000,"1.5 TFSI","150 HP","Ön Çekiş"],
+
+  ["Volvo","XC40","SUV","B3 Plus Dark","Benzin","Otomatik",2023,2825000,39000,"2.0 Turbo","163 HP","Ön Çekiş"],
+  ["Volvo","S60","Sedan","B4 Ultimate","Benzin","Otomatik",2022,2985000,51000,"2.0 Turbo","197 HP","Ön Çekiş"],
+
+  ["Tesla","Model 3","Sedan","Long Range AWD","Elektrik","Otomatik",2023,2795000,44000,"Elektrik","498 HP","Dört Çeker"]
+
 ];
 
 
 /* ============================================================
-   3. YARDIMCI VERİ ÜRETİCİLERİ
+   SATICI İSİMLERİ
+   ============================================================ */
+
+const sellerNames = [
+  "Mert Yılmaz",
+  "Emre Kaya",
+  "Burak Demir",
+  "Can Aydın",
+  "Kerem Şahin",
+  "Onur Çelik",
+  "Berkay Özkan",
+  "Eren Aksoy",
+  "Serkan Arslan",
+  "Hakan Koç",
+  "Mehmet Yıldız",
+  "Ali Kılıç",
+  "Oğuzhan Kurt",
+  "Barış Doğan",
+  "Umut Kara"
+];
+
+
+/* ============================================================
+   KONUM LİSTESİ
+   ============================================================ */
+
+const locations = [
+  "İstanbul, Kadıköy",
+  "İstanbul, Ataşehir",
+  "İstanbul, Ümraniye",
+  "İstanbul, Başakşehir",
+  "İstanbul, Beylikdüzü",
+  "Ankara, Çankaya",
+  "Ankara, Keçiören",
+  "İzmir, Bornova",
+  "İzmir, Karşıyaka",
+  "Bursa, Nilüfer",
+  "Antalya, Kepez",
+  "Kocaeli, Gebze",
+  "Adana, Seyhan"
+];
+
+
+/* ============================================================
+   RENKLER
+   ============================================================ */
+
+const carColors = [
+  "Beyaz",
+  "Gri",
+  "Siyah",
+  "Lacivert",
+  "Kırmızı",
+  "Gümüş"
+];
+
+
+/* ============================================================
+   EKSPERTİZ VERİSİ
    ============================================================ */
 
 function createExpertData(index) {
 
-    return {
-        hood: index % 3 !== 0,
-        fender: index % 4 !== 0,
-        roof: index % 5 !== 0,
-        doorRight: index % 6 !== 0,
-        tramer: Math.floor((index % 8) * 3750),
-        engineScore: 88 + (index % 11),
-        transmissionScore: 90 + (index % 9)
-    };
-}
+  const sets = [
 
+    {
+      hood: "Orijinal",
+      fenderLeft: "Orijinal",
+      roof: "Orijinal",
+      doorRight: "Orijinal",
+      tramer: "Hasar Kayıtsız",
+      engineScore: "%97",
+      transmissionScore: "Kusursuz / Test Edildi"
+    },
 
-function createDemoCar(base, index, variant) {
+    {
+      hood: "Orijinal",
+      fenderLeft: "Boya",
+      roof: "Orijinal",
+      doorRight: "Orijinal",
+      tramer: "12.400 TL",
+      engineScore: "%94",
+      transmissionScore: "Kusursuz / Test Edildi"
+    },
 
-    const [
-        brand,
-        model,
-        body,
-        basePrice,
-        fuel,
-        trans
-    ] = base;
+    {
+      hood: "Orijinal",
+      fenderLeft: "Orijinal",
+      roof: "Orijinal",
+      doorRight: "Boya",
+      tramer: "8.750 TL",
+      engineScore: "%93",
+      transmissionScore: "Kontrol Edildi"
+    },
 
-    const year = 2021 + ((index + variant) % 5);
+    {
+      hood: "Boya",
+      fenderLeft: "Orijinal",
+      roof: "Orijinal",
+      doorRight: "Orijinal",
+      tramer: "21.500 TL",
+      engineScore: "%91",
+      transmissionScore: "Kontrol Edildi"
+    },
 
-    const km = 8500 +
-        (((index * 7311) + (variant * 4200)) % 85000);
+    {
+      hood: "Orijinal",
+      fenderLeft: "Değişen",
+      roof: "Orijinal",
+      doorRight: "Orijinal",
+      tramer: "34.800 TL",
+      engineScore: "%89",
+      transmissionScore: "Kontrol Edildi"
+    }
 
-    const price = basePrice +
-        (((variant * 42000) + (index % 4) * 17500));
+  ];
 
-    const location = locations[
-        (index + variant) % locations.length
-    ];
+  return sets[index % sets.length];
 
-    const imageIndex =
-        (index + variant) % imgPool.length;
-
-    const engineMap = {
-        "Renault": "1.0 TCe",
-        "Fiat": "1.4 Fire",
-        "Opel": "1.2 Turbo",
-        "Peugeot": "1.2 PureTech",
-        "Volkswagen": "1.0 TSI",
-        "Toyota": "1.8 Hybrid",
-        "Honda": "1.5 VTEC",
-        "Hyundai": "1.0 T-GDI",
-        "Ford": "1.0 EcoBoost",
-        "Skoda": "1.0 TSI",
-        "SEAT": "1.0 TSI",
-        "Dacia": "1.0 TCe",
-        "Nissan": "1.3 DIG-T",
-        "Kia": "1.6 T-GDI",
-        "Cupra": "1.5 TSI",
-        "BMW": "1.5 TwinPower",
-        "Mercedes-Benz": "1.3 Turbo",
-        "Audi": "1.5 TFSI",
-        "Volvo": "2.0 B4",
-        "Tesla": "Elektrikli"
-    };
-
-    const powerMap = {
-        "Renault": 90,
-        "Fiat": 95,
-        "Opel": 100,
-        "Peugeot": 100,
-        "Volkswagen": 110,
-        "Toyota": 140,
-        "Honda": 129,
-        "Hyundai": 100,
-        "Ford": 125,
-        "Skoda": 110,
-        "SEAT": 110,
-        "Dacia": 100,
-        "Nissan": 158,
-        "Kia": 150,
-        "Cupra": 150,
-        "BMW": 136,
-        "Mercedes-Benz": 163,
-        "Audi": 150,
-        "Volvo": 197,
-        "Tesla": 283
-    };
-
-    const equipment = [
-        "Geri Görüş Kamerası",
-        "Apple CarPlay",
-        "Android Auto",
-        "LED Far",
-        "Hız Sabitleyici",
-        "Park Sensörü",
-        "Dijital Klima"
-    ].slice(0, 4 + ((index + variant) % 4));
-
-    const tco =
-        Math.round(price * 0.022) +
-        12000 +
-        ((index % 5) * 1500);
-
-    const expert = createExpertData(index + variant);
-
-    return {
-
-        id: index + 1 + (variant * 100),
-
-        brand,
-        model,
-
-        title: `${year} ${brand} ${model}`,
-
-        trim:
-            variant === 0
-                ? "Standart"
-                : variant === 1
-                    ? "Premium"
-                    : "Plus",
-
-        seg: body,
-
-        body,
-
-        price,
-
-        fuel,
-
-        trans,
-
-        transmission: trans,
-
-        year,
-
-        km,
-
-        tco,
-
-        img: imgPool[imageIndex],
-
-        images: [
-            imgPool[imageIndex],
-            imgPool[(imageIndex + 1) % imgPool.length],
-            imgPool[(imageIndex + 2) % imgPool.length]
-        ],
-
-        engine: engineMap[brand] || "1.5 Turbo",
-
-        power: powerMap[brand] || 120,
-
-        drive:
-            body === "SUV"
-                ? "Önden Çekiş"
-                : "Önden Çekiş",
-
-        color: [
-            "Beyaz",
-            "Siyah",
-            "Gri",
-            "Kırmızı",
-            "Mavi"
-        ][(index + variant) % 5],
-
-        seller:
-            sellerNames[(index + variant) % sellerNames.length],
-
-        sellerType:
-            index % 3 === 0
-                ? "Kurumsal"
-                : "Galerici",
-
-        location:
-            `${location[1]}, ${location[0]}`,
-
-        city: location[0],
-
-        district: location[1],
-
-        featured:
-            index < 6,
-
-        description:
-            `${year} model ${brand} ${model}. ` +
-            `Bakımları düzenli yapılmış, günlük kullanıma hazır ` +
-            `ve detaylı olarak kontrol edilmiş araç.`,
-
-        equipment,
-
-        expert
-    };
 }
 
 
 /* ============================================================
-   4. 70 ARAÇLIK DEMO KATALOG
+   ARAÇ LİSTESİ OLUŞTUR
+   ------------------------------------------------------------
+   35 gerçek model x 2 farklı ilan = 70 araç
    ============================================================ */
 
-const dummyCars = [];
+window.dummyCars = [];
 
-carCatalog.forEach((car, index) => {
 
-    dummyCars.push(
-        createDemoCar(car, index, 0)
-    );
+carCatalog.forEach((base, modelIndex) => {
 
-    dummyCars.push(
-        createDemoCar(car, index, 1)
-    );
+  for (let variant = 0; variant < 2; variant++) {
+
+    const id =
+      modelIndex * 2 +
+      variant +
+      1;
+
+
+    const year =
+      Math.max(
+        2019,
+        Number(base[6]) - variant
+      );
+
+
+    const price =
+      base[7] -
+      (
+        variant *
+        Math.round(
+          base[7] * 0.055
+        )
+      );
+
+
+    const km =
+      base[8] +
+      (
+        variant === 0
+          ? 0
+          : 24500 +
+            (
+              modelIndex % 6
+            ) * 4200
+      );
+
+
+    let tcoRate = 0.0058;
+
+
+    if (base[4] === "Hibrit") {
+      tcoRate = 0.0042;
+    }
+
+
+    if (base[4] === "Elektrik") {
+      tcoRate = 0.0032;
+    }
+
+
+    const tco =
+      Math.max(
+        4500,
+        Math.round(
+          price * tcoRate
+        )
+      );
+
+
+    const imageStart =
+      (
+        modelIndex +
+        variant
+      ) % imgPool.length;
+
+
+    const location =
+      locations[
+        (id - 1) %
+        locations.length
+      ];
+
+
+    const seller =
+      sellerNames[
+        (id - 1) %
+        sellerNames.length
+      ];
+
+
+    const car = {
+
+      id: id,
+
+      brand: base[0],
+
+      model: base[1],
+
+      title:
+        `${base[0]} ${base[1]} ${base[3]}`,
+
+      trim: base[3],
+
+      seg: base[2],
+
+      body: base[2],
+
+      price: price,
+
+      fuel: base[4],
+
+      trans: base[5],
+
+      transmission: base[5],
+
+      year: year,
+
+      km: km,
+
+      tco: tco,
+
+
+      img:
+        imgPool[imageStart],
+
+
+      images: [
+
+        imgPool[imageStart],
+
+        imgPool[
+          (imageStart + 1) %
+          imgPool.length
+        ],
+
+        imgPool[
+          (imageStart + 2) %
+          imgPool.length
+        ],
+
+        imgPool[
+          (imageStart + 3) %
+          imgPool.length
+        ]
+
+      ],
+
+
+      engine: base[9],
+
+      power: base[10],
+
+      drive: base[11],
+
+
+      color:
+        carColors[
+          id % carColors.length
+        ],
+
+
+      seller: seller,
+
+      sellerType:
+        id % 5 === 0
+          ? "Kurumsal"
+          : "Bireysel",
+
+
+      location: location,
+
+
+      city:
+        location.split(", ")[0],
+
+
+      district:
+        location.split(", ")[1],
+
+
+      featured:
+        id <= 6,
+
+
+      description:
+        `${year} model ${base[0]} ${base[1]} ${base[3]}. ` +
+        `${km.toLocaleString("tr-TR")} km'de, ` +
+        `${base[4].toLowerCase()} yakıtlı ve ` +
+        `${base[5].toLowerCase()} şanzımanlıdır. ` +
+        `Araç bilgileri demo amaçlı hazırlanmıştır.`,
+
+
+      equipment: [
+
+        "Klima",
+        "Multimedya ekranı",
+        "Bluetooth",
+        "Geri görüş kamerası",
+        "Park sensörü",
+        "Hız sabitleyici",
+        "Elektrikli camlar",
+        "Anahtarsız çalıştırma",
+        "LED farlar",
+        "Yokuş kalkış desteği",
+        "ABS",
+        "ESP"
+
+      ],
+
+
+      expert:
+        createExpertData(id)
+
+    };
+
+
+    window.dummyCars.push(car);
+
+  }
 
 });
 
-window.dummyCars = dummyCars;
+
+/* ============================================================
+   2. ORTAK DURUM
+   ============================================================ */
+
+let favorites =
+  JSON.parse(
+    localStorage.getItem("favs") || "[]"
+  );
+
+
+window.favorites =
+  favorites;
+
+
+let uploadedImages = [];
+
+
+/* ============================================================
+   3. SAYFA GEÇİŞLERİ
+   ============================================================ */
+
+function go(pageId) {
+
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
+
+      page.classList.remove(
+        "active"
+      );
+
+    });
+
+
+  const target =
+    document.getElementById(
+      pageId
+    );
+
+
+  if (target) {
+
+    target.classList.add(
+      "active"
+    );
+
+  }
+
+
+  document
+    .querySelectorAll(
+      ".navlinks button, .mobile-bottom-nav button"
+    )
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page === pageId
+      );
+
+    });
+
+
+  if (pageId === "home") {
+
+    renderHome();
+
+  }
+
+
+  if (pageId === "browse") {
+
+    renderBrowse();
+
+  }
+
+
+  if (
+    pageId === "favorites" &&
+    typeof renderFavorites ===
+    "function"
+  ) {
+
+    renderFavorites();
+
+  }
+
+
+  window.scrollTo({
+
+    top: 0,
+
+    behavior: "instant"
+
+  });
+
+}
+
+
+/* ============================================================
+   4. AKILLI ARAMA
+   ============================================================ */
+
+function handleSearchInput(val) {
+
+  const dropdown =
+    document.getElementById(
+      "searchDropdown"
+    );
+
+
+  if (!dropdown) return;
+
+
+  const q =
+    String(val || "")
+      .trim()
+      .toLocaleLowerCase(
+        "tr-TR"
+      );
+
+
+  if (!q) {
+
+    dropdown.classList.remove(
+      "open"
+    );
+
+    return;
+
+  }
+
+
+  const cmdItems = [];
+
+  const carItems = [];
+
+
+  if (
+    "favoriler".includes(q) ||
+    "fav".includes(q)
+  ) {
+
+    cmdItems.push({
+
+      text:
+        "⭐ Favorilerim Sayfasına Git",
+
+      action: () => {
+
+        go("favorites");
+
+        clearSearch();
+
+      }
+
+    });
+
+  }
+
+
+  if (
+    "ilan ver".includes(q) ||
+    "sat".includes(q)
+  ) {
+
+    cmdItems.push({
+
+      text:
+        "📝 İlan Ver Sayfasına Git",
+
+      action: () => {
+
+        go("sell");
+
+        clearSearch();
+
+      }
+
+    });
+
+  }
+
+
+  if (
+    "sihirbaz".includes(q) ||
+    "bul".includes(q)
+  ) {
+
+    cmdItems.push({
+
+      text:
+        "🪄 Bana Araba Bul Sihirbazı",
+
+      action: () => {
+
+        go("find");
+
+        clearSearch();
+
+      }
+
+    });
+
+  }
+
+
+  const matchedCars =
+    window.dummyCars
+      .filter(car => {
+
+        const brand =
+          String(car.brand || "")
+            .toLocaleLowerCase(
+              "tr-TR"
+            );
+
+
+        const model =
+          String(car.model || "")
+            .toLocaleLowerCase(
+              "tr-TR"
+            );
+
+
+        return (
+          brand.includes(q) ||
+          model.includes(q)
+        );
+
+      })
+      .slice(0, 5);
+
+
+  matchedCars.forEach(car => {
+
+    carItems.push({
+
+      text:
+        `${car.brand} ${car.model} ${car.trim} ` +
+        `(${car.price.toLocaleString("tr-TR")} TL)`,
+
+      action: () => {
+
+        openDetail(
+          car.id
+        );
+
+        clearSearch();
+
+      },
+
+      tag:
+        car.fuel
+
+    });
+
+  });
+
+
+  let html = "";
+
+
+  if (
+    cmdItems.length > 0
+  ) {
+
+    html +=
+      '<div class="search-group-title">Hızlı Komutlar</div>';
+
+
+    cmdItems.forEach(
+      (item, index) => {
+
+        html += `
+
+          <div
+            class="search-item"
+            onclick="execCmd(${index})"
+          >
+
+            <span>
+              ${item.text}
+            </span>
+
+            <span class="type-tag">
+              Komut
+            </span>
+
+          </div>
+
+        `;
+
+      }
+    );
+
+
+    dropdown.cmdActions =
+      cmdItems.map(
+        item => item.action
+      );
+
+  }
+
+
+  if (
+    carItems.length > 0
+  ) {
+
+    html +=
+      '<div class="search-group-title">Eşleşen Araçlar</div>';
+
+
+    carItems.forEach(
+      (item, index) => {
+
+        html += `
+
+          <div
+            class="search-item"
+            onclick="execCar(${index})"
+          >
+
+            <span>
+              ${item.text}
+            </span>
+
+            <span class="type-tag">
+              ${item.tag}
+            </span>
+
+          </div>
+
+        `;
+
+      }
+    );
+
+
+    dropdown.carActions =
+      carItems.map(
+        item => item.action
+      );
+
+  }
+
+
+  if (!html) {
+
+    html = `
+
+      <div
+        class="search-item"
+        onclick="executeBrowseSearch('${q.replace(/'/g, "\\'")}')"
+      >
+
+        🔍 "${q}" için araçlarda detaylı ara...
+
+      </div>
+
+    `;
+
+
+    dropdown.cmdActions = [
+
+      () =>
+        executeBrowseSearch(q)
+
+    ];
+
+  }
+
+
+  dropdown.innerHTML =
+    html;
+
+
+  dropdown.classList.add(
+    "open"
+  );
+
+}
+
+
+function execCmd(index) {
+
+  const dropdown =
+    document.getElementById(
+      "searchDropdown"
+    );
+
+
+  if (
+    dropdown &&
+    dropdown.cmdActions &&
+    dropdown.cmdActions[index]
+  ) {
+
+    dropdown.cmdActions[index]();
+
+  }
+
+}
+
+
+function execCar(index) {
+
+  const dropdown =
+    document.getElementById(
+      "searchDropdown"
+    );
+
+
+  if (
+    dropdown &&
+    dropdown.carActions &&
+    dropdown.carActions[index]
+  ) {
+
+    dropdown.carActions[index]();
+
+  }
+
+}
+
+
+function executeBrowseSearch(q) {
+
+  go("browse");
+
+
+  const queryInput =
+    document.getElementById(
+      "fQuery"
+    );
+
+
+  if (queryInput) {
+
+    queryInput.value =
+      q;
+
+  }
+
+
+  renderBrowse();
+
+  clearSearch();
+
+}
+
+
+function clearSearch() {
+
+  const input =
+    document.getElementById(
+      "globalSearchInput"
+    );
+
+
+  const dropdown =
+    document.getElementById(
+      "searchDropdown"
+    );
+
+
+  if (input) {
+
+    input.value = "";
+
+  }
+
+
+  if (dropdown) {
+
+    dropdown.classList.remove(
+      "open"
+    );
+
+  }
+
+}
+
+
+function handleSearchKeyDown(
+  event
+) {
+
+  if (
+    event.key === "Enter"
+  ) {
+
+    const input =
+      document.getElementById(
+        "globalSearchInput"
+      );
+
+
+    if (!input) return;
+
+
+    const q =
+      input.value.trim();
+
+
+    if (q) {
+
+      executeBrowseSearch(
+        q
+      );
+
+    }
+
+  }
+
+}
+
+
+/* CTRL + K */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      (event.ctrlKey ||
+        event.metaKey) &&
+      event.key.toLowerCase() ===
+        "k"
+    ) {
+
+      event.preventDefault();
+
+
+      const input =
+        document.getElementById(
+          "globalSearchInput"
+        );
+
+
+      if (input) {
+
+        input.focus();
+
+      }
+
+    }
+
+  }
+);
 
 
 /* ============================================================
    5. FAVORİLER
    ============================================================ */
 
-let favorites = [];
+function toggleFav(
+  id,
+  e
+) {
 
-try {
+  if (e) {
+
+    e.stopPropagation();
+
+  }
+
+
+  if (
+    favorites.includes(id)
+  ) {
 
     favorites =
-        JSON.parse(
-            localStorage.getItem("favs") || "[]"
-        );
+      favorites.filter(
+        item => item !== id
+      );
 
-    if (!Array.isArray(favorites)) {
-        favorites = [];
-    }
+  } else {
 
-} catch (error) {
+    favorites.push(id);
 
-    favorites = [];
+  }
+
+
+  window.favorites =
+    favorites;
+
+
+  localStorage.setItem(
+    "favs",
+    JSON.stringify(
+      favorites
+    )
+  );
+
+
+  renderHome();
+
+  renderBrowse();
+
+  if (
+    typeof renderFavorites ===
+    "function"
+  ) {
+
+    renderFavorites();
+
+  }
 
 }
 
-window.favorites = favorites;
-
-
-/* ============================================================
-   6. KULLANICI İLANLARINI YÜKLE
-   ============================================================ */
-
-function normalizeSavedListing(car, index) {
-
-    if (!car || typeof car !== "object") {
-        return null;
-    }
-
-    const safeBrand =
-        car.brand || "Diğer";
-
-    const safeModel =
-        car.model || "Araç";
-
-    const safeYear =
-        Number(car.year) || new Date().getFullYear();
-
-    const safePrice =
-        Number(car.price) || 0;
-
-    const safeKm =
-        Number(car.km) || 0;
-
-    const imageList =
-        Array.isArray(car.images) && car.images.length
-            ? car.images
-            : car.image
-                ? [car.image]
-                : [
-                    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=1200"
-                ];
-
-    return {
-
-        ...car,
-
-        id:
-            car.id ||
-            `user_${Date.now()}_${index}`,
-
-        brand: safeBrand,
-
-        model: safeModel,
-
-        title:
-            car.title ||
-            `${safeYear} ${safeBrand} ${safeModel}`,
-
-        trim:
-            car.trim || "Standart",
-
-        seg:
-            car.seg ||
-            car.body ||
-            "Sedan",
-
-        body:
-            car.body ||
-            "Sedan",
-
-        price: safePrice,
-
-        fuel:
-            car.fuel ||
-            "Benzin",
-
-        trans:
-            car.trans ||
-            car.transmission ||
-            "Otomatik",
-
-        transmission:
-            car.transmission ||
-            car.trans ||
-            "Otomatik",
-
-        year: safeYear,
-
-        km: safeKm,
-
-        tco:
-            Number(car.tco) ||
-            Math.round(safePrice * 0.022),
-
-        img:
-            car.img ||
-            imageList[0],
-
-        images:
-            imageList,
-
-        engine:
-            car.engine ||
-            "Belirtilmemiş",
-
-        power:
-            Number(car.power) ||
-            0,
-
-        drive:
-            car.drive ||
-            "Önden Çekiş",
-
-        color:
-            car.color ||
-            "Belirtilmemiş",
-
-        seller:
-            car.seller ||
-            "Bireysel Satıcı",
-
-        sellerType:
-            car.sellerType ||
-            "Bireysel",
-
-        location:
-            car.location ||
-            "Türkiye",
-
-        city:
-            car.city ||
-            "",
-
-        district:
-            car.district ||
-            "",
-
-        featured:
-            false,
-
-        description:
-            car.description ||
-            "Satıcı tarafından eklenen ilan.",
-
-        equipment:
-            Array.isArray(car.equipment)
-                ? car.equipment
-                : Array.isArray(car.features)
-                    ? car.features
-                    : [],
-
-        features:
-            Array.isArray(car.features)
-                ? car.features
-                : [],
-
-        expert:
-            car.expert || {
-                hood: true,
-                fender: true,
-                roof: true,
-                doorRight: true,
-                tramer: Number(car.tramer) || 0,
-                engineScore: 90,
-                transmissionScore: 90
-            },
-
-        source:
-            "user_listing",
-
-        isUserListing:
-            true
-    };
-}
-
-
-function loadSavedUserListings() {
-
-    try {
-
-        const raw =
-            localStorage.getItem("my_listings");
-
-        if (!raw) {
-            return;
-        }
-
-        const saved =
-            JSON.parse(raw);
-
-        if (!Array.isArray(saved) || !saved.length) {
-            return;
-        }
-
-        const normalized =
-            saved
-                .map((car, index) =>
-                    normalizeSavedListing(car, index)
-                )
-                .filter(Boolean);
-
-        const existingIds =
-            new Set(
-                window.dummyCars.map(car =>
-                    String(car.id)
-                )
-            );
-
-        normalized.reverse().forEach(car => {
-
-            if (!existingIds.has(String(car.id))) {
-
-                window.dummyCars.unshift(car);
-
-                existingIds.add(
-                    String(car.id)
-                );
-            }
-
-        });
-
-        console.log(
-            `Arabamı Bul: ${normalized.length} kullanıcı ilanı yüklendi.`
-        );
-
-    } catch (error) {
-
-        console.warn(
-            "Kullanıcı ilanları yüklenemedi:",
-            error
-        );
-
-    }
-}
-
-
-/* ============================================================
-   7. SAYFA NAVİGASYONU
-   ============================================================ */
-
-function go(pageId) {
-
-    const pages =
-        document.querySelectorAll(".page");
-
-    pages.forEach(page => {
-
-        page.classList.remove("active");
-
-    });
-
-
-    const target =
-        document.getElementById(pageId);
-
-    if (target) {
-
-        target.classList.add("active");
-
-    }
-
-
-    document
-        .querySelectorAll("[data-page]")
-        .forEach(button => {
-
-            button.classList.toggle(
-                "active",
-                button.dataset.page === pageId
-            );
-
-        });
-
-
-    if (pageId === "home") {
-
-        renderHome();
-
-    }
-
-    if (pageId === "browse") {
-
-        renderBrowse();
-
-    }
-
-    if (pageId === "favorites") {
-
-        renderFavorites();
-
-    }
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-/* ============================================================
-   8. FAVORİ İŞLEMLERİ
-   ============================================================ */
 
 function isFavorite(id) {
 
-    return favorites.some(
-        favoriteId =>
-            String(favoriteId) === String(id)
-    );
+  return favorites.some(
+    item =>
+      String(item) ===
+      String(id)
+  );
 
 }
 
 
-function toggleFav(id) {
+/* ============================================================
+   6. ANA SAYFA
+   ============================================================ */
 
-    const index =
-        favorites.findIndex(
-            favoriteId =>
-                String(favoriteId) === String(id)
-        );
+function renderHome() {
 
-
-    if (index >= 0) {
-
-        favorites.splice(index, 1);
-
-    } else {
-
-        favorites.push(id);
-
-    }
+  const grid =
+    document.getElementById(
+      "homeGrid"
+    );
 
 
-    window.favorites = favorites;
+  if (!grid) return;
 
 
-    try {
+  grid.innerHTML =
+    window.dummyCars
+      .slice(0, 6)
+      .map(
+        car =>
+          createCarCard(car)
+      )
+      .join("");
 
-        localStorage.setItem(
-            "favs",
-            JSON.stringify(favorites)
-        );
-
-    } catch (error) {
-
-        console.warn(
-            "Favoriler kaydedilemedi:",
-            error
-        );
-
-    }
+}
 
 
-    renderHome();
-    renderBrowse();
-    renderFavorites();
+/* ============================================================
+   7. KATEGORİLER
+   ============================================================ */
+
+function filterByCategory(
+  cat
+) {
+
+  document
+    .querySelectorAll(
+      ".category-pills .pill"
+    )
+    .forEach(pill => {
+
+      pill.classList.toggle(
+
+        "active",
+
+        pill.textContent.includes(
+          cat
+        ) ||
+
+        (
+          cat === "" &&
+          pill.textContent.includes(
+            "Tüm"
+          )
+        )
+
+      );
+
+    });
+
+
+  go("browse");
+
+
+  const bodyInput =
+    document.getElementById(
+      "fBody"
+    );
+
+
+  const fuelInput =
+    document.getElementById(
+      "fFuel"
+    );
+
+
+  if (bodyInput) {
+
+    bodyInput.value =
+      cat === "Elektrik"
+        ? ""
+        : cat;
+
+  }
+
+
+  if (fuelInput) {
+
+    fuelInput.value =
+      cat === "Elektrik"
+        ? "Elektrik"
+        : "";
+
+  }
+
+
+  renderBrowse();
+
+}
+
+
+/* ============================================================
+   8. ARAÇ LİSTESİ / FİLTRELER
+   ============================================================ */
+
+function renderBrowse() {
+
+  const grid =
+    document.getElementById(
+      "browseGrid"
+    );
+
+
+  if (!grid) return;
+
+
+  const q =
+    (
+      document.getElementById(
+        "fQuery"
+      )?.value || ""
+    )
+      .toLocaleLowerCase(
+        "tr-TR"
+      );
+
+
+  const brand =
+    document.getElementById(
+      "fBrand"
+    )?.value || "";
+
+
+  const body =
+    document.getElementById(
+      "fBody"
+    )?.value || "";
+
+
+  const pMin =
+    Number(
+      document.getElementById(
+        "fPriceMin"
+      )?.value || 0
+    );
+
+
+  const pMax =
+    Number(
+      document.getElementById(
+        "fPriceMax"
+      )?.value ||
+      Infinity
+    );
+
+
+  const yMin =
+    Number(
+      document.getElementById(
+        "fYearMin"
+      )?.value || 0
+    );
+
+
+  const yMax =
+    Number(
+      document.getElementById(
+        "fYearMax"
+      )?.value ||
+      Infinity
+    );
+
+
+  const kmMax =
+    Number(
+      document.getElementById(
+        "fKmMax"
+      )?.value ||
+      Infinity
+    );
+
+
+  const fuel =
+    document.getElementById(
+      "fFuel"
+    )?.value || "";
+
+
+  const trans =
+    document.getElementById(
+      "fTrans"
+    )?.value || "";
+
+
+  const sort =
+    document.getElementById(
+      "fSort"
+    )?.value ||
+    "default";
+
+
+  let filtered =
+    window.dummyCars.filter(
+      car => {
+
+        const carBrand =
+          String(
+            car.brand || ""
+          )
+            .toLocaleLowerCase(
+              "tr-TR"
+            );
+
+
+        const carModel =
+          String(
+            car.model || ""
+          )
+            .toLocaleLowerCase(
+              "tr-TR"
+            );
+
+
+        if (
+          q &&
+          !(
+            carBrand.includes(q) ||
+            carModel.includes(q)
+          )
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          brand &&
+          car.brand !== brand
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          body &&
+          car.seg !== body
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          car.price < pMin
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          pMax !== Infinity &&
+          car.price > pMax
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          car.year < yMin
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          yMax !== Infinity &&
+          car.year > yMax
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          car.km > kmMax
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          fuel &&
+          car.fuel !== fuel
+        ) {
+
+          return false;
+
+        }
+
+
+        if (
+          trans &&
+          car.trans !== trans
+        ) {
+
+          return false;
+
+        }
+
+
+        return true;
+
+      }
+    );
+
+
+  /* SIRALAMA */
+
+  if (
+    sort === "priceAsc"
+  ) {
+
+    filtered.sort(
+      (a, b) =>
+        a.price - b.price
+    );
+
+  }
+
+
+  if (
+    sort === "priceDesc"
+  ) {
+
+    filtered.sort(
+      (a, b) =>
+        b.price - a.price
+    );
+
+  }
+
+
+  if (
+    sort === "yearDesc"
+  ) {
+
+    filtered.sort(
+      (a, b) =>
+        b.year - a.year
+    );
+
+  }
+
+
+  if (
+    sort === "kmAsc"
+  ) {
+
+    filtered.sort(
+      (a, b) =>
+        a.km - b.km
+    );
+
+  }
+
+
+  const resultCount =
+    document.getElementById(
+      "resultCount"
+    );
+
+
+  if (resultCount) {
+
+    resultCount.textContent =
+      `Bulunan Araç: ${filtered.length}`;
+
+  }
+
+
+  grid.innerHTML =
+    filtered.length > 0
+
+      ?
+
+        filtered
+          .map(
+            car =>
+              createCarCard(
+                car
+              )
+          )
+          .join("")
+
+      :
+
+        `
+
+          <div
+            style="
+              grid-column:1/-1;
+              padding:40px;
+              text-align:center;
+              color:var(--muted);
+            "
+          >
+
+            Aramanıza uygun araç bulunamadı.
+
+          </div>
+
+        `;
 
 }
 
@@ -739,1103 +1546,679 @@ function toggleFav(id) {
    9. ARAÇ KARTI
    ============================================================ */
 
-function createCarCard(car, matchRate) {
+function createCarCard(
+  car,
+  matchRate
+) {
 
-    if (!car) {
-        return "";
-    }
+  const isFav =
+    favorites.includes(
+      car.id
+    );
 
 
-    const favorite =
-        isFavorite(car.id);
+  return `
+
+    <div
+      class="vehicle-card"
+      onclick="openDetail(${car.id})"
+    >
+
+      <button
+        class="fav-btn"
+        onclick="toggleFav(${car.id}, event)"
+        type="button"
+      >
+
+        ${isFav ? "❤️" : "🤍"}
+
+      </button>
 
 
-    const image =
-        car.img ||
-        car.image ||
-        (
-            Array.isArray(car.images)
-                ? car.images[0]
-                : imgPool[0]
+      <div
+        class="car-img"
+        style="
+          background-image:url('${car.img}')
+        "
+      >
+
+        <div class="car-overlay">
+
+          <span>
+            ${car.brand} ${car.model}
+          </span>
+
+          <span>
+            ${car.year}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="car-body">
+
+        ${
+          matchRate
+            ?
+
+              `
+
+                <span class="match-badge">
+
+                  %${matchRate} Uyumlu
+
+                </span>
+
+              `
+
+            :
+
+              ""
+        }
+
+
+        <div class="car-title">
+
+          ${car.brand}
+          ${car.model}
+
+        </div>
+
+
+        <div class="car-price">
+
+          ${car.price.toLocaleString(
+            "tr-TR"
+          )} TL
+
+        </div>
+
+
+        <div class="car-meta">
+
+          <span>
+            ${car.fuel}
+          </span>
+
+          •
+
+          <span>
+            ${car.trans}
+          </span>
+
+          •
+
+          <span>
+            ${car.km.toLocaleString(
+              "tr-TR"
+            )} KM
+          </span>
+
+        </div>
+
+
+        <div class="badge-tco">
+
+          Tahmini Yürütme:
+
+          ~${car.tco.toLocaleString(
+            "tr-TR"
+          )} TL / ay
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ============================================================
+   10. İLAN VERME / GÖRSEL YÜKLEME
+   ============================================================ */
+
+function handleImageUpload(
+  e
+) {
+
+  const files =
+    e.target.files;
+
+
+  if (
+    !files ||
+    !files.length
+  ) {
+
+    return;
+
+  }
+
+
+  for (
+    const file of files
+  ) {
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      function(event) {
+
+        uploadedImages.push(
+          event.target.result
         );
 
 
-    const price =
-        new Intl.NumberFormat("tr-TR")
-            .format(Number(car.price) || 0);
+        renderImgPreviews();
+
+      };
 
 
-    const km =
-        new Intl.NumberFormat("tr-TR")
-            .format(Number(car.km) || 0);
+    reader.readAsDataURL(
+      file
+    );
 
-
-    const tco =
-        new Intl.NumberFormat("tr-TR")
-            .format(Number(car.tco) || 0);
-
-
-    const matchHtml =
-        matchRate
-            ? `
-                <div class="match-badge">
-                    ${matchRate}% Uyum
-                </div>
-            `
-            : "";
-
-
-    return `
-
-        <article
-            class="car-card"
-            data-car-id="${car.id}"
-            onclick="openDetail('${car.id}')"
-        >
-
-            <div class="car-card-image">
-
-                <img
-                    src="${image}"
-                    alt="${car.title || `${car.brand} ${car.model}`}"
-                    loading="lazy"
-                >
-
-                ${matchHtml}
-
-                <button
-                    type="button"
-                    class="favorite-btn ${favorite ? "active" : ""}"
-                    onclick="event.stopPropagation(); toggleFav('${car.id}')"
-                    aria-label="Favorilere ekle"
-                >
-                    ${favorite ? "♥" : "♡"}
-                </button>
-
-                ${
-                    car.isUserListing
-                        ? `
-                            <span class="user-listing-badge">
-                                Yeni İlan
-                            </span>
-                        `
-                        : ""
-                }
-
-            </div>
-
-
-            <div class="car-card-body">
-
-                <div class="car-card-top">
-
-                    <div>
-
-                        <div class="car-card-brand">
-                            ${car.brand || ""}
-                        </div>
-
-                        <h3>
-                            ${car.model || "Araç"}
-                        </h3>
-
-                    </div>
-
-                    <strong class="car-card-price">
-                        ${price} TL
-                    </strong>
-
-                </div>
-
-
-                <div class="car-card-meta">
-
-                    <span>
-                        ${car.year || "-"}
-                    </span>
-
-                    <span>
-                        ${km} km
-                    </span>
-
-                    <span>
-                        ${car.fuel || "-"}
-                    </span>
-
-                    <span>
-                        ${car.trans || car.transmission || "-"}
-                    </span>
-
-                </div>
-
-
-                <div class="car-card-bottom">
-
-                    <span>
-                        ${car.body || car.seg || "-"}
-                    </span>
-
-                    <span>
-                        Sahiplik: ${tco} TL/yıl
-                    </span>
-
-                </div>
-
-            </div>
-
-        </article>
-
-    `;
-}
-
-
-/* ============================================================
-   10. ANA SAYFA
-   ============================================================ */
-
-function renderHome() {
-
-    const grid =
-        document.getElementById("homeGrid");
-
-    if (!grid) {
-        return;
-    }
-
-
-    const popularCars =
-        window.dummyCars
-            .filter(car => !car.isUserListing)
-            .slice(0, 6);
-
-
-    grid.innerHTML =
-        popularCars
-            .map(car =>
-                createCarCard(car)
-            )
-            .join("");
-
-
-    const count =
-        document.getElementById("homeCarCount");
-
-    if (count) {
-
-        count.textContent =
-            `${window.dummyCars.length}`;
-
-    }
+  }
 
 }
 
 
-/* ============================================================
-   11. KATEGORİ FİLTRELEME
-   ============================================================ */
+function renderImgPreviews() {
 
-function filterByCategory(category) {
-
-    const body =
-        document.getElementById("fBody");
-
-    const fuel =
-        document.getElementById("fFuel");
+  const grid =
+    document.getElementById(
+      "imgPreviewGrid"
+    );
 
 
-    if (body) {
-        body.value = "";
-    }
-
-    if (fuel) {
-        fuel.value = "";
-    }
+  if (!grid) return;
 
 
-    if (category === "Elektrikli Araçlar") {
-
-        if (fuel) {
-            fuel.value = "Elektrik";
-        }
-
-    } else if (body) {
-
-        const validBodies =
-            [
-                "Sedan",
-                "SUV",
-                "Hatchback",
-                "Coupe"
-            ];
-
-        if (validBodies.includes(category)) {
-
-            body.value = category;
-
-        }
-
-    }
-
-
-    go("browse");
-
-    renderBrowse();
-
-}
-
-
-/* ============================================================
-   12. ARAÇLARI İNCELE
-   ============================================================ */
-
-function renderBrowse() {
-
-    const grid =
-        document.getElementById("browseGrid");
-
-    if (!grid) {
-        return;
-    }
-
-
-    const query =
+  grid.innerHTML =
+    uploadedImages
+      .map(
         (
-            document.getElementById("fQuery")?.value ||
-            ""
+          src,
+          index
+        ) => `
+
+          <div class="preview-card">
+
+            <img src="${src}">
+
+            <button
+              type="button"
+              class="remove-btn"
+              onclick="removeImg(${index})"
+            >
+
+              ✕
+
+            </button>
+
+          </div>
+
+        `
+      )
+      .join("");
+
+}
+
+
+function removeImg(
+  index
+) {
+
+  uploadedImages.splice(
+    index,
+    1
+  );
+
+
+  renderImgPreviews();
+
+}
+
+
+function submitNewCar(
+  e
+) {
+
+  e.preventDefault();
+
+
+  const price =
+    Number(
+      document.getElementById(
+        "addPrice"
+      )?.value || 0
+    );
+
+
+  const newId =
+    window.dummyCars.length > 0
+
+      ?
+
+        Math.max(
+          ...window.dummyCars.map(
+            car => car.id
+          )
+        ) + 1
+
+      :
+
+        1;
+
+
+  const brand =
+    document.getElementById(
+      "addBrand"
+    )?.value || "";
+
+
+  const model =
+    document.getElementById(
+      "addModel"
+    )?.value || "";
+
+
+  const body =
+    document.getElementById(
+      "addBody"
+    )?.value || "";
+
+
+  const fuel =
+    document.getElementById(
+      "addFuel"
+    )?.value || "";
+
+
+  const trans =
+    document.getElementById(
+      "addTrans"
+    )?.value || "";
+
+
+  const year =
+    Number(
+      document.getElementById(
+        "addYear"
+      )?.value || 0
+    );
+
+
+  const km =
+    Number(
+      document.getElementById(
+        "addKm"
+      )?.value || 0
+    );
+
+
+  const newCar = {
+
+    id: newId,
+
+    brand: brand,
+
+    model: model,
+
+    title:
+      `${brand} ${model}`,
+
+    trim:
+      "İlan Sahibi Tarafından Girildi",
+
+    seg: body,
+
+    body: body,
+
+    price: price,
+
+    fuel: fuel,
+
+    trans: trans,
+
+    transmission: trans,
+
+    year: year,
+
+    km: km,
+
+    tco:
+      Math.round(
+        price * 0.006
+      ),
+
+
+    img:
+      uploadedImages[0] ||
+      imgPool[0],
+
+
+    images:
+      uploadedImages.length
+        ? [...uploadedImages]
+        : [imgPool[0]],
+
+
+    engine:
+      "Belirtilmedi",
+
+
+    power:
+      "Belirtilmedi",
+
+
+    drive:
+      "Ön Çekiş",
+
+
+    color:
+      "Belirtilmedi",
+
+
+    location:
+      "İstanbul, Kadıköy",
+
+
+    city:
+      "İstanbul",
+
+
+    district:
+      "Kadıköy",
+
+
+    seller:
+      "Yeni İlan Sahibi",
+
+
+    sellerType:
+      "Bireysel",
+
+
+    featured:
+      false,
+
+
+    description:
+      `${year} model ${brand} ${model}. ` +
+      `${km.toLocaleString("tr-TR")} km'de.`,
+
+
+    equipment: [
+
+      "Klima",
+      "Bluetooth",
+      "Park sensörü",
+      "ABS",
+      "ESP"
+
+    ],
+
+
+    expert: {
+
+      hood:
+        "Beyan Edilmedi",
+
+      fenderLeft:
+        "Beyan Edilmedi",
+
+      roof:
+        "Beyan Edilmedi",
+
+      doorRight:
+        "Beyan Edilmedi",
+
+      tramer:
+        "Beyan Edilmedi",
+
+      engineScore:
+        "%95",
+
+      transmissionScore:
+        "Kontrol Edildi"
+
+    }
+
+  };
+
+
+  window.dummyCars.unshift(
+    newCar
+  );
+
+
+  alert(
+    "İlanınız başarıyla eklendi!"
+  );
+
+
+  uploadedImages = [];
+
+
+  renderImgPreviews();
+
+
+  if (e.target) {
+
+    e.target.reset();
+
+  }
+
+
+  go("browse");
+
+}
+
+
+/* ============================================================
+   11. YENİ ARAÇ DETAY SİSTEMİ
+   ============================================================ */
+
+function openDetail(
+  id
+) {
+
+  console.log(
+    "Araç detay isteği:",
+    id
+  );
+
+
+  const detailSystem =
+    window.AB_Detail;
+
+
+  if (!detailSystem) {
+
+    console.error(
+      "AB_Detail bulunamadı. detail.js yüklenmemiş olabilir."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    typeof detailSystem.open !==
+    "function"
+  ) {
+
+    console.error(
+      "AB_Detail.open fonksiyonu bulunamadı."
+    );
+
+    return;
+
+  }
+
+
+  detailSystem.open(id);
+
+}
+
+
+/* ============================================================
+   12. YAPAY ZEKA DESTEK MOTORU
+   ============================================================ */
+
+async function sendAIChat() {
+
+  const input =
+    document.getElementById(
+      "chatInput"
+    );
+
+
+  if (!input) return;
+
+
+  const query =
+    input.value.trim();
+
+
+  if (!query) return;
+
+
+  const body =
+    document.getElementById(
+      "chatBody"
+    );
+
+
+  if (!body) return;
+
+
+  body.innerHTML += `
+
+    <div class="chat-msg user">
+
+      ${query}
+
+    </div>
+
+  `;
+
+
+  input.value = "";
+
+
+  body.scrollTop =
+    body.scrollHeight;
+
+
+  const typingId =
+    "typing_" +
+    Date.now();
+
+
+  body.innerHTML += `
+
+    <div
+      class="chat-msg bot"
+      id="${typingId}"
+    >
+
+      <div class="typing-indicator">
+
+        <div class="typing-dot"></div>
+
+        <div class="typing-dot"></div>
+
+        <div class="typing-dot"></div>
+
+      </div>
+
+    </div>
+
+  `;
+
+
+  body.scrollTop =
+    body.scrollHeight;
+
+
+  setTimeout(
+    () => {
+
+      document
+        .getElementById(
+          typingId
         )
-            .trim()
-            .toLowerCase();
+        ?.remove();
 
 
-    const brand =
-        document.getElementById("fBrand")?.value ||
-        "";
+      let reply;
 
 
-    const body =
-        document.getElementById("fBody")?.value ||
-        "";
+      if (
+        typeof generateAIResponse ===
+        "function"
+      ) {
 
+        reply =
+          generateAIResponse(
+            query
+          );
 
-    const priceMin =
-        Number(
-            document.getElementById("fPriceMin")?.value
-        ) || 0;
+      } else {
 
+        reply =
+          "Size uygun araçları bulmak için Bana Araba Bul bölümünü kullanabilirsiniz.";
 
-    const priceMax =
-        Number(
-            document.getElementById("fPriceMax")?.value
-        ) || Infinity;
+      }
 
 
-    const yearMin =
-        Number(
-            document.getElementById("fYearMin")?.value
-        ) || 0;
+      body.innerHTML += `
 
+        <div class="chat-msg bot">
 
-    const yearMax =
-        Number(
-            document.getElementById("fYearMax")?.value
-        ) || Infinity;
+          ${reply}
 
+        </div>
 
-    const kmMax =
-        Number(
-            document.getElementById("fKmMax")?.value
-        ) || Infinity;
+      `;
 
 
-    const fuel =
-        document.getElementById("fFuel")?.value ||
-        "";
+      body.scrollTop =
+        body.scrollHeight;
 
 
-    const trans =
-        document.getElementById("fTrans")?.value ||
-        "";
-
-
-    const sort =
-        document.getElementById("fSort")?.value ||
-        "default";
-
-
-    let filtered =
-        window.dummyCars.filter(car => {
-
-            const searchable =
-                `
-                    ${car.brand || ""}
-                    ${car.model || ""}
-                    ${car.title || ""}
-                    ${car.city || ""}
-                    ${car.district || ""}
-                `
-                    .toLowerCase();
-
-
-            if (
-                query &&
-                !searchable.includes(query)
-            ) {
-                return false;
-            }
-
-
-            if (
-                brand &&
-                car.brand !== brand
-            ) {
-                return false;
-            }
-
-
-            if (
-                body &&
-                car.body !== body
-            ) {
-                return false;
-            }
-
-
-            if (
-                car.price < priceMin ||
-                car.price > priceMax
-            ) {
-                return false;
-            }
-
-
-            if (
-                car.year < yearMin ||
-                car.year > yearMax
-            ) {
-                return false;
-            }
-
-
-            if (
-                car.km > kmMax
-            ) {
-                return false;
-            }
-
-
-            if (
-                fuel &&
-                car.fuel !== fuel
-            ) {
-                return false;
-            }
-
-
-            if (
-                trans &&
-                car.trans !== trans &&
-                car.transmission !== trans
-            ) {
-                return false;
-            }
-
-
-            return true;
-
-        });
-
-
-    /* -------------------------
-       Sıralama
-       ------------------------- */
-
-    if (sort === "priceAsc") {
-
-        filtered.sort(
-            (a, b) =>
-                Number(a.price) -
-                Number(b.price)
-        );
-
-    }
-
-    else if (sort === "priceDesc") {
-
-        filtered.sort(
-            (a, b) =>
-                Number(b.price) -
-                Number(a.price)
-        );
-
-    }
-
-    else if (sort === "yearDesc") {
-
-        filtered.sort(
-            (a, b) =>
-                Number(b.year) -
-                Number(a.year)
-        );
-
-    }
-
-    else if (sort === "kmAsc") {
-
-        filtered.sort(
-            (a, b) =>
-                Number(a.km) -
-                Number(b.km)
-        );
-
-    }
-
-
-    /* -------------------------
-       Sonuç sayısı
-       ------------------------- */
-
-    const resultCount =
-        document.getElementById("browseCount") ||
-        document.getElementById("resultCount");
-
-
-    if (resultCount) {
-
-        resultCount.textContent =
-            `Bulunan Araç: ${filtered.length}`;
-
-    }
-
-
-    /* -------------------------
-       Sonuç yok
-       ------------------------- */
-
-    if (!filtered.length) {
-
-        grid.innerHTML = `
-
-            <div class="empty-state">
-
-                <div class="empty-state-icon">
-                    🚗
-                </div>
-
-                <h3>
-                    Aradığınız kriterlerde araç bulunamadı.
-                </h3>
-
-                <p>
-                    Filtreleri değiştirerek tekrar deneyebilirsiniz.
-                </p>
-
-                <button
-                    type="button"
-                    onclick="resetFilters()"
-                    class="btn"
-                >
-                    Filtreleri Temizle
-                </button>
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    grid.innerHTML =
-        filtered
-            .map(car =>
-                createCarCard(car)
-            )
-            .join("");
+    },
+    900
+  );
 
 }
 
 
 /* ============================================================
-   13. FAVORİLER SAYFASI
-   ============================================================ */
-
-function renderFavorites() {
-
-    const grid =
-        document.getElementById("favoritesGrid");
-
-    if (!grid) {
-        return;
-    }
-
-
-    const favoriteCars =
-        window.dummyCars.filter(car =>
-            isFavorite(car.id)
-        );
-
-
-    const count =
-        document.getElementById("favoritesCount");
-
-
-    if (count) {
-
-        count.textContent =
-            favoriteCars.length;
-
-    }
-
-
-    if (!favoriteCars.length) {
-
-        grid.innerHTML = `
-
-            <div class="empty-state">
-
-                <div class="empty-state-icon">
-                    ♡
-                </div>
-
-                <h3>
-                    Henüz favori aracınız yok.
-                </h3>
-
-                <p>
-                    Beğendiğiniz araçları favorilerinize ekleyebilirsiniz.
-                </p>
-
-                <button
-                    type="button"
-                    class="btn"
-                    onclick="go('browse')"
-                >
-                    Araçları İncele
-                </button>
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-
-    grid.innerHTML =
-        favoriteCars
-            .map(car =>
-                createCarCard(car)
-            )
-            .join("");
-
-}
-
-
-/* ============================================================
-   14. ARAÇ DETAY
-   ============================================================ */
-
-function openDetail(id) {
-
-    if (
-        window.AB_Detail &&
-        typeof window.AB_Detail.open === "function"
-    ) {
-
-        window.AB_Detail.open(id);
-
-        return;
-
-    }
-
-
-    console.warn(
-        "detail.js bulunamadı veya AB_Detail.open mevcut değil."
-    );
-
-}
-
-
-/* ============================================================
-   15. GLOBAL ARAMA
-   ============================================================ */
-
-function handleSearchInput(event) {
-
-    const value =
-        event.target.value.trim();
-
-
-    const suggestions =
-        document.getElementById("searchSuggestions");
-
-
-    if (!suggestions) {
-        return;
-    }
-
-
-    if (!value) {
-
-        suggestions.innerHTML = "";
-        suggestions.classList.remove("open");
-
-        return;
-
-    }
-
-
-    const query =
-        value.toLowerCase();
-
-
-    const matches =
-        window.dummyCars
-            .filter(car => {
-
-                const text =
-                    `
-                        ${car.brand}
-                        ${car.model}
-                        ${car.title}
-                    `
-                        .toLowerCase();
-
-                return text.includes(query);
-
-            })
-            .slice(0, 5);
-
-
-    if (!matches.length) {
-
-        suggestions.innerHTML = `
-            <div class="search-empty">
-                Sonuç bulunamadı
-            </div>
-        `;
-
-    } else {
-
-        suggestions.innerHTML =
-            matches
-                .map(car => `
-
-                    <button
-                        type="button"
-                        class="search-result-item"
-                        onclick="openDetail('${car.id}')"
-                    >
-
-                        <span>
-                            ${car.brand} ${car.model}
-                        </span>
-
-                        <strong>
-                            ${new Intl.NumberFormat("tr-TR").format(car.price)} TL
-                        </strong>
-
-                    </button>
-
-                `)
-                .join("");
-
-    }
-
-
-    suggestions.classList.add("open");
-
-}
-
-
-function execCar(query) {
-
-    const clean =
-        query
-            .trim()
-            .toLowerCase();
-
-
-    if (!clean) {
-        return;
-    }
-
-
-    const car =
-        window.dummyCars.find(item => {
-
-            const text =
-                `
-                    ${item.brand}
-                    ${item.model}
-                    ${item.title}
-                `
-                    .toLowerCase();
-
-            return text.includes(clean);
-
-        });
-
-
-    if (car) {
-
-        openDetail(car.id);
-
-        return true;
-
-    }
-
-
-    return false;
-
-}
-
-
-function executeBrowseSearch(query) {
-
-    const input =
-        document.getElementById("fQuery");
-
-    if (input) {
-
-        input.value =
-            query || "";
-
-    }
-
-
-    go("browse");
-
-    renderBrowse();
-
-}
-
-
-function execCmd(command) {
-
-    const clean =
-        String(command || "")
-            .trim()
-            .toLowerCase();
-
-
-    if (
-        clean === "favoriler" ||
-        clean === "favorilerim"
-    ) {
-
-        go("favorites");
-
-        return;
-
-    }
-
-
-    if (
-        clean === "ilan ver" ||
-        clean === "araç ekle"
-    ) {
-
-        go("sell");
-
-        return;
-
-    }
-
-
-    if (
-        clean === "araçlar" ||
-        clean === "araç incele" ||
-        clean === "araçları incele"
-    ) {
-
-        go("browse");
-
-        return;
-
-    }
-
-
-    if (
-        clean === "ana sayfa" ||
-        clean === "home"
-    ) {
-
-        go("home");
-
-        return;
-
-    }
-
-
-    if (
-        clean === "bana araba bul" ||
-        clean === "sihirbaz"
-    ) {
-
-        go("find");
-
-        return;
-
-    }
-
-
-    if (!execCar(command)) {
-
-        executeBrowseSearch(command);
-
-    }
-
-}
-
-
-function clearSearch() {
-
-    const input =
-        document.getElementById("globalSearch");
-
-    if (input) {
-
-        input.value = "";
-
-    }
-
-
-    const suggestions =
-        document.getElementById("searchSuggestions");
-
-    if (suggestions) {
-
-        suggestions.innerHTML = "";
-
-        suggestions.classList.remove("open");
-
-    }
-
-}
-
-
-function handleSearchKeyDown(event) {
-
-    if (event.key === "Enter") {
-
-        event.preventDefault();
-
-        execCmd(event.target.value);
-
-    }
-
-
-    if (event.key === "Escape") {
-
-        clearSearch();
-
-    }
-
-}
-
-
-/* ============================================================
-   16. CTRL + K
-   ============================================================ */
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (
-            (event.ctrlKey || event.metaKey) &&
-            event.key.toLowerCase() === "k"
-        ) {
-
-            event.preventDefault();
-
-            const search =
-                document.getElementById("globalSearch");
-
-            if (search) {
-
-                search.focus();
-
-                search.select();
-
-            }
-
-        }
-
-    }
-);
-
-
-/* ============================================================
-   17. AI SOHBET
-   ============================================================ */
-
-function sendAIChat() {
-
-    const input =
-        document.getElementById("aiInput");
-
-    const messages =
-        document.getElementById("aiMessages");
-
-
-    if (!input || !messages) {
-        return;
-    }
-
-
-    const text =
-        input.value.trim();
-
-
-    if (!text) {
-        return;
-    }
-
-
-    messages.insertAdjacentHTML(
-        "beforeend",
-        `
-            <div class="chat-message user">
-                ${text}
-            </div>
-        `
-    );
-
-
-    input.value = "";
-
-
-    setTimeout(() => {
-
-        const response =
-            generateAIResponse(text);
-
-
-        messages.insertAdjacentHTML(
-            "beforeend",
-            `
-                <div class="chat-message assistant">
-                    ${response}
-                </div>
-            `
-        );
-
-
-        messages.scrollTop =
-            messages.scrollHeight;
-
-    }, 400);
-
-}
-
-
-function generateAIResponse(text) {
-
-    const query =
-        text.toLowerCase();
-
-
-    if (
-        query.includes("ucuz") ||
-        query.includes("bütçe")
-    ) {
-
-        return `
-            Bütçe odaklı bir araç arıyorsanız
-            Araçları İncele bölümünden fiyat aralığı
-            belirleyebilirsiniz.
-        `;
-
-    }
-
-
-    if (
-        query.includes("az yak") ||
-        query.includes("tüketim")
-    ) {
-
-        return `
-            Yakıt tüketimi sizin için önemliyse
-            hibrit veya küçük hacimli benzinli
-            araçlara bakabilirsiniz.
-        `;
-
-    }
-
-
-    if (
-        query.includes("suv")
-    ) {
-
-        return `
-            SUV araçları görmek için Araçları İncele
-            bölümündeki kasa tipi filtresinden SUV
-            seçebilirsiniz.
-        `;
-
-    }
-
-
-    if (
-        query.includes("otomatik")
-    ) {
-
-        return `
-            Otomatik araçları Vites filtresinden
-            seçerek listeyi daraltabilirsiniz.
-        `;
-
-    }
-
-
-    return `
-        Size daha uygun araçları bulabilmem için
-        bütçenizi, kullanım amacınızı ve otomatik
-        veya manuel tercihinizi yazabilirsiniz.
-    `;
-
-}
-
-
-/* ============================================================
-   18. İLANLAR GÜNCELLENDİĞİNDE LİSTEYİ YENİLE
+   13. BAŞLANGIÇ
    ============================================================ */
 
 window.addEventListener(
-    "arabamiBulListingsUpdated",
-    function () {
+  "DOMContentLoaded",
+  () => {
 
-        loadSavedUserListings();
+    go("home");
 
-        renderHome();
-        renderBrowse();
-        renderFavorites();
+    console.log(
+      "Arabamı Bul:",
+      window.dummyCars.length,
+      "gerçekçi demo araç yüklendi."
+    );
 
-    }
-);
-
-
-/* ============================================================
-   19. DOM HAZIR
-   ============================================================ */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        /* Önce kayıtlı kullanıcı ilanlarını yükle */
-        loadSavedUserListings();
-
-
-        /* Ana sayfayı aç */
-        go("home");
-
-
-        console.log(
-            `Arabamı Bul hazır. Toplam araç: ${window.dummyCars.length}`
-        );
-
-    }
+  }
 );
