@@ -1,0 +1,128 @@
+```html
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Karşılaştır | ARABAMI BUL</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/compare.css">
+</head>
+
+<body>
+
+<header class="compare-header">
+  <div class="compare-header-inner">
+
+    <a href="index.html" class="compare-logo">
+      <span class="compare-logo-icon">🚗</span>
+      <span>ARABAMI <b>BUL</b></span>
+    </a>
+
+    <a href="index.html" class="compare-back">
+      ← Araçlara Dön
+    </a>
+
+  </div>
+</header>
+
+
+<main class="compare-page">
+
+  <section class="compare-heading">
+
+    <div>
+      <span class="compare-kicker">ARABAMI BUL</span>
+
+      <h1>Araçları Karşılaştır</h1>
+
+      <p>
+        Seçtiğin araçların fiyat, teknik özellik ve donanımlarını
+        yan yana incele.
+      </p>
+    </div>
+
+    <div class="compare-count">
+      <strong id="compareCount">0</strong>
+      <span>/ 3 araç</span>
+    </div>
+
+  </section>
+
+
+  <section id="compareEmpty" class="compare-empty" hidden>
+
+    <div class="compare-empty-icon">
+      ⇄
+    </div>
+
+    <h2>Henüz araç eklemedin</h2>
+
+    <p>
+      Araç ilanlarından karşılaştırmak istediğin araçları seç.
+      En fazla 3 aracı aynı anda karşılaştırabilirsin.
+    </p>
+
+    <a href="index.html" class="compare-primary-btn">
+      Araçları İncele
+    </a>
+
+  </section>
+
+
+  <section id="compareArea" class="compare-area">
+
+    <div class="compare-toolbar">
+
+      <div>
+        <strong>Karşılaştırma</strong>
+        <span id="compareDescription">
+          Araç özelliklerini yan yana incele
+        </span>
+      </div>
+
+      <button
+        type="button"
+        id="clearCompare"
+        class="compare-clear-btn"
+      >
+        Tümünü Temizle
+      </button>
+
+    </div>
+
+
+    <div class="compare-table-wrap">
+
+      <div id="compareGrid" class="compare-grid">
+        <!-- compare.js burayı dolduracak -->
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section class="compare-note">
+
+    <strong>Bilgilendirme</strong>
+
+    <p>
+      Karşılaştırma verileri Arabamı Bul üzerindeki ilan bilgilerinden
+      oluşturulur. Gerçek satın alma öncesinde araç ve ekspertiz
+      bilgilerinin ayrıca kontrol edilmesi önerilir.
+    </p>
+
+  </section>
+
+</main>
+
+
+<script src="js/app.js"></script>
+<script src="js/compare.js"></script>
+
+</body>
+</html>
+```
